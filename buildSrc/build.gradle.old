@@ -1,0 +1,39 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    google()
+}
+
+apply plugin: 'groovy'
+
+gradlePlugin {
+    plugins {
+        debugLogPlugin {
+            id = 'it.sephiroth.android.library.debuglog'
+            implementationClass = 'it.sephiroth.android.library.debuglog.DebugLogPlugin'
+        }
+    }
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+
+    implementation 'com.android.tools.build:gradle:7.0.3'
+    implementation 'com.android.tools.build:gradle-api:7.0.3'
+
+    implementation 'com.google.guava:guava:31.0.1-jre'
+    implementation 'commons-io:commons-io:2.6'
+
+    implementation "org.ow2.asm:asm:${asm_version}"
+    implementation "org.ow2.asm:asm-util:${asm_version}"
+    implementation "org.ow2.asm:asm-commons:${asm_version}"
+
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+//    implementation project(':debuglog-annotations')
+}
