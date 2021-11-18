@@ -19,6 +19,9 @@ repositories {
     google()
 }
 
+version = Config.VERSION
+group = Config.GROUP
+
 configure<GradlePluginDevelopmentExtension> {
     plugins {
         create("androidDebugLog") {
@@ -47,6 +50,24 @@ dependencies {
     annotationProcessor(Config.Dependencies.Misc.lombok)
 }
 
+tasks {
+    val sourcesJar by creating(Jar::class) {
+        archiveClassifier.set("sourcesJar")
+//        from(sourceSets.main.get().allSource)
+    }
+
+//    val javadocJar by creating(Jar::class) {
+//        dependsOn.add(javadoc)
+//        archiveClassifier.set("javadoc")
+//        from(javadoc)
+//    }
+
+    artifacts {
+//        archives(sourcesJar)
+//        archives(javadocJar)
+        archives(jar)
+    }
+}
 
 if (project.hasProperty("sonatypeUsername")
         && project.hasProperty("sonatypePassword")
@@ -59,7 +80,10 @@ if (project.hasProperty("sonatypeUsername")
 
     publishing {
         publications {
-            create<MavenPublication>("mavenJava") {
+            create<MavenPublication>("pluginMaven") {
+                groupId = Config.GROUP
+                version = Config.VERSION
+
                 pom {
                     groupId = Config.GROUP
                     version = Config.VERSION
@@ -68,7 +92,6 @@ if (project.hasProperty("sonatypeUsername")
                     url.set(Config.Pom.URL)
                     name.set(project.name)
 
-                    from(components["java"])
 
                     licenses {
                         license {
@@ -106,16 +129,19 @@ if (project.hasProperty("sonatypeUsername")
                 }
             }
         }
+
+
+    }
+
+    signing {
+        sign(publishing.publications["pluginMaven"])
+    }
+
+    tasks.withType<Sign> {
+        onlyIf { !Config.DEBUG }
     }
 }
 
-signing {
-    sign(publishing.publications["mavenJava"])
-}
-
-tasks.withType<Sign> {
-    onlyIf { !Config.DEBUG }
-}
 
 java {
     sourceCompatibility = Config.Java.version
