@@ -23,7 +23,7 @@ class PostClassVisitor(
         val methodDataPair = paramsMap[methodUniqueKey]
 
         if (null != methodDataPair) {
-            logger.lifecycle("methodData: $methodDataPair")
+            logger.debug("methodData: $methodDataPair")
             return PostMethodVisitor(className, methodDataPair.second, methodDataPair.first, access, descriptor, mv)
         }
         return mv
@@ -31,7 +31,7 @@ class PostClassVisitor(
 
 
     companion object {
-        private const val TAG = DebugLogPlugin.TAG
+        private const val TAG = "${DebugLogPlugin.TAG}:PostClassVisitor"
         val logger: Logger = LoggerFactory.getLogger(PostClassVisitor::class.java) as Logger
     }
 }

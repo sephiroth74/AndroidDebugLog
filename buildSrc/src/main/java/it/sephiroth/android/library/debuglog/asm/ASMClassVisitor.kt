@@ -18,14 +18,14 @@ import org.slf4j.LoggerFactory
  * @author Alessandro Crugnola on 16.11.21 - 15:34
  */
 class ASMClassVisitor(
-    cv: ASMClassWriter,
-    private val className: String,
-    private val superName: String,
-    private val pluginData: IPluginData
+        cv: ASMClassWriter,
+        private val className: String,
+        private val superName: String,
+        private val pluginData: IPluginData
 ) : ClassVisitor(Constants.ASM_VERSION, cv) {
 
     companion object {
-        private const val TAG = DebugLogPlugin.TAG
+        private const val TAG = "${DebugLogPlugin.TAG}:ASMClassVisitor"
     }
 
     private val logger: Logger = LoggerFactory.getLogger(ASMClassVisitor::class.java) as Logger
@@ -40,7 +40,6 @@ class ASMClassVisitor(
     }
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor? {
-        logger.lifecycle("[$TAG] {}::visitMethod(name={}, descriptor={}, signature={})", className, name, descriptor, signature)
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions) ?: return null
 
         val methodData = MethodData(name, descriptor, pluginData).apply {

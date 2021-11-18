@@ -44,7 +44,7 @@ abstract class TransformClassWorkAction : WorkAction<TransformClassWorkAction.Tr
 
     private fun transformSingleFile(pluginData: IPluginData, inputFile: File, destFile: File, classLoader: URLClassLoader) {
         if (!isClassAvailableForTransformation(inputFile.absolutePath)) {
-            logger.lifecycle("[$TAG] Skipping $inputFile")
+            logger.info("[$TAG] Skipping $inputFile")
             copyFile(inputFile, destFile)
         } else {
             var inputStream: InputStream? = null
@@ -55,7 +55,7 @@ abstract class TransformClassWorkAction : WorkAction<TransformClassWorkAction.Tr
                 inputStream = FileInputStream(inputFile)
                 outputStream = FileOutputStream(destFile)
 
-                logger.lifecycle("[$TAG] transformSingleFile(${inputFile.name}, $destFile)")
+                logger.debug("[$TAG] transformSingleFile(${inputFile.name}, $destFile)")
 
                 // 1. Build ClassReader object
                 val classReader = ClassReader(inputStream)
@@ -71,7 +71,7 @@ abstract class TransformClassWorkAction : WorkAction<TransformClassWorkAction.Tr
                 classReader.accept(preClassVisitor, ClassReader.EXPAND_FRAMES)
 
                 if (preClassVisitor.enabled) {
-                    logger.lifecycle("[$TAG] Annotations found in $className. Proceed with transformation.")
+                    logger.info("[$TAG] Annotations found in $className. Proceed with transformation.")
                     classWriter = ASMClassWriter(classReader.className, classReader.superName, ClassWriter.COMPUTE_FRAMES, classLoader)
                     classReader.accept(PostClassVisitor(classWriter, className, superName, preClassVisitor.methodsParametersMap), ClassReader.EXPAND_FRAMES)
                 }

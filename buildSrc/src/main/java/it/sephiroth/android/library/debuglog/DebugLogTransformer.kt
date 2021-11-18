@@ -27,7 +27,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         pluginScopes.add(QualifiedContent.Scope.PROJECT)
         pluginScopes.add(QualifiedContent.Scope.SUB_PROJECTS)
         pluginScopes.add(QualifiedContent.Scope.EXTERNAL_LIBRARIES)
-        logger.lifecycle("[$TAG] DebugLogTransformer added to project $project.name")
+        logger.debug("[$TAG] DebugLogTransformer added to project $project.name")
     }
 
     override fun getName(): String {
@@ -57,17 +57,17 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         debugLogPluginExtension = project.extensions.getByName(Constants.DEBUGLOG_EXTENSION) as DebugLogPluginExtension
 
         logger.lifecycle(
-            "[$TAG] androidDebugLog[" +
-                    "enabled=${debugLogPluginExtension.enabled.get()}, " +
-                    "logLevel=${debugLogPluginExtension.logLevel.get()}, " +
-                    "debugResult=${debugLogPluginExtension.debugResult.get()}, " +
-                    "debugArguments=${debugLogPluginExtension.debugArguments.get()}, " +
-                    "runVariant=${debugLogPluginExtension.runVariant.get()}" +
-                    "]"
+                "[$TAG] androidDebugLog[" +
+                        "enabled=${debugLogPluginExtension.enabled.get()}, " +
+                        "logLevel=${debugLogPluginExtension.logLevel.get()}, " +
+                        "debugResult=${debugLogPluginExtension.debugResult.get()}, " +
+                        "debugArguments=${debugLogPluginExtension.debugArguments.get()}, " +
+                        "runVariant=${debugLogPluginExtension.runVariant.get()}" +
+                        "]"
         )
 
-        logger.lifecycle("[$TAG] variant: ${transformInvocation.context.variantName}")
-        logger.lifecycle("[$TAG] transformInvocation.incremental: ${transformInvocation.isIncremental}, incremental: $isIncremental")
+        logger.debug("[$TAG] project variant: ${transformInvocation.context.variantName} (current: ${debugLogPluginExtension.runVariant.get().name}")
+        logger.debug("[$TAG] transformInvocation.incremental: ${transformInvocation.isIncremental}, incremental: $isIncremental")
 
         processInput(transformInvocation, debugLogPluginExtension)
 
@@ -113,7 +113,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     }
 
     private fun processJarInput(workQueue: WorkQueue, transformInvocation: TransformInvocation, jarInput: JarInput) {
-        logger.lifecycle("[$TAG] processJarInput(${jarInput.file.name})")
+        logger.debug("[$TAG] processJarInput(${jarInput.file.name})")
 
         val status = jarInput.status
         val dest = transformInvocation.outputProvider.getContentLocation(jarInput.file.absolutePath, jarInput.contentTypes, jarInput.scopes, Format.JAR)
@@ -142,14 +142,14 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     }
 
     private fun processDirectoryInput(
-        workQueue: WorkQueue,
-        transformInvocation: TransformInvocation,
-        debugLogPluginExtension: DebugLogPluginExtension,
-        directoryInput: DirectoryInput,
-        classPaths: List<URL>
+            workQueue: WorkQueue,
+            transformInvocation: TransformInvocation,
+            debugLogPluginExtension: DebugLogPluginExtension,
+            directoryInput: DirectoryInput,
+            classPaths: List<URL>
     ) {
 
-        logger.lifecycle("[$TAG] processDirectoryInput(${directoryInput.file})")
+        logger.debug("[$TAG] processDirectoryInput(${directoryInput.file})")
 
         val enabled = isPluginEnabled(transformInvocation, debugLogPluginExtension)
         val dest = transformInvocation.outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
@@ -167,7 +167,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
                 val destFilePath = inputFile.absolutePath.replace(srcDirPath, destDirPath)
                 val destFile = File(destFilePath)
 
-                logger.lifecycle("[$TAG] inputFile: $inputFile, destFile: $destFile")
+                logger.debug("[$TAG] inputFile: $inputFile, destFile: $destFile")
 
                 when (status) {
                     Status.ADDED,
@@ -193,14 +193,14 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     }
 
     private fun transformDirectory(
-        workQueue: WorkQueue,
-        enabled: Boolean,
-        inputDir: File,
-        outputDir: File,
-        classPaths: List<URL>
+            workQueue: WorkQueue,
+            enabled: Boolean,
+            inputDir: File,
+            outputDir: File,
+            classPaths: List<URL>
     ) {
 
-        logger.lifecycle("[$TAG] transformDirectory(enabled=$enabled, $inputDir, $outputDir)")
+        logger.debug("[$TAG] transformDirectory(enabled=$enabled, $inputDir, $outputDir)")
         if (!enabled) {
             FileUtils.copyDirectory(inputDir, outputDir)
             return
@@ -211,7 +211,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         if (inputDir.isDirectory) {
             FileUtils.listFilesAndDirs(inputDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE).forEach { file ->
                 if (file.isFile) {
-                    logger.lifecycle("[$TAG] Checking file $file (is file: ${file.isFile})")
+                    logger.debug("[$TAG] Checking file $file (is file: ${file.isFile})")
                     val filePath = file.absolutePath
                     val outputFile = File(filePath.replace(inputDirPath, outputDirPath))
                     transformSingleFile(workQueue, file, outputFile, classPaths)
@@ -241,7 +241,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     }
 
     private fun cleanDexBuilderFolder(dest: File) {
-        logger.lifecycle("[$TAG] cleanDexBuilderFolder($dest)")
+        logger.debug("[$TAG] cleanDexBuilderFolder($dest)")
         try {
             val dexBuilderDir = StringUtils.replaceLastPart(dest.absolutePath, name, "dexBuilder")
             // intermediates/transforms/dexBuilder/debug
@@ -263,10 +263,11 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     private fun isPluginEnabled(transformInvocation: TransformInvocation, extension: DebugLogPluginExtension): Boolean {
         if (!extension.enabled.get()) return false
         val runVariant = extension.runVariant.get()
+        logger.debug("[$TAG] variant = ${transformInvocation.context.variantName} (runVariant=$runVariant)")
 
-        if ("debug" == transformInvocation.context.variantName) {
+        if (transformInvocation.context.variantName.toLowerCase().endsWith("debug")) {
             return runVariant == RunVariant.Debug || runVariant == RunVariant.Always
-        } else if ("release" == transformInvocation.context.variantName) {
+        } else if (transformInvocation.context.variantName.toLowerCase().endsWith("release")) {
             return runVariant == RunVariant.Release || runVariant == RunVariant.Always
         } else {
             return false

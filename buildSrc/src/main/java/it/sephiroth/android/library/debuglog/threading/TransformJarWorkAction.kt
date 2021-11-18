@@ -21,7 +21,7 @@ abstract class TransformJarWorkAction : WorkAction<TransformJarParams> {
         val srcJar = parameters.getSrcFile().get()
         val dstJar = parameters.getDstFile().get()
 
-        logger.lifecycle("[$TAG] transformJar(${srcJar.asFile.name} --> ${dstJar.asFile.name})")
+        logger.debug("[$TAG] transformJar(${srcJar.asFile.name} --> ${dstJar.asFile.name})")
         FileUtils.copyFile(srcJar.asFile, dstJar.asFile)
     }
 

@@ -31,7 +31,6 @@ class ASMMethodVisitor(
         val av = super.visitAnnotation(descriptor, visible)
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG};") {
             val av2 = ASMAnnotationVisitor(av, methodData)
-            logger.lifecycle("[$TAG] {}::visitAnnotation({})", className, descriptor)
             enabled = true
             return av2
         }
@@ -40,7 +39,7 @@ class ASMMethodVisitor(
 
     override fun visitLocalVariable(name: String, descriptor: String, signature: String?, start: Label, end: Label, index: Int) {
         if (enabled && "this" != name && start == labels.first()) {
-            logger.lifecycle("[$TAG] {}::visitLocalVariable({}, {})", className, name, signature)
+            logger.debug("[$TAG] {}::visitLocalVariable({}, {})", className, name, signature)
             val type = Type.getType(descriptor)
             if (type.sort == Type.OBJECT || type.sort == Type.ARRAY) {
                 parameters.add(MethodParameter(name, "L${Constants.JavaTypes.TYPE_OBJECT};", index))
@@ -64,7 +63,7 @@ class ASMMethodVisitor(
     }
 
     companion object {
-        private const val TAG = DebugLogPlugin.TAG
+        private const val TAG = "${DebugLogPlugin.TAG}:ASMMethodVisitor"
     }
 
     interface Callback {

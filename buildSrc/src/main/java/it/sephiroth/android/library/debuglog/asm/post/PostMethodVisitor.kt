@@ -14,12 +14,12 @@ import org.objectweb.asm.commons.LocalVariablesSorter
 import org.slf4j.LoggerFactory
 
 class PostMethodVisitor(
-    private val className: String,
-    private val parameters: List<MethodParameter>,
-    private val methodData: MethodData,
-    access: Int,
-    descriptor: String,
-    methodVisitor: MethodVisitor
+        private val className: String,
+        private val parameters: List<MethodParameter>,
+        private val methodData: MethodData,
+        access: Int,
+        descriptor: String,
+        methodVisitor: MethodVisitor
 ) : LocalVariablesSorter(Constants.ASM_VERSION, access, descriptor, methodVisitor), Opcodes {
 
     private var timingStartVarIndex: Int? = null
@@ -88,8 +88,8 @@ class PostMethodVisitor(
         } else {
             mv.visitLdcInsn("void")
             mv.visitMethodInsn(
-                Opcodes.INVOKESTATIC, Constants.JavaTypes.TYPE_RESULT_LOGGER, "print",
-                "(IILjava/lang/String;Ljava/lang/String;JLjava/lang/Object;)V", false
+                    Opcodes.INVOKESTATIC, Constants.JavaTypes.TYPE_RESULT_LOGGER, "print",
+                    "(IILjava/lang/String;Ljava/lang/String;JLjava/lang/Object;)V", false
             )
         }
     }
@@ -100,7 +100,7 @@ class PostMethodVisitor(
     private fun printMethodStart() {
         logger.debug("[$TAG] ($className:${methodData.name}) Creating input logger injection")
 
-        val printerLoggerIndex = newLocal(Type.getObjectType(Constants.JavaTypes.TYPE_PARAMS_LOGGER))
+        // val printerLoggerIndex = newLocal(Type.getObjectType(Constants.JavaTypes.TYPE_PARAMS_LOGGER))
         mv.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
         mv.visitInsn(Opcodes.DUP)
         mv.visitLdcInsn(methodData.simpleClassName)                 // tag (String)
@@ -125,7 +125,7 @@ class PostMethodVisitor(
 
         // Insert a start local variable containing the current time in ms
         if (methodData.debugResult) {
-            logger.lifecycle("[$TAG] ($className:${methodData.name}) Adding currentTimeMillis variable")
+            logger.debug("[$TAG] ($className:${methodData.name}) Adding currentTimeMillis variable")
             timingStartVarIndex = newLocal(Type.LONG_TYPE)
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false)
             mv.visitVarInsn(Opcodes.LSTORE, timingStartVarIndex!!)
@@ -139,7 +139,7 @@ class PostMethodVisitor(
     }
 
     companion object {
-        private const val TAG = DebugLogPlugin.TAG
+        private const val TAG = "${DebugLogPlugin.TAG}:PostMethodVisitor"
         private val logger = LoggerFactory.getLogger(PostMethodVisitor::class.java) as Logger
     }
 }

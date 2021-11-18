@@ -7,6 +7,7 @@ plugins {
     id("java-gradle-plugin")
     id("maven-publish")
     signing
+    groovy
 }
 
 repositories {
@@ -16,37 +17,16 @@ repositories {
     google()
 }
 
-apply(plugin = "groovy")
-apply(plugin = "java-library")
-
-sourceSets {
-    main {
-        java {
-            srcDir("${project.rootDir}/buildSrc/main/java")
-        }
-
-//        resources {
-//            srcDir("${project.rootDir}/buildSrc/main")
-//        }
-    }
-}
-
 
 configure<GradlePluginDevelopmentExtension> {
     plugins {
-        create("debugLogPlugin") {
+        create("androidDebugLog") {
             id = "it.sephiroth.android.library.debuglog"
             implementationClass = "it.sephiroth.android.library.debuglog.DebugLogPlugin"
         }
     }
 }
 
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-}
 
 dependencies {
     val asm_version: String by project
@@ -73,9 +53,9 @@ dependencies {
 
 
 if (project.hasProperty("sonatypeUsername")
-    && project.hasProperty("sonatypePassword")
-    && project.hasProperty("SONATYPE_RELEASE_URL")
-    && project.hasProperty("SONATYPE_SNAPSHOT_URL")
+        && project.hasProperty("sonatypePassword")
+        && project.hasProperty("SONATYPE_RELEASE_URL")
+        && project.hasProperty("SONATYPE_SNAPSHOT_URL")
 ) {
     val SONATYPE_RELEASE_URL: String by project
     val SONATYPE_SNAPSHOT_URL: String by project
@@ -156,4 +136,10 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
     withSourcesJar()
     withJavadocJar()
+}
+
+afterEvaluate {
+    tasks.withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "11"
+    }
 }
