@@ -1,3 +1,5 @@
+// debuglog-annotations/build.gradle.kts
+
 @file:Suppress("LocalVariableName")
 
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -11,11 +13,11 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = Config.Android.compileSdk
 
     defaultConfig {
-        minSdk = 24
-        targetSdk = 31
+        minSdk = Config.Android.minSdk
+        targetSdk = Config.Android.targetSdk
     }
 
     buildTypes {
@@ -23,27 +25,27 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = Config.Java.version
+        targetCompatibility = Config.Java.version
     }
 }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = Config.Kotlin.jvmVersion
     }
 }
 
 afterEvaluate {
 
     if (project.hasProperty("sonatypeUsername")
-        && project.hasProperty("sonatypePassword")
-        && project.hasProperty("SONATYPE_RELEASE_URL")
-        && project.hasProperty("SONATYPE_SNAPSHOT_URL")
+            && project.hasProperty("sonatypePassword")
+            && project.hasProperty("SONATYPE_RELEASE_URL")
+            && project.hasProperty("SONATYPE_SNAPSHOT_URL")
     ) {
         val SONATYPE_RELEASE_URL: String by project
         val SONATYPE_SNAPSHOT_URL: String by project
-        val publishingUrl = if (project.extra["is_release"] == true) SONATYPE_RELEASE_URL else SONATYPE_SNAPSHOT_URL
+        val publishingUrl = if (!Config.DEBUG) SONATYPE_RELEASE_URL else SONATYPE_SNAPSHOT_URL
 
 
         publishing {
@@ -51,42 +53,32 @@ afterEvaluate {
                 create<MavenPublication>("release") {
 
                     pom {
-                        val POM_DESCRIPTION: String by project
-                        val POM_URL: String by project
-                        val POM_LICENCE_NAME: String by project
-                        val POM_LICENCE_URL: String by project
-                        val POM_SCM_URL: String by project
-                        val POM_SCM_CONNECTION: String by project
-                        val POM_SCM_DEV_CONNECTION: String by project
-                        val POM_DEVELOPER_ID: String by project
-                        val POM_DEVELOPER_NAME: String by project
+                        groupId = Config.GROUP
+                        version = Config.VERSION
 
-                        groupId = project.ext["group"] as String
-                        version = project.ext["version"] as String
-
-                        description.set(POM_DESCRIPTION)
-                        url.set(POM_URL)
+                        description.set(Config.Pom.DESCRIPTION)
+                        url.set(Config.Pom.URL)
                         name.set(project.name)
 
                         from(components["release"])
 
                         licenses {
                             license {
-                                name.set(POM_LICENCE_NAME)
-                                url.set(POM_LICENCE_URL)
+                                name.set(Config.Pom.LICENCE_NAME)
+                                url.set(Config.Pom.LICENCE_URL)
                             }
                         }
 
                         scm {
-                            url.set(POM_SCM_URL)
-                            connection.set(POM_SCM_CONNECTION)
-                            developerConnection.set(POM_SCM_DEV_CONNECTION)
+                            url.set(Config.Pom.SCM_URL)
+                            connection.set(Config.Pom.SCM_CONNECTION)
+                            developerConnection.set(Config.Pom.SCM_DEV_CONNECTION)
                         }
 
                         developers {
                             developer {
-                                id.set(POM_DEVELOPER_ID)
-                                name.set(POM_DEVELOPER_NAME)
+                                id.set(Config.Pom.DEVELOPER_ID)
+                                name.set(Config.Pom.DEVELOPER_NAME)
                             }
                         }
                     }
@@ -115,7 +107,7 @@ afterEvaluate {
     }
 
     tasks.withType<Sign> {
-        onlyIf { project.extra["is_release"] == true }
+        onlyIf { !Config.DEBUG }
     }
 
     java {
@@ -123,10 +115,8 @@ afterEvaluate {
     }
 }
 dependencies {
-    val kotlin_version: String by project
-
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation(kotlin("stdlib-jdk8", version = kotlin_version))
+    implementation(Config.Dependencies.Android.androidCoreKtx)
+    implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 }
 repositories {
     mavenCentral()

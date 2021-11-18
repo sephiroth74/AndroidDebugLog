@@ -154,6 +154,8 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         val enabled = isPluginEnabled(transformInvocation, debugLogPluginExtension)
         val dest = transformInvocation.outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
 
+        logger.lifecycle("[$TAG] Transformation enabled: $enabled")
+
         FileUtils.forceMkdir(dest)
 
         if (transformInvocation.isIncremental) {

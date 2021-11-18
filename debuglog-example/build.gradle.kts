@@ -1,3 +1,5 @@
+// debuglog-example/build.gradle.kts
+
 import it.sephiroth.android.library.debuglog.*
 import it.sephiroth.android.library.debuglog.RunVariant.*
 
@@ -12,33 +14,23 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${project.extra["kotlin_version"]}")
+        classpath(Config.Dependencies.Android.buildGradle)
+        classpath(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))
     }
 }
-
 
 plugins {
     id("com.android.application")
     id("kotlin-android")
 
     // when using remote repo
-    // id("it.sephiroth.android.library.debuglog")
+    id("it.sephiroth.android.library.debuglog")
 }
 
 // ---------  when using local buildSrc --------------
-apply<DebugLogPlugin>()
-
-configure<DebugLogPluginExtension> {
-    enabled.set(true)
-    logLevel.set(AndroidLogLevel.DEBUG)
-    debugResult.set(true)
-    debugArguments.set(DebugArguments.Full)
-    runVariant.set(Debug)
-}
-
-// ---------- when using remote repo -----------------
-//androidDebugLog {
+//apply<DebugLogPlugin>()
+//
+//configure<DebugLogPluginExtension> {
 //    enabled.set(true)
 //    logLevel.set(AndroidLogLevel.DEBUG)
 //    debugResult.set(true)
@@ -46,15 +38,24 @@ configure<DebugLogPluginExtension> {
 //    runVariant.set(Debug)
 //}
 
+// ---------- when using remote repo -----------------
+androidDebugLog {
+    enabled.set(true)
+    logLevel.set(AndroidLogLevel.DEBUG)
+    debugResult.set(true)
+    debugArguments.set(DebugArguments.Full)
+    runVariant.set(Debug)
+}
+
 android {
-    compileSdk = 31
+    compileSdk = Config.Android.compileSdk
 
     defaultConfig {
         applicationId = "it.sephiroth.android.app.debuglog_example"
-        minSdk = 24
-        targetSdk = 31
-        versionCode = 12345
-        versionName = "1.2.3"
+        minSdk = Config.Android.minSdk
+        targetSdk = Config.Android.targetSdk
+        versionCode = 1
+        versionName = "0.2.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,21 +67,19 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = Config.Java.version
+        targetCompatibility = Config.Java.version
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = Config.Kotlin.jvmVersion
     }
 }
 
 dependencies {
-    val kotlin_version: String by project
+    implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 
-    implementation(kotlin("stdlib-jdk8", version = kotlin_version))
-
-    implementation("it.sephiroth.android.library.debuglog:debuglog-annotations:0.0.1-SNAPSHOT")
+    implementation("it.sephiroth.android.library.debuglog:debuglog-annotations:${Config.VERSION}")
 
     implementation("androidx.appcompat:appcompat:1.3.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.2")

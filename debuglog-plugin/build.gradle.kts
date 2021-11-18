@@ -1,3 +1,5 @@
+// debuglog-plugin/build.gradle.kts
+
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.plugins.signing.Sign
@@ -17,7 +19,6 @@ repositories {
     google()
 }
 
-
 configure<GradlePluginDevelopmentExtension> {
     plugins {
         create("androidDebugLog") {
@@ -29,26 +30,21 @@ configure<GradlePluginDevelopmentExtension> {
 
 
 dependencies {
-    val asm_version: String by project
-    val kotlin_version: String by project
+    implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
+    implementation(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))
+    implementation(Config.Dependencies.Android.buildGradle)
+    implementation(Config.Dependencies.Android.buildGradleApi)
 
-    implementation(kotlin("stdlib-jdk8", version = kotlin_version))
-    implementation(kotlin("reflect", version = kotlin_version))
-    implementation(kotlin("gradle-plugin", version = kotlin_version))
-
-    implementation("com.android.tools.build:gradle:7.0.3")
-    implementation("com.android.tools.build:gradle-api:7.0.3")
-
-    implementation("com.google.guava:guava:31.0.1-jre")
-    implementation("commons-io:commons-io:2.6")
-    implementation("org.ow2.asm:asm:${asm_version}")
-    implementation("org.ow2.asm:asm-util:${asm_version}")
-    implementation("org.ow2.asm:asm-commons:${asm_version}")
+    implementation(Config.Dependencies.Misc.guava)
+    implementation(Config.Dependencies.Misc.commonsIo)
+    implementation(Config.Dependencies.Asm.asm)
+    implementation(Config.Dependencies.Asm.asmUtil)
+    implementation(Config.Dependencies.Asm.asmCommon)
 
     implementation(gradleApi())
     implementation(localGroovy())
 
-    annotationProcessor("org.projectlombok:lombok:1.18.12")
+    annotationProcessor(Config.Dependencies.Misc.lombok)
 }
 
 
@@ -59,48 +55,38 @@ if (project.hasProperty("sonatypeUsername")
 ) {
     val SONATYPE_RELEASE_URL: String by project
     val SONATYPE_SNAPSHOT_URL: String by project
-    val publishingUrl = if (project.extra["is_release"] == true) SONATYPE_RELEASE_URL else SONATYPE_SNAPSHOT_URL
+    val publishingUrl = if (Config.DEBUG == false) SONATYPE_RELEASE_URL else SONATYPE_SNAPSHOT_URL
 
     publishing {
         publications {
             create<MavenPublication>("mavenJava") {
                 pom {
-                    val POM_DESCRIPTION: String by project
-                    val POM_URL: String by project
-                    val POM_LICENCE_NAME: String by project
-                    val POM_LICENCE_URL: String by project
-                    val POM_SCM_URL: String by project
-                    val POM_SCM_CONNECTION: String by project
-                    val POM_SCM_DEV_CONNECTION: String by project
-                    val POM_DEVELOPER_ID: String by project
-                    val POM_DEVELOPER_NAME: String by project
+                    groupId = Config.GROUP
+                    version = Config.VERSION
 
-                    groupId = project.ext["group"] as String
-                    version = project.ext["version"] as String
-
-                    description.set(POM_DESCRIPTION)
-                    url.set(POM_URL)
+                    description.set(Config.Pom.DESCRIPTION)
+                    url.set(Config.Pom.URL)
                     name.set(project.name)
 
                     from(components["java"])
 
                     licenses {
                         license {
-                            name.set(POM_LICENCE_NAME)
-                            url.set(POM_LICENCE_URL)
+                            name.set(Config.Pom.LICENCE_NAME)
+                            url.set(Config.Pom.LICENCE_URL)
                         }
                     }
 
                     scm {
-                        url.set(POM_SCM_URL)
-                        connection.set(POM_SCM_CONNECTION)
-                        developerConnection.set(POM_SCM_DEV_CONNECTION)
+                        url.set(Config.Pom.SCM_URL)
+                        connection.set(Config.Pom.SCM_CONNECTION)
+                        developerConnection.set(Config.Pom.SCM_DEV_CONNECTION)
                     }
 
                     developers {
                         developer {
-                            id.set(POM_DEVELOPER_ID)
-                            name.set(POM_DEVELOPER_NAME)
+                            id.set(Config.Pom.DEVELOPER_ID)
+                            name.set(Config.Pom.DEVELOPER_NAME)
                         }
                     }
                 }
@@ -128,18 +114,18 @@ signing {
 }
 
 tasks.withType<Sign> {
-    onlyIf { project.extra["is_release"] == true }
+    onlyIf { !Config.DEBUG }
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = Config.Java.version
+    targetCompatibility = Config.Java.version
     withSourcesJar()
     withJavadocJar()
 }
 
 afterEvaluate {
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = Config.Kotlin.jvmVersion
     }
 }
