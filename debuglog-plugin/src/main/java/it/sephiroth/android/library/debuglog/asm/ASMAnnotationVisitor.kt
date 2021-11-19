@@ -7,7 +7,9 @@ import org.objectweb.asm.AnnotationVisitor
 /**
  * @author Alessandro Crugnola on 18.11.21 - 13:56
  */
-class ASMAnnotationVisitor(av: AnnotationVisitor?, private val methodData: MethodData) : AnnotationVisitor(Constants.ASM_VERSION, av) {
+class ASMAnnotationVisitor(av: AnnotationVisitor?,
+                           private val methodData: MethodData,
+                           private val callback: Callback?) : AnnotationVisitor(Constants.ASM_VERSION, av) {
 
     override fun visit(name: String, value: Any) {
         if ("debugResult" == name) {
@@ -20,5 +22,14 @@ class ASMAnnotationVisitor(av: AnnotationVisitor?, private val methodData: Metho
             methodData.enabled = value as Boolean
         }
         super.visit(name, value)
+    }
+
+    override fun visitEnd() {
+        super.visitEnd()
+        callback?.accept(methodData)
+    }
+
+    interface Callback {
+        fun accept(methodData: MethodData)
     }
 }

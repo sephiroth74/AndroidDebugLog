@@ -11,27 +11,41 @@ import org.objectweb.asm.commons.LocalVariablesSorter
 import org.slf4j.LoggerFactory
 
 class ASMMethodVisitor(
-    private val methodName: String,
-    private val className: String,
-    access: Int,
-    descriptor: String,
-    methodVisitor: MethodVisitor,
-    private val methodData: MethodData,
-    private val callback: Callback?
+        private val methodName: String,
+        private val className: String,
+        access: Int,
+        descriptor: String,
+        methodVisitor: MethodVisitor,
+        private val methodData: MethodData,
+        private val classMethodData: MethodData?,
+        private val callback: Callback?
 ) : LocalVariablesSorter(Constants.ASM_VERSION, access, descriptor, methodVisitor), Opcodes {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
-
-    private var enabled = false
-
     private val labels = mutableListOf<Label>()
     private val parameters = mutableListOf<MethodParameter>()
 
+    private var enabled = false
+
+    init {
+        logger.debug("[$TAG] visiting method $className::$methodName")
+
+        classMethodData?.let {
+            methodData.copyFrom(it)
+            enabled = it.enabled
+        }
+    }
+
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
+        logger.quiet("[$TAG] ${className}:$methodName visitAnnotation $descriptor")
         val av = super.visitAnnotation(descriptor, visible)
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG};") {
-            val av2 = ASMAnnotationVisitor(av, methodData)
-            enabled = true
+            val av2 = ASMAnnotationVisitor(av, methodData, object : ASMAnnotationVisitor.Callback {
+                override fun accept(methodData: MethodData) {
+                    enabled = methodData.enabled
+                    logger.lifecycle("[$TAG] ${className}:${methodName} now is enabled = $enabled (${methodData.enabled})")
+                }
+            })
             return av2
         }
         return av
@@ -39,7 +53,7 @@ class ASMMethodVisitor(
 
     override fun visitLocalVariable(name: String, descriptor: String, signature: String?, start: Label, end: Label, index: Int) {
         if (enabled && "this" != name && start == labels.first()) {
-            logger.debug("[$TAG] {}::visitLocalVariable({}, {})", className, name, signature)
+            logger.quiet("[$TAG] {}:{} visitLocalVariable({}, {})", className, methodName, name, signature)
             val type = Type.getType(descriptor)
             if (type.sort == Type.OBJECT || type.sort == Type.ARRAY) {
                 parameters.add(MethodParameter(name, "L${Constants.JavaTypes.TYPE_OBJECT};", index))

@@ -7,21 +7,25 @@ import it.sephiroth.android.library.debuglog.Constants
  *
  * @author Alessandro Crugnola on 18.11.21 - 14:01
  */
-data class MethodData(val name: String, val descriptor: String) {
+data class MethodData(val name: String, val descriptor: String, val className: String, val simpleClassName: String) {
     var debugResult: Boolean = false
     var logLevel: Int = Constants.DEFAULT_LOG_LEVEL.value
     var debugArguments: Int = Constants.DEFAULT_DEBUG_ARGUMENTS.value
     var enabled: Boolean = true
 
-    lateinit var className: String
-    lateinit var simpleClassName: String
-
     val uniqueKey = generateUniqueKey(name, descriptor)
 
-    constructor(name: String, descriptor: String, input: IPluginData) : this(name, descriptor) {
+    fun copyFrom(input: IPluginData) {
         debugResult = input.debugResult
         logLevel = input.logLevel.value
         debugArguments = input.debugArguments.value
+    }
+
+    fun copyFrom(input: MethodData) {
+        debugResult = input.debugResult
+        logLevel = input.logLevel
+        debugArguments = input.debugArguments
+        enabled = input.enabled
     }
 
     companion object {

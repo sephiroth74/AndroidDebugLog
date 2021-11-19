@@ -27,6 +27,7 @@ object Constants {
         const val TYPE_PARAMS_LOGGER = "it/sephiroth/android/library/debuglog/ParamsLogger"
         const val TYPE_RESULT_LOGGER = "it/sephiroth/android/library/debuglog/MethodResultLogger"
         const val TYPE_ANNOTATION_DEBUGLOG = "it/sephiroth/android/library/debuglog/DebugLog"
+        const val TYPE_ANNOTATION_DEBUGLOG_CLASS = "it/sephiroth/android/library/debuglog/DebugLogClass"
         const val TYPE_OBJECT = "java/lang/Object"
     }
 

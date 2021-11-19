@@ -66,10 +66,13 @@ class DebugLogTransformer(private val project: Project) : Transform() {
                         "]"
         )
 
+        val enabled = isPluginEnabled(transformInvocation, debugLogPluginExtension)
+
         logger.debug("[$TAG] project variant: ${transformInvocation.context.variantName} (current: ${debugLogPluginExtension.runVariant.get().name}")
         logger.debug("[$TAG] transformInvocation.incremental: ${transformInvocation.isIncremental}, incremental: $isIncremental")
+        logger.lifecycle("[$TAG] Transformation enabled: $enabled")
 
-        processInput(transformInvocation, debugLogPluginExtension)
+        processInput(transformInvocation, debugLogPluginExtension, enabled)
 
         // log total execution time
         val endTime = System.currentTimeMillis()
@@ -82,7 +85,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
      * @param transformInvocation
      * @param debugLogPluginExtension
      */
-    private fun processInput(transformInvocation: TransformInvocation, debugLogPluginExtension: DebugLogPluginExtension) {
+    private fun processInput(transformInvocation: TransformInvocation, debugLogPluginExtension: DebugLogPluginExtension, enabled: Boolean) {
         // 1. delete all transformed classes if the invocation is not incremental.
         if (!transformInvocation.isIncremental) transformInvocation.outputProvider.deleteAll()
 
@@ -101,7 +104,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
             // directory inputs
             input.directoryInputs.forEach { directory ->
                 if (directory.contentTypes.contains(QualifiedContent.DefaultContentType.CLASSES)) {
-                    processDirectoryInput(workQueue, transformInvocation, debugLogPluginExtension, directory, classPaths)
+                    processDirectoryInput(workQueue, transformInvocation, enabled, directory, classPaths)
                 }
             }
         }
@@ -144,17 +147,15 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     private fun processDirectoryInput(
             workQueue: WorkQueue,
             transformInvocation: TransformInvocation,
-            debugLogPluginExtension: DebugLogPluginExtension,
+            enabled: Boolean,
             directoryInput: DirectoryInput,
             classPaths: List<URL>
     ) {
 
         logger.debug("[$TAG] processDirectoryInput(${directoryInput.file})")
 
-        val enabled = isPluginEnabled(transformInvocation, debugLogPluginExtension)
-        val dest = transformInvocation.outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
 
-        logger.lifecycle("[$TAG] Transformation enabled: $enabled")
+        val dest = transformInvocation.outputProvider.getContentLocation(directoryInput.name, directoryInput.contentTypes, directoryInput.scopes, Format.DIRECTORY)
 
         FileUtils.forceMkdir(dest)
 

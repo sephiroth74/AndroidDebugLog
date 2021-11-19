@@ -24,36 +24,47 @@ class ASMClassVisitor(
         private val pluginData: IPluginData
 ) : ClassVisitor(Constants.ASM_VERSION, cv) {
 
-    companion object {
-        private const val TAG = "${DebugLogPlugin.TAG}:ASMClassVisitor"
-    }
-
     private val logger: Logger = LoggerFactory.getLogger(ASMClassVisitor::class.java) as Logger
+    private var classMethodData: MethodData? = null
+    private val simpleClassName = StringUtils.getSimpleClassName(className)
 
     val methodsParametersMap = hashMapOf<String, Pair<MethodData, List<MethodParameter>>>()
 
     var enabled = false
         private set
 
-    override fun visitAnnotation(descriptor: String, visible: Boolean): AnnotationVisitor {
-        return super.visitAnnotation(descriptor, visible)
+    init {
+        logger.debug("[$TAG] visiting class $className")
+    }
+
+    override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
+        logger.quiet("{} visitAnnotation({})", className, descriptor)
+        val av = super.visitAnnotation(descriptor, visible)
+        if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_CLASS};") {
+            classMethodData = MethodData("", "", className, simpleClassName).apply { copyFrom(pluginData) }
+            val av2 = ASMAnnotationVisitor(av, classMethodData!!, null)
+            return av2
+        }
+        return av
     }
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor? {
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions) ?: return null
 
-        val methodData = MethodData(name, descriptor, pluginData).apply {
-            className = this@ASMClassVisitor.className
-            simpleClassName = StringUtils.getSimpleClassName(this@ASMClassVisitor.className)
-        }
+        val methodData = MethodData(name, descriptor, className, simpleClassName).apply { copyFrom(pluginData) }
 
-        val mv2 = ASMMethodVisitor(name, className, access, descriptor, mv, methodData, object : ASMMethodVisitor.Callback {
+        val mv2 = ASMMethodVisitor(name, className, access, descriptor, mv, methodData, classMethodData, object : ASMMethodVisitor.Callback {
             override fun accept(methodData: MethodData, params: List<MethodParameter>) {
+                logger.lifecycle("[$TAG] transformation enabled for {}::{}", className, methodData.name)
                 this@ASMClassVisitor.enabled = true
                 this@ASMClassVisitor.methodsParametersMap[methodData.uniqueKey] = Pair(methodData, params)
 
             }
         })
         return mv2
+    }
+
+    companion object {
+        private const val TAG = "${DebugLogPlugin.TAG}:ASMClassVisitor"
     }
 }

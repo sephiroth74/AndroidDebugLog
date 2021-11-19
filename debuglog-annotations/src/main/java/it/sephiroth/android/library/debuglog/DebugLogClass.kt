@@ -4,5 +4,5 @@ import android.util.Log
 
 @Suppress("unused")
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
-@kotlin.annotation.Retention(AnnotationRetention.BINARY)
+@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
 annotation class DebugLogClass(val debugResult: Boolean = false, val logLevel: Int = Log.INFO, val debugArguments: Int = DebugArguments.FULL, val enabled: Boolean = true)
