@@ -41,6 +41,12 @@ class PostMethodVisitor(
      */
     private fun printMethodEnd(opcode: Int) {
         logger.debug("[$TAG] ($className:${methodData.name}) Creating output logger injection")
+
+        if (null == timingStartVarIndex) {
+            logger.warn("timingStartVarIndex should not be null here")
+            return
+        }
+
         var returnType: Type = Type.getReturnType(methodData.descriptor)
         var returnDesc: String = methodData.descriptor.substring(methodData.descriptor.indexOf(")") + 1)
         if (returnDesc.startsWith("[") || returnDesc.startsWith("L")) {
@@ -49,7 +55,7 @@ class PostMethodVisitor(
 
         // Store origin return value
         var resultTempValIndex = -1
-        if (returnType !== Type.VOID_TYPE || opcode == Opcodes.ATHROW) {
+        if (returnType != Type.VOID_TYPE || opcode == Opcodes.ATHROW) {
             if (opcode == Opcodes.ATHROW) {
                 returnType = Type.getType("L${Constants.JavaTypes.TYPE_OBJECT};")
             }
@@ -60,6 +66,8 @@ class PostMethodVisitor(
             }
             mv.visitVarInsn(storeOpcocde, resultTempValIndex)
         }
+
+        logger.quiet("$className:${methodData.name} opcode=$opcode, returnType=$returnType, returnDesc=$returnDesc")
 
         // Timing: parameter1 parameter2
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false)
@@ -75,7 +83,7 @@ class PostMethodVisitor(
         mv.visitVarInsn(Opcodes.LLOAD, index)               // costedMillis (long)
 
         // Last parameter type is based on the method return type
-        if (returnType !== Type.VOID_TYPE || opcode == Opcodes.ATHROW) {
+        if (returnType != Type.VOID_TYPE || opcode == Opcodes.ATHROW) {
             var loadOpcode: Int = ASMVisitorUtils.getLoadOpcodeFromType(returnType)
             if (opcode == Opcodes.ATHROW) {
                 loadOpcode = Opcodes.ALOAD
@@ -86,7 +94,8 @@ class PostMethodVisitor(
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, Constants.JavaTypes.TYPE_RESULT_LOGGER, "print", formatDesc, false)
             mv.visitVarInsn(loadOpcode, resultTempValIndex)
         } else {
-            mv.visitLdcInsn("void")
+            mv.visitInsn(Opcodes.ACONST_NULL)
+            // mv.visitLdcInsn("void") // use 'void' instead of passing a null object
             mv.visitMethodInsn(
                     Opcodes.INVOKESTATIC, Constants.JavaTypes.TYPE_RESULT_LOGGER, "print",
                     "(IILjava/lang/String;Ljava/lang/String;JLjava/lang/Object;)V", false
@@ -109,16 +118,21 @@ class PostMethodVisitor(
 
         mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "<init>", "(Ljava/lang/String;Ljava/lang/String;I)V", false)
 
-        if (methodData.debugArguments != DebugArguments.None.value) {
-            parameters.forEach { parameter ->
-                val name = parameter.name
-                val descriptor = parameter.descriptor
-                val index = parameter.index
+        //if (methodData.debugArguments != DebugArguments.None.value) {
+        parameters.forEach { parameter ->
+            val name = parameter.name
+            val descriptor = parameter.descriptor
+            val index = parameter.index
+            if (methodData.debugArguments == DebugArguments.None.value) {
+                val fullyDesc = String.format("(Ljava/lang/String;)L%s;", Constants.JavaTypes.TYPE_PARAMS_LOGGER)
+                printMethodArgument(name, fullyDesc)
+            } else {
                 val opcode = ASMVisitorUtils.getLoadOpcodeFromDesc(descriptor)
                 val fullyDesc = String.format("(Ljava/lang/String;%s)L%s;", descriptor, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
-                printMethodArgument(index, opcode, name, fullyDesc)
+                printMethodArgumentAndValue(index, opcode, name, fullyDesc)
             }
         }
+        //}
 
         ASMVisitorUtils.visitInt(mv, methodData.logLevel)
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "print", "(I)V", false)
@@ -132,7 +146,18 @@ class PostMethodVisitor(
         }
     }
 
-    private fun printMethodArgument(localIndex: Int, opcode: Int, name: String, descriptor: String) {
+    /**
+     * Print only param name
+     */
+    private fun printMethodArgument(name: String, descriptor: String) {
+        mv.visitLdcInsn(name)
+        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "append", descriptor, false)
+    }
+
+    /**
+     * Print both param name and its value
+     */
+    private fun printMethodArgumentAndValue(localIndex: Int, opcode: Int, name: String, descriptor: String) {
         mv.visitLdcInsn(name)
         mv.visitVarInsn(opcode, localIndex)
         mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "append", descriptor, false)

@@ -5,13 +5,14 @@ import android.util.Log
 import it.sephiroth.android.library.debuglog.DebugArguments
 import it.sephiroth.android.library.debuglog.DebugLog
 import it.sephiroth.android.library.debuglog.DebugLogClass
+import it.sephiroth.android.library.debuglog.MethodResultLogger
 import java.io.BufferedInputStream
 import java.io.InputStream
 import java.io.StringBufferInputStream
 
-@DebugLogClass
+@DebugLogClass(debugArguments = DebugArguments.NONE, debugResult = true)
 internal class TestClass {
-    @DebugLog(debugArguments = DebugArguments.FULL, enabled = false)
+
     fun onTestReturnInt(version: String?): Int {
         return BuildConfig.VERSION_CODE
     }

@@ -85,6 +85,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
      * @param transformInvocation
      * @param debugLogPluginExtension
      */
+    @Suppress("UNUSED_PARAMETER")
     private fun processInput(transformInvocation: TransformInvocation, debugLogPluginExtension: DebugLogPluginExtension, enabled: Boolean) {
         // 1. delete all transformed classes if the invocation is not incremental.
         if (!transformInvocation.isIncremental) transformInvocation.outputProvider.deleteAll()

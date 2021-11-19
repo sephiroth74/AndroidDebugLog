@@ -17,11 +17,20 @@ public class ParamsLogger {
         this.tag = tag;
         this.methodName = methodName;
         this.debugArguments = debugType;
-        this.printArguments = debugArguments != DebugArguments.NONE;
+        this.printArguments = true; //debugArguments != DebugArguments.NONE;
     }
 
     public ParamsLogger(String tag, String methodName) {
         this(tag, methodName, DebugArguments.FULL);
+    }
+
+    public ParamsLogger append(String name) {
+        if (!printArguments) return this;
+        if (paramIndex++ != 0) {
+            paramsList.append(divider);
+        }
+        paramsList.append(name);
+        return this;
     }
 
     public ParamsLogger append(String name, int val) {

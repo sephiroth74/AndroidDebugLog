@@ -37,21 +37,21 @@ public class MethodResultLogger {
     }
 
     public static void print(int level, int printArguments, String className, String methodName, long costedMillis, Object returnVal) {
-        if (printArguments == DebugArguments.NONE) {
-            DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, "");
+        if (printArguments == DebugArguments.NONE || returnVal == null) {
+            DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, null);
         } else {
-            if (returnVal != null && returnVal.getClass().isArray()) {
+            if (returnVal.getClass().isArray()) { // array
                 if (printArguments == DebugArguments.FULL) {
                     DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, arrayToString(returnVal));
-                } else if (printArguments == DebugArguments.SHORT) {
+                } else {
                     DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, ParamsLogger.arrayToHashCode(returnVal));
                 }
-            } else if (returnVal instanceof String || returnVal instanceof Enum) {
+            } else if (returnVal instanceof String || returnVal instanceof Enum) { // String, Enum
                 DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, returnVal + "");
-            } else {
+            } else { // everything else
                 if (printArguments == DebugArguments.FULL) {
                     DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, returnVal + "");
-                } else if (printArguments == DebugArguments.SHORT) {
+                } else {
                     DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, ParamsLogger.objectToHashCode(returnVal) + "");
                 }
             }
