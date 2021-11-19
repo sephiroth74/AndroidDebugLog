@@ -23,11 +23,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val testClass = TestClass()
-        testClass.onTestReturnInt(BuildConfig.VERSION_NAME)
-        testClass.testVoidNoParams()
-        testClass.testComplexParams(listOf("hello", "logged", "world"), this)
-        testClass.testInnerClass()
+        TestClass().testAll(this)
+        AnotherTestClass().testAll(this)
     }
 
 }

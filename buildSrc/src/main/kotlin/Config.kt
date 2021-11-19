@@ -9,8 +9,12 @@ import org.gradle.api.JavaVersion
 
 object Config {
     const val ASM_VERSION = "9.2"
+
     const val KOTLIN_VERSION = "1.5.31"
-    const val VERSION = "0.0.2-SNAPSHOT"
+
+    // this library version
+    const val VERSION = "0.0.3-SNAPSHOT"
+
     const val GROUP = "it.sephiroth.android.library.debuglog"
 
     val DEBUG = VERSION.endsWith("SNAPSHOT")

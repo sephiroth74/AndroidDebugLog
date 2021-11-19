@@ -1,11 +1,10 @@
 package it.sephiroth.android.library.debuglog.threading
 
 import it.sephiroth.android.library.debuglog.DebugLogPlugin
-import it.sephiroth.android.library.debuglog.asm.ASMClassVisitor
+import it.sephiroth.android.library.debuglog.asm.pre.ASMClassVisitor
 import it.sephiroth.android.library.debuglog.asm.ASMClassWriter
 import it.sephiroth.android.library.debuglog.asm.post.PostClassVisitor
 import it.sephiroth.android.library.debuglog.asm.vo.IPluginData
-import it.sephiroth.android.library.debuglog.asm.vo.PluginData
 import org.apache.commons.io.FileUtils
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.logging.Logger
@@ -25,7 +24,7 @@ abstract class TransformClassWorkAction : WorkAction<TransformClassWorkAction.Tr
         const val TAG = DebugLogPlugin.TAG
     }
 
-    val logger: Logger = LoggerFactory.getLogger(TransformClassWorkAction::class.java) as Logger
+    private val logger: Logger = LoggerFactory.getLogger(TransformClassWorkAction::class.java) as Logger
 
     override fun execute() {
         val inputFile = parameters.getSrcFile().get().asFile
@@ -73,7 +72,11 @@ abstract class TransformClassWorkAction : WorkAction<TransformClassWorkAction.Tr
                 if (preClassVisitor.enabled) {
                     logger.info("[$TAG] Annotations found in $className. Proceed with transformation.")
                     classWriter = ASMClassWriter(classReader.className, classReader.superName, ClassWriter.COMPUTE_FRAMES, classLoader)
-                    classReader.accept(PostClassVisitor(classWriter, className, superName, preClassVisitor.methodsParametersMap), ClassReader.EXPAND_FRAMES)
+                    classReader.accept(PostClassVisitor(
+                        classWriter,
+                        className,
+                        preClassVisitor.methodsParametersMap
+                    ), ClassReader.EXPAND_FRAMES)
                 }
 
                 //4. Get the complete byte stream through toByteArray method of classWriter object

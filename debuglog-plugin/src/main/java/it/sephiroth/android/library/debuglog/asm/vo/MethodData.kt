@@ -12,6 +12,7 @@ data class MethodData(val name: String, val descriptor: String, val className: S
     var logLevel: Int = Constants.DEFAULT_LOG_LEVEL.value
     var debugArguments: Int = Constants.DEFAULT_DEBUG_ARGUMENTS.value
     var enabled: Boolean = true
+    var lineNumber: Int? = null
 
     val uniqueKey = generateUniqueKey(name, descriptor)
 

@@ -11,7 +11,13 @@ import java.io.InputStream
 import java.io.StringBufferInputStream
 
 @DebugLogClass(debugArguments = DebugArguments.SHORT, debugResult = true)
-internal class TestClass {
+class TestClass {
+    fun testAll(context: Context) {
+        val t1 = onTestReturnInt(BuildConfig.VERSION_NAME)
+        val t2 = testVoidNoParams()
+        val t3 = testComplexParams(listOf("hello", "logged", "world"), context)
+        val t4 = testInnerClass()
+    }
 
     fun onTestReturnInt(version: String?): Int {
         testReturnNull({})
@@ -19,16 +25,23 @@ internal class TestClass {
     }
 
     fun testVoidNoParams() {
-        if(true) {
+        if (true) {
             return
         }
     }
 
     fun testComplexParams(list: List<String?>?, context: Context): Context {
+        list?.forEach {
+            Log.v(this::class.java.simpleName, "item=$it")
+        }
         return context
     }
 
     fun testReturnNull(type: Runnable?): Runnable? {
+        val newType = type
+        if (newType != null) {
+            return Runnable { type.run() }
+        }
         return null
     }
 
@@ -83,6 +96,8 @@ internal class TestClass {
     }
 
     inner class InnerTestClass() {
+
+        @DebugLog
         fun helloInnerTest() {
 
         }

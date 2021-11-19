@@ -1,4 +1,4 @@
-package it.sephiroth.android.library.debuglog.asm
+package it.sephiroth.android.library.debuglog.asm.pre
 
 import it.sephiroth.android.library.debuglog.Constants
 import it.sephiroth.android.library.debuglog.DebugLogPlugin
@@ -11,21 +11,21 @@ import org.objectweb.asm.commons.LocalVariablesSorter
 import org.slf4j.LoggerFactory
 
 class ASMMethodVisitor(
-        private val methodName: String,
-        private val className: String,
-        access: Int,
-        descriptor: String,
-        methodVisitor: MethodVisitor,
-        private val methodData: MethodData,
-        private val classMethodData: MethodData?,
-        private val callback: Callback?
+    private val methodName: String,
+    private val className: String,
+    access: Int,
+    descriptor: String,
+    methodVisitor: MethodVisitor,
+    private val methodData: MethodData,
+    classMethodData: MethodData?,
+    private val callback: Callback?
 ) : LocalVariablesSorter(Constants.ASM_VERSION, access, descriptor, methodVisitor), Opcodes {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
     private val labels = mutableListOf<Label>()
     private val parameters = mutableListOf<MethodParameter>()
-
     private var enabled = false
+    private var lineNumber: Int? = null
 
     init {
         logger.debug("[$TAG] visiting method $className::$methodName")
@@ -51,9 +51,13 @@ class ASMMethodVisitor(
         return av
     }
 
+    override fun visitLineNumber(line: Int, start: Label?) {
+        if (null == lineNumber) lineNumber = line
+        super.visitLineNumber(line, start)
+    }
+
     override fun visitLocalVariable(name: String, descriptor: String, signature: String?, start: Label, end: Label, index: Int) {
         if (enabled && "this" != name && start == labels.first()) {
-            logger.debug("[$TAG] {}:{} visitLocalVariable({}, {})", className, methodName, name, signature)
             val type = Type.getType(descriptor)
             if (type.sort == Type.OBJECT || type.sort == Type.ARRAY) {
                 parameters.add(MethodParameter(name, "L${Constants.JavaTypes.TYPE_OBJECT};", index))
@@ -72,6 +76,7 @@ class ASMMethodVisitor(
     override fun visitEnd() {
         super.visitEnd()
         if (enabled) {
+            methodData.lineNumber = lineNumber
             callback?.accept(methodData, parameters)
         }
     }

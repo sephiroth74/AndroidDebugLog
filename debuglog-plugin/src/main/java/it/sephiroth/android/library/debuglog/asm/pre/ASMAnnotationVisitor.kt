@@ -1,4 +1,4 @@
-package it.sephiroth.android.library.debuglog.asm
+package it.sephiroth.android.library.debuglog.asm.pre
 
 import it.sephiroth.android.library.debuglog.Constants
 import it.sephiroth.android.library.debuglog.asm.vo.MethodData

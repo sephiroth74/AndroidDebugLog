@@ -24,15 +24,14 @@ class DebugLogPlugin : Plugin<Project> {
             throw IllegalStateException("'android-application' or 'android-library' plugin required.")
         }
 
-//        // 1. create the 'debuglog' extension
+        // 1. create the 'debuglog' extension
         project.extensions.create(Constants.DEBUGLOG_EXTENSION, DebugLogPluginExtension::class.java)
-        // inject the extra dependencies
-        project.dependencies.add("implementation", "${Constants.DEBUGLOG_ANNOTATION_DEPENDENCY_LIBRARY_NAME}:${Constants.VERSION_NAME}")
-
 
         // register the plugin
         val appExtension = project.extensions.getByType(AppExtension::class.java)
         appExtension.registerTransform(DebugLogTransformer(project))
+
+        log.lifecycle("Registered `${Constants.DEBUGLOG_EXTENSION}` extension for ${this::class.java.simpleName}")
     }
 
 }

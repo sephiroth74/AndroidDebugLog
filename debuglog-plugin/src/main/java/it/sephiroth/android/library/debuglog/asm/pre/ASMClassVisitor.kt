@@ -1,7 +1,8 @@
-package it.sephiroth.android.library.debuglog.asm
+package it.sephiroth.android.library.debuglog.asm.pre
 
 import it.sephiroth.android.library.debuglog.Constants
 import it.sephiroth.android.library.debuglog.DebugLogPlugin
+import it.sephiroth.android.library.debuglog.asm.ASMClassWriter
 import it.sephiroth.android.library.debuglog.asm.vo.IPluginData
 import it.sephiroth.android.library.debuglog.asm.vo.MethodData
 import it.sephiroth.android.library.debuglog.asm.vo.MethodParameter
@@ -18,10 +19,10 @@ import org.slf4j.LoggerFactory
  * @author Alessandro Crugnola on 16.11.21 - 15:34
  */
 class ASMClassVisitor(
-        cv: ASMClassWriter,
-        private val className: String,
-        private val superName: String,
-        private val pluginData: IPluginData
+    cv: ASMClassWriter,
+    private val className: String,
+    private val superName: String,
+    private val pluginData: IPluginData
 ) : ClassVisitor(Constants.ASM_VERSION, cv) {
 
     private val logger: Logger = LoggerFactory.getLogger(ASMClassVisitor::class.java) as Logger

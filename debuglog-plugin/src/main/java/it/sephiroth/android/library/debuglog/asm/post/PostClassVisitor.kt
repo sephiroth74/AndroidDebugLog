@@ -2,18 +2,17 @@ package it.sephiroth.android.library.debuglog.asm.post
 
 import it.sephiroth.android.library.debuglog.Constants
 import it.sephiroth.android.library.debuglog.DebugLogPlugin
-import it.sephiroth.android.library.debuglog.asm.ASMClassWriter
 import it.sephiroth.android.library.debuglog.asm.vo.MethodData
 import it.sephiroth.android.library.debuglog.asm.vo.MethodParameter
 import org.gradle.api.logging.Logger
 import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.MethodVisitor
 import org.slf4j.LoggerFactory
 
 class PostClassVisitor(
-    cv: ASMClassWriter,
+    cv: ClassWriter,
     private val className: String,
-    private val superName: String,
     private val paramsMap: Map<String, Pair<MethodData, List<MethodParameter>>>
 ) : ClassVisitor(Constants.ASM_VERSION, cv) {
 
@@ -23,7 +22,6 @@ class PostClassVisitor(
         val methodDataPair = paramsMap[methodUniqueKey]
 
         if (null != methodDataPair) {
-            logger.debug("methodData: $methodDataPair")
             return PostMethodVisitor(className, methodDataPair.second, methodDataPair.first, access, descriptor, mv)
         }
         return mv

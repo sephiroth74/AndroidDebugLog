@@ -14,12 +14,12 @@ import org.objectweb.asm.commons.LocalVariablesSorter
 import org.slf4j.LoggerFactory
 
 class PostMethodVisitor(
-        private val className: String,
-        private val parameters: List<MethodParameter>,
-        private val methodData: MethodData,
-        access: Int,
-        descriptor: String,
-        methodVisitor: MethodVisitor
+    private val className: String,
+    private val parameters: List<MethodParameter>,
+    private val methodData: MethodData,
+    access: Int,
+    descriptor: String,
+    methodVisitor: MethodVisitor
 ) : LocalVariablesSorter(Constants.ASM_VERSION, access, descriptor, methodVisitor), Opcodes {
 
     private var timingStartVarIndex: Int? = null
@@ -97,8 +97,8 @@ class PostMethodVisitor(
             // mv.visitInsn(Opcodes.ACONST_NULL) // use null as result variable
             mv.visitLdcInsn("void") // use 'void' instead of passing a null object
             mv.visitMethodInsn(
-                    Opcodes.INVOKESTATIC, Constants.JavaTypes.TYPE_RESULT_LOGGER, "print",
-                    "(IILjava/lang/String;Ljava/lang/String;JLjava/lang/Object;)V", false
+                Opcodes.INVOKESTATIC, Constants.JavaTypes.TYPE_RESULT_LOGGER, "print",
+                "(IILjava/lang/String;Ljava/lang/String;JLjava/lang/Object;)V", false
             )
         }
     }
@@ -109,12 +109,21 @@ class PostMethodVisitor(
     private fun printMethodStart() {
         logger.debug("[$TAG] ($className:${methodData.name}) Creating input logger injection")
 
+        val lineNumber: Int = methodData.lineNumber?.minus(1) ?: 0
+
         // val printerLoggerIndex = newLocal(Type.getObjectType(Constants.JavaTypes.TYPE_PARAMS_LOGGER))
         mv.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
         mv.visitInsn(Opcodes.DUP)
-        mv.visitLdcInsn(methodData.simpleClassName)                 // tag (String)
-        mv.visitLdcInsn(methodData.name)                            // methodName (String)
-        ASMVisitorUtils.visitInt(mv, methodData.debugArguments)     // debugType (int)
+        mv.visitLdcInsn(methodData.simpleClassName)                 // [1] tag (String)
+        mv.visitLdcInsn(methodData.name)                            // [2] methodName (String)
+        ASMVisitorUtils.visitInt(mv, methodData.debugArguments)     // [3] debugType (int)
+
+        // [4] lineNumber (int)
+        // if (lineNumber > 0) {
+        //    ASMVisitorUtils.visitInt(mv, lineNumber)
+        //} else {
+        //    mv.visitInsn(Opcodes.ACONST_NULL)
+        //}
 
         mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "<init>", "(Ljava/lang/String;Ljava/lang/String;I)V", false)
 

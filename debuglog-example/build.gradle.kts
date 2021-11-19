@@ -41,8 +41,8 @@ plugins {
 // ---------- when using remote repo -----------------
 androidDebugLog {
     enabled.set(true)
-    logLevel.set(AndroidLogLevel.DEBUG)
-    debugResult.set(true)
+    logLevel.set(AndroidLogLevel.VERBOSE)
+    debugResult.set(false)
     debugArguments.set(DebugArguments.Full)
     runVariant.set(Debug)
 }

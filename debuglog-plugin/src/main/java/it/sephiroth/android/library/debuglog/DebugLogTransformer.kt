@@ -30,6 +30,10 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         logger.debug("[$TAG] DebugLogTransformer added to project $project.name")
     }
 
+    fun getPluginExtension(): DebugLogPluginExtension {
+        return debugLogPluginExtension
+    }
+
     override fun getName(): String {
         return this::class.java.simpleName
     }
@@ -56,23 +60,24 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         // retrieve the registered plugin-extension
         debugLogPluginExtension = project.extensions.getByName(Constants.DEBUGLOG_EXTENSION) as DebugLogPluginExtension
 
-        logger.lifecycle(
-                "[$TAG] androidDebugLog[" +
-                        "enabled=${debugLogPluginExtension.enabled.get()}, " +
-                        "logLevel=${debugLogPluginExtension.logLevel.get()}, " +
-                        "debugResult=${debugLogPluginExtension.debugResult.get()}, " +
-                        "debugArguments=${debugLogPluginExtension.debugArguments.get()}, " +
-                        "runVariant=${debugLogPluginExtension.runVariant.get()}" +
-                        "]"
-        )
-
         val enabled = isPluginEnabled(transformInvocation, debugLogPluginExtension)
+
+
+        logger.lifecycle(
+            "[$TAG] androidDebugLog[" +
+                    "enabled=${debugLogPluginExtension.enabled.get()}, " +
+                    "logLevel=${debugLogPluginExtension.logLevel.get()}, " +
+                    "debugResult=${debugLogPluginExtension.debugResult.get()}, " +
+                    "debugArguments=${debugLogPluginExtension.debugArguments.get()}, " +
+                    "runVariant=${debugLogPluginExtension.runVariant.get()}" +
+                    "]"
+        )
 
         logger.debug("[$TAG] project variant: ${transformInvocation.context.variantName} (current: ${debugLogPluginExtension.runVariant.get().name}")
         logger.debug("[$TAG] transformInvocation.incremental: ${transformInvocation.isIncremental}, incremental: $isIncremental")
         logger.lifecycle("[$TAG] Transformation enabled: $enabled")
 
-        processInput(transformInvocation, debugLogPluginExtension, enabled)
+        processInput(transformInvocation, enabled)
 
         // log total execution time
         val endTime = System.currentTimeMillis()
@@ -83,10 +88,8 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     /**
      * Process all files and directories
      * @param transformInvocation
-     * @param debugLogPluginExtension
      */
-    @Suppress("UNUSED_PARAMETER")
-    private fun processInput(transformInvocation: TransformInvocation, debugLogPluginExtension: DebugLogPluginExtension, enabled: Boolean) {
+    private fun processInput(transformInvocation: TransformInvocation, enabled: Boolean) {
         // 1. delete all transformed classes if the invocation is not incremental.
         if (!transformInvocation.isIncremental) transformInvocation.outputProvider.deleteAll()
 
@@ -146,11 +149,11 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     }
 
     private fun processDirectoryInput(
-            workQueue: WorkQueue,
-            transformInvocation: TransformInvocation,
-            enabled: Boolean,
-            directoryInput: DirectoryInput,
-            classPaths: List<URL>
+        workQueue: WorkQueue,
+        transformInvocation: TransformInvocation,
+        enabled: Boolean,
+        directoryInput: DirectoryInput,
+        classPaths: List<URL>
     ) {
 
         logger.debug("[$TAG] processDirectoryInput(${directoryInput.file})")
@@ -197,11 +200,11 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     }
 
     private fun transformDirectory(
-            workQueue: WorkQueue,
-            enabled: Boolean,
-            inputDir: File,
-            outputDir: File,
-            classPaths: List<URL>
+        workQueue: WorkQueue,
+        enabled: Boolean,
+        inputDir: File,
+        outputDir: File,
+        classPaths: List<URL>
     ) {
 
         logger.debug("[$TAG] transformDirectory(enabled=$enabled, $inputDir, $outputDir)")
@@ -226,17 +229,21 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         }
     }
 
-    private fun transformSingleFile(workQueue: WorkQueue, inputFile: File, destFile: File, classPaths: List<URL>) {
+    protected fun transformSingleFile(workQueue: WorkQueue, inputFile: File, destFile: File, classPaths: List<URL>) {
+        val pluginData: PluginData? = getPluginExtension()?.let { ext ->
+            PluginData(ext.logLevel.get(), ext.debugResult.get(), ext.debugArguments.get())
+        }
+
         workQueue.submit(TransformClassWorkAction::class.java) {
             getSrcFile().set(inputFile)
             getDstFile().set(destFile)
             getClassPaths().set(classPaths)
-            getPluginData().set(PluginData(debugLogPluginExtension.logLevel.get(), debugLogPluginExtension.debugResult.get(), debugLogPluginExtension.debugArguments.get()))
+            getPluginData().set(pluginData)
         }
     }
 
 
-    private fun transformJar(workQueue: WorkQueue, srcJar: File, destJar: File) {
+    protected fun transformJar(workQueue: WorkQueue, srcJar: File, destJar: File) {
         workQueue.submit(TransformJarWorkAction::class.java) {
             getSrcFile().set(srcJar)
             getDstFile().set(destJar)
@@ -269,12 +276,12 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         val runVariant = extension.runVariant.get()
         logger.debug("[$TAG] variant = ${transformInvocation.context.variantName} (runVariant=$runVariant)")
 
-        if (transformInvocation.context.variantName.toLowerCase().endsWith("debug")) {
-            return runVariant == RunVariant.Debug || runVariant == RunVariant.Always
+        return if (transformInvocation.context.variantName.toLowerCase().endsWith("debug")) {
+            runVariant == RunVariant.Debug || runVariant == RunVariant.Always
         } else if (transformInvocation.context.variantName.toLowerCase().endsWith("release")) {
-            return runVariant == RunVariant.Release || runVariant == RunVariant.Always
+            runVariant == RunVariant.Release || runVariant == RunVariant.Always
         } else {
-            return false
+            false
         }
     }
 
