@@ -10,18 +10,26 @@ import java.io.BufferedInputStream
 import java.io.InputStream
 import java.io.StringBufferInputStream
 
-@DebugLogClass(debugArguments = DebugArguments.NONE, debugResult = true)
+@DebugLogClass(debugArguments = DebugArguments.SHORT, debugResult = true)
 internal class TestClass {
 
     fun onTestReturnInt(version: String?): Int {
+        testReturnNull({})
         return BuildConfig.VERSION_CODE
     }
 
     fun testVoidNoParams() {
+        if(true) {
+            return
+        }
     }
 
     fun testComplexParams(list: List<String?>?, context: Context): Context {
         return context
+    }
+
+    fun testReturnNull(type: Runnable?): Runnable? {
+        return null
     }
 
     fun testInnerClass() {

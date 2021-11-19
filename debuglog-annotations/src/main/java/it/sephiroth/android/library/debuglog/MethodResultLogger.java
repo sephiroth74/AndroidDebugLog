@@ -37,10 +37,10 @@ public class MethodResultLogger {
     }
 
     public static void print(int level, int printArguments, String className, String methodName, long costedMillis, Object returnVal) {
-        if (printArguments == DebugArguments.NONE || returnVal == null) {
+        if (printArguments == DebugArguments.NONE) {
             DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, null);
         } else {
-            if (returnVal.getClass().isArray()) { // array
+            if (returnVal != null && returnVal.getClass().isArray()) { // array
                 if (printArguments == DebugArguments.FULL) {
                     DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, arrayToString(returnVal));
                 } else {
@@ -49,7 +49,7 @@ public class MethodResultLogger {
             } else if (returnVal instanceof String || returnVal instanceof Enum) { // String, Enum
                 DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, returnVal + "");
             } else { // everything else
-                if (printArguments == DebugArguments.FULL) {
+                if (printArguments == DebugArguments.FULL || returnVal == null) {
                     DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, returnVal + "");
                 } else {
                     DebugLogger.DEFAULT_IMPL.logExit(level, className, methodName, costedMillis, ParamsLogger.objectToHashCode(returnVal) + "");

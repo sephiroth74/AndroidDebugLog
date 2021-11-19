@@ -94,8 +94,8 @@ class PostMethodVisitor(
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, Constants.JavaTypes.TYPE_RESULT_LOGGER, "print", formatDesc, false)
             mv.visitVarInsn(loadOpcode, resultTempValIndex)
         } else {
-            mv.visitInsn(Opcodes.ACONST_NULL)
-            // mv.visitLdcInsn("void") // use 'void' instead of passing a null object
+            // mv.visitInsn(Opcodes.ACONST_NULL) // use null as result variable
+            mv.visitLdcInsn("void") // use 'void' instead of passing a null object
             mv.visitMethodInsn(
                     Opcodes.INVOKESTATIC, Constants.JavaTypes.TYPE_RESULT_LOGGER, "print",
                     "(IILjava/lang/String;Ljava/lang/String;JLjava/lang/Object;)V", false
