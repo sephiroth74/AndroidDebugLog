@@ -37,7 +37,7 @@ class ASMMethodVisitor(
     }
 
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
-        logger.quiet("[$TAG] ${className}:$methodName visitAnnotation $descriptor")
+        logger.debug("[$TAG] ${className}:$methodName visitAnnotation $descriptor")
         val av = super.visitAnnotation(descriptor, visible)
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG};") {
             val av2 = ASMAnnotationVisitor(av, methodData, object : ASMAnnotationVisitor.Callback {
@@ -53,7 +53,7 @@ class ASMMethodVisitor(
 
     override fun visitLocalVariable(name: String, descriptor: String, signature: String?, start: Label, end: Label, index: Int) {
         if (enabled && "this" != name && start == labels.first()) {
-            logger.quiet("[$TAG] {}:{} visitLocalVariable({}, {})", className, methodName, name, signature)
+            logger.debug("[$TAG] {}:{} visitLocalVariable({}, {})", className, methodName, name, signature)
             val type = Type.getType(descriptor)
             if (type.sort == Type.OBJECT || type.sort == Type.ARRAY) {
                 parameters.add(MethodParameter(name, "L${Constants.JavaTypes.TYPE_OBJECT};", index))

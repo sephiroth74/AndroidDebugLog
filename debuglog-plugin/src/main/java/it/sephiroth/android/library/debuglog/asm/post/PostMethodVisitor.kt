@@ -67,7 +67,7 @@ class PostMethodVisitor(
             mv.visitVarInsn(storeOpcocde, resultTempValIndex)
         }
 
-        logger.quiet("$className:${methodData.name} opcode=$opcode, returnType=$returnType, returnDesc=$returnDesc")
+        logger.debug("$className:${methodData.name} opcode=$opcode, returnType=$returnType, returnDesc=$returnDesc")
 
         // Timing: parameter1 parameter2
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false)

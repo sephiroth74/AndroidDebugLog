@@ -38,7 +38,7 @@ class ASMClassVisitor(
     }
 
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
-        logger.quiet("{} visitAnnotation({})", className, descriptor)
+        logger.debug("{} visitAnnotation({})", className, descriptor)
         val av = super.visitAnnotation(descriptor, visible)
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_CLASS};") {
             classMethodData = MethodData("", "", className, simpleClassName).apply { copyFrom(pluginData) }
