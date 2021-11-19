@@ -43,7 +43,7 @@ class ASMMethodVisitor(
             val av2 = ASMAnnotationVisitor(av, methodData, object : ASMAnnotationVisitor.Callback {
                 override fun accept(methodData: MethodData) {
                     enabled = methodData.enabled
-                    logger.lifecycle("[$TAG] ${className}:${methodName} now is enabled = $enabled (${methodData.enabled})")
+                    logger.debug("[$TAG] ${className}:${methodName} now is enabled = $enabled (${methodData.enabled})")
                 }
             })
             return av2

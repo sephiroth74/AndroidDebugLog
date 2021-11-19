@@ -55,7 +55,7 @@ class ASMClassVisitor(
 
         val mv2 = ASMMethodVisitor(name, className, access, descriptor, mv, methodData, classMethodData, object : ASMMethodVisitor.Callback {
             override fun accept(methodData: MethodData, params: List<MethodParameter>) {
-                logger.lifecycle("[$TAG] transformation enabled for {}::{}", className, methodData.name)
+                logger.info("[$TAG] transformation enabled for {}::{}", className, methodData.name)
                 this@ASMClassVisitor.enabled = true
                 this@ASMClassVisitor.methodsParametersMap[methodData.uniqueKey] = Pair(methodData, params)
 
