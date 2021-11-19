@@ -22,6 +22,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     private val logger: Logger = project.logger
     private lateinit var debugLogPluginExtension: DebugLogPluginExtension
     private val pluginScopes: HashSet<QualifiedContent.Scope> = HashSet()
+    private val resultData = ResultData()
 
     init {
         pluginScopes.add(QualifiedContent.Scope.PROJECT)
@@ -83,6 +84,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startTime
         logger.lifecycle("[$TAG] DebugLog Transformation SUCCESS in ${totalTime}ms")
+        logger.lifecycle("[$TAG] Processed ${resultData.transformedFiles} classes")
     }
 
     /**
@@ -240,6 +242,8 @@ class DebugLogTransformer(private val project: Project) : Transform() {
             getClassPaths().set(classPaths)
             getPluginData().set(pluginData)
         }
+
+        resultData.transformedFiles += 1
     }
 
 
@@ -288,5 +292,9 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     companion object {
         const val TAG: String = DebugLogPlugin.TAG
 
+    }
+
+    class ResultData {
+        var transformedFiles: Int = 0
     }
 }

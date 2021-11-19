@@ -3,7 +3,7 @@ package it.sephiroth.android.library.debuglog
 import org.objectweb.asm.Opcodes
 
 object Constants {
-    const val ASM_VERSION = Opcodes.ASM9
+    const val ASM_VERSION = BuildConfig.ASM_VERSION
 
     const val DEBUGLOG_EXTENSION = "androidDebugLog"
 
