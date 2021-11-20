@@ -1,35 +1,32 @@
 # AndroidDebugLog
 
-Originally forked from https://github.com/Leaking/Hunter and inspired by https://www.fatalerrors.org/a/how-to-use-transform-api-and-asm-to-implement-an-anti-quick-click-case.html.
+Originally forked from https://github.com/Leaking/Hunter <br />
+and inspired by https://www.fatalerrors.org/a/how-to-use-transform-api-and-asm-to-implement-an-anti-quick-click-case.html.
 
 
 # Installation
 
-Root build.gradle file:
+Add the classpath `it.sephiroth.android.library.debuglog:debuglog-plugin:*version` to your root **build.gradle** file:
 
     buildscript {
         repositories {
-        mavenCentral()
-        mavenLocal()
-        google()
-        maven { url = uri("https://plugins.gradle.org/m2/") }
-    }
+            ...
+        }
 
-    dependencies {
-        ...
-        classpath("it.sephiroth.android.library.debuglog:debuglog-plugin:*version*")
-    }
-
+        dependencies {
+            ...
+            classpath("it.sephiroth.android.library.debuglog:debuglog-plugin:*version*")
+        }
 }
 
-Then, your module build.gradle file:
+Then, your in your module **build.gradle** file, enable the plugin:
 
     plugins {
-        id("com.android.application")
-        id("kotlin-android")
+        ...
         id("it.sephiroth.android.library.debuglog")
     }
 
+    // it can be configured globally in this way:
     androidDebugLog {
         enabled.set(true)
         logLevel.set(AndroidLogLevel.VERBOSE)
@@ -46,12 +43,42 @@ Then, your module build.gradle file:
 
 # Usage
 
+You can add the `DebugLogClass` to the class declaration. In this way all the class methods will be logged
+
     @DebugLogClass
     class TestClass {
-        ...class bidy
+        ...
     }
 
-or a single method:
+
+Otherwise, to debug print a single method::
 
     @Debug(logLevel=Log.INFO, debugArguments=DebugArguments.FULL, debugResult=true) // all annotation params are optional
     private fun hello(input: String) {
+        ...
+    }
+
+
+# License
+
+    MIT License
+
+    Copyright (c) 2021 Alessandro Crugnola
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
