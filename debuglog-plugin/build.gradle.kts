@@ -6,11 +6,12 @@ import org.gradle.plugins.signing.Sign
 
 plugins {
     `kotlin-dsl`
-    id("java-gradle-plugin")
-    id("maven-publish")
     signing
     groovy
+    id("java-gradle-plugin")
+    id("maven-publish")
 }
+
 
 repositories {
     gradlePluginPortal()
@@ -70,9 +71,9 @@ tasks {
 }
 
 if (project.hasProperty("sonatypeUsername")
-        && project.hasProperty("sonatypePassword")
-        && project.hasProperty("SONATYPE_RELEASE_URL")
-        && project.hasProperty("SONATYPE_SNAPSHOT_URL")
+    && project.hasProperty("sonatypePassword")
+    && project.hasProperty("SONATYPE_RELEASE_URL")
+    && project.hasProperty("SONATYPE_SNAPSHOT_URL")
 ) {
     val SONATYPE_RELEASE_URL: String by project
     val SONATYPE_SNAPSHOT_URL: String by project
@@ -155,3 +156,6 @@ afterEvaluate {
         kotlinOptions.jvmTarget = Config.Kotlin.jvmVersion
     }
 }
+
+
+// ------------ build config ----------------
