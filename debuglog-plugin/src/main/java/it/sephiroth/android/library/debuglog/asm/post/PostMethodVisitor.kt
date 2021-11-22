@@ -109,7 +109,7 @@ class PostMethodVisitor(
     private fun printMethodStart() {
         logger.debug("[$TAG] ($className:${methodData.name}) Creating input logger injection")
 
-        val lineNumber: Int = methodData.lineNumber?.minus(1) ?: 0
+        // val lineNumber: Int = methodData.lineNumber?.minus(1) ?: 0
 
         // val printerLoggerIndex = newLocal(Type.getObjectType(Constants.JavaTypes.TYPE_PARAMS_LOGGER))
         mv.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)

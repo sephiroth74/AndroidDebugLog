@@ -128,12 +128,12 @@ class ParamsLogger(
     companion object {
         @JvmStatic
         fun objectToHashCode(value: Any?): String {
-            return if (value == null) "null" else value.javaClass.name + "#" + System.identityHashCode(value)
+            return if (value == null) "null" else value::class.java.name + "#" + System.identityHashCode(value)
         }
 
         @JvmStatic
         fun arrayToHashCode(value: Any?): String {
-            return if (value == null) "null" else value.javaClass.canonicalName + "[size=" + java.lang.reflect.Array.getLength(value) + "]"
+            return if (value == null) "null" else value::class.java.name + "[size=" + java.lang.reflect.Array.getLength(value) + "]"
         }
 
         @JvmStatic

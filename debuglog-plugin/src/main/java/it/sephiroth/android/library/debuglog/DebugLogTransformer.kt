@@ -20,7 +20,7 @@ import java.net.URL
 @Suppress("DEPRECATION")
 class DebugLogTransformer(private val project: Project) : Transform() {
     private val logger: Logger = project.logger
-    private lateinit var debugLogPluginExtension: DebugLogPluginExtension
+    private lateinit var pluginExtension: DebugLogPluginExtension
     private val pluginScopes: HashSet<QualifiedContent.Scope> = HashSet()
     private val resultData = ResultData()
 
@@ -31,8 +31,8 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         logger.debug("[$TAG] DebugLogTransformer added to project $project.name")
     }
 
-    fun getPluginExtension(): DebugLogPluginExtension {
-        return debugLogPluginExtension
+    private fun getPluginExtension(): DebugLogPluginExtension {
+        return pluginExtension
     }
 
     override fun getName(): String {
@@ -59,24 +59,35 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         val startTime = System.currentTimeMillis()
 
         // retrieve the registered plugin-extension
-        debugLogPluginExtension = project.extensions.getByName(Constants.DEBUGLOG_EXTENSION) as DebugLogPluginExtension
-
-        val enabled = isPluginEnabled(transformInvocation, debugLogPluginExtension)
+        pluginExtension = project.extensions.getByName(Constants.DEBUGLOG_EXTENSION) as DebugLogPluginExtension
 
 
         logger.lifecycle(
             "[$TAG] androidDebugLog[" +
-                    "enabled=${debugLogPluginExtension.enabled.get()}, " +
-                    "logLevel=${debugLogPluginExtension.logLevel.get()}, " +
-                    "debugResult=${debugLogPluginExtension.debugResult.get()}, " +
-                    "debugArguments=${debugLogPluginExtension.debugArguments.get()}, " +
-                    "runVariant=${debugLogPluginExtension.runVariant.get()}" +
+                    "enabled=${pluginExtension.enabled.get()}, " +
+                    "logLevel=${pluginExtension.logLevel.get()}, " +
+                    "debugResult=${pluginExtension.debugResult.get()}, " +
+                    "debugArguments=${pluginExtension.debugArguments.get()}, " +
+                    "runVariant=${pluginExtension.runVariant.get()}" +
                     "]"
         )
 
-        logger.debug("[$TAG] project variant: ${transformInvocation.context.variantName} (current: ${debugLogPluginExtension.runVariant.get().name}")
+        val enabled = isPluginEnabled(transformInvocation, pluginExtension)
+
+        logger.debug("[$TAG] project variant: ${transformInvocation.context.variantName} (current: ${pluginExtension.runVariant.get()}")
         logger.debug("[$TAG] transformInvocation.incremental: ${transformInvocation.isIncremental}, incremental: $isIncremental")
-        logger.lifecycle("[$TAG] Transformation enabled: $enabled")
+
+        if (!enabled) {
+            logger.lifecycle("[$TAG] Transformation not enabled")
+            if (!pluginExtension.enabled.get()) {
+                logger.lifecycle("[$TAG] ${Constants.DEBUGLOG_EXTENSION} disabled")
+            } else {
+                logger.lifecycle("[$TAG] Current variant `${transformInvocation.context.variantName}` not enabled (${pluginExtension.runVariant.get()})")
+            }
+        } else {
+            logger.lifecycle("[$TAG] Transformation enabled: $enabled")
+        }
+
 
         processInput(transformInvocation, enabled)
 
@@ -232,7 +243,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     }
 
     protected fun transformSingleFile(workQueue: WorkQueue, inputFile: File, destFile: File, classPaths: List<URL>) {
-        val pluginData: PluginData? = getPluginExtension()?.let { ext ->
+        val pluginData: PluginData? = getPluginExtension().let { ext ->
             PluginData(ext.logLevel.get(), ext.debugResult.get(), ext.debugArguments.get())
         }
 
@@ -278,15 +289,8 @@ class DebugLogTransformer(private val project: Project) : Transform() {
     private fun isPluginEnabled(transformInvocation: TransformInvocation, extension: DebugLogPluginExtension): Boolean {
         if (!extension.enabled.get()) return false
         val runVariant = extension.runVariant.get()
-        logger.debug("[$TAG] variant = ${transformInvocation.context.variantName} (runVariant=$runVariant)")
-
-        return if (transformInvocation.context.variantName.toLowerCase().endsWith("debug")) {
-            runVariant == RunVariant.Debug || runVariant == RunVariant.Always
-        } else if (transformInvocation.context.variantName.toLowerCase().endsWith("release")) {
-            runVariant == RunVariant.Release || runVariant == RunVariant.Always
-        } else {
-            false
-        }
+        val currentVariant = transformInvocation.context.variantName
+        return currentVariant.matches(runVariant)
     }
 
     companion object {

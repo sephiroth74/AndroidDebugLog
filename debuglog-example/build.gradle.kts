@@ -1,7 +1,7 @@
 // debuglog-example/build.gradle.kts
 
-import it.sephiroth.android.library.debuglog.*
-import it.sephiroth.android.library.debuglog.RunVariant.*
+import it.sephiroth.android.library.debuglog.DebugArguments
+import it.sephiroth.android.library.debuglog.AndroidLogLevel
 
 buildscript {
     repositories {
@@ -40,12 +40,13 @@ plugins {
 
 // ---------- when using remote repo -----------------
 androidDebugLog {
-    enabled.set(true)
+//    enabled.set(true)
     logLevel.set(AndroidLogLevel.VERBOSE)
     debugResult.set(false)
     debugArguments.set(DebugArguments.Full)
-    runVariant.set(Debug)
+    runVariant.set(Regex(".*(debug)"))
 }
+
 
 android {
     compileSdk = Config.Android.compileSdk

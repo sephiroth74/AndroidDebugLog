@@ -10,6 +10,7 @@ plugins {
     groovy
     id("java-gradle-plugin")
     id("maven-publish")
+    id("com.gradle.plugin-publish") version "0.16.0"
 }
 
 
@@ -23,10 +24,19 @@ repositories {
 version = Config.VERSION
 group = Config.GROUP
 
+pluginBundle {
+    website = "https://github.com/sephiroth74/AndroidDebugLog"
+    vcsUrl = "https://github.com/sephiroth74/AndroidDebugLog"
+    tags = listOf("android", "annotations", "logging")
+}
+
+
 configure<GradlePluginDevelopmentExtension> {
     plugins {
         create("androidDebugLog") {
             id = "it.sephiroth.android.library.debuglog"
+            displayName = "Android Debug Log"
+            description = "A compile time debug library annotation for android projects"
             implementationClass = "it.sephiroth.android.library.debuglog.DebugLogPlugin"
         }
     }
@@ -53,15 +63,15 @@ dependencies {
 
 tasks {
     val sourcesJar by creating(Jar::class) {
-        archiveClassifier.set("sourcesJar")
+        archiveClassifier.set("sources")
 //        from(sourceSets.main.get().allSource)
     }
 
-//    val javadocJar by creating(Jar::class) {
-//        dependsOn.add(javadoc)
-//        archiveClassifier.set("javadoc")
-//        from(javadoc)
-//    }
+    val javadocJar by creating(Jar::class) {
+        archiveClassifier.set("javadoc")
+        dependsOn.add(javadoc)
+        from(javadoc)
+    }
 
     artifacts {
 //        archives(sourcesJar)
@@ -140,6 +150,12 @@ if (project.hasProperty("sonatypeUsername")
 
     tasks.withType<Sign> {
         onlyIf { !Config.DEBUG }
+    }
+}
+
+publishing {
+    repositories {
+        mavenLocal()
     }
 }
 

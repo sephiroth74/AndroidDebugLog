@@ -11,13 +11,22 @@ Add the classpath `it.sephiroth.android.library.debuglog:debuglog-plugin:*versio
     buildscript {
         repositories {
             ...
+            maven { url = uri("https://repo1.maven.org/maven2") }
         }
 
         dependencies {
             ...
             classpath("it.sephiroth.android.library.debuglog:debuglog-plugin:*version*")
         }
-}
+    }
+
+
+    allprojects {
+        repositories {
+            ...
+            maven { url = uri("https://repo1.maven.org/maven2") }
+        }
+    }
 
 Then, your in your module **build.gradle** file, enable the plugin:
 
@@ -32,9 +41,8 @@ Then, your in your module **build.gradle** file, enable the plugin:
         logLevel.set(AndroidLogLevel.VERBOSE)
         debugResult.set(false)
         debugArguments.set(DebugArguments.Full)
-        runVariant.set(Debug)
+        runVariant.set(Regex(".*"))
     }
-
     
     dependencies {
         ...

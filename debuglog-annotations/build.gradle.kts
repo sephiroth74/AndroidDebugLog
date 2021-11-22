@@ -114,10 +114,8 @@ afterEvaluate {
         // empty
     }
 }
+
 dependencies {
     implementation(Config.Dependencies.Android.androidCoreKtx)
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
-}
-repositories {
-    mavenCentral()
 }
