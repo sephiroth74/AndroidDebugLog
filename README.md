@@ -1,5 +1,11 @@
 # AndroidDebugLog
 
+Provides bytecode injection at compile time by using the provided `DebugLog*` annotations. <br />
+Once a class is annotated with the `@DebugLogClass` annotation, the final compiled class will log all the class methods. <br />
+The annotation `@DebugLog` can be used to add logging to a single method.<br />
+This gradle plugin doesn't use reflection to inject the logging. All the work is done at compile time.
+
+
 Originally forked from https://github.com/Leaking/Hunter <br />
 and inspired by https://www.fatalerrors.org/a/how-to-use-transform-api-and-asm-to-implement-an-anti-quick-click-case.html.
 
