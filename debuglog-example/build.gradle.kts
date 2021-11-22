@@ -8,9 +8,8 @@ buildscript {
         mavenCentral()
         mavenLocal()
         google()
-        maven { url = uri("file://" + File(System.getProperty("user.home"), ".m2/repository").absolutePath) }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-        maven { url = uri("https://oss.sonatype.org/content/repositories/releases") }
+        maven { url = uri("https://repo1.maven.org/maven2") }
     }
 
     dependencies {
@@ -44,7 +43,7 @@ androidDebugLog {
     logLevel.set(AndroidLogLevel.VERBOSE)
     debugResult.set(false)
     debugArguments.set(DebugArguments.Full)
-    runVariant.set(Regex(".*(debug)"))
+    runVariant.set(".*(debug)")
 }
 
 

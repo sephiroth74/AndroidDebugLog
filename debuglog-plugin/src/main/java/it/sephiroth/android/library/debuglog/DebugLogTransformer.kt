@@ -290,7 +290,7 @@ class DebugLogTransformer(private val project: Project) : Transform() {
         if (!extension.enabled.get()) return false
         val runVariant = extension.runVariant.get()
         val currentVariant = transformInvocation.context.variantName
-        return currentVariant.matches(runVariant)
+        return currentVariant.matches(Regex(runVariant))
     }
 
     companion object {

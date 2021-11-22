@@ -28,13 +28,13 @@ abstract class DebugLogPluginExtension {
     /**
      * Set the name (regexp pattern) on which variant the transformation will be executed
      */
-    abstract val runVariant: Property<Regex>
+    abstract val runVariant: Property<String>
 
     init {
         enabled.convention(true)
         logLevel.convention(Constants.DEFAULT_LOG_LEVEL)
         debugResult.convention(Constants.DEFAULT_DEBUG_RESULT)
         debugArguments.convention(Constants.DEFAULT_DEBUG_ARGUMENTS)
-        runVariant.convention(Regex(".*"))
+        runVariant.convention(".*")
     }
 }

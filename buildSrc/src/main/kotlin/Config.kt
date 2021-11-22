@@ -13,7 +13,7 @@ object Config {
     const val KOTLIN_VERSION = "1.5.31"
 
     // this library version
-    const val VERSION = "0.0.4-rc1"
+    const val VERSION = "0.0.4-rc2"
 
     const val GROUP = "it.sephiroth.android.library.debuglog"
 
