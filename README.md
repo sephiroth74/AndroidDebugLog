@@ -44,7 +44,7 @@ Then, your in your module **build.gradle** file, enable the plugin:
         logLevel.set(AndroidLogLevel.VERBOSE)
         debugResult.set(false)
         debugArguments.set(DebugArguments.Full)
-        runVariant.set(Regex(".*"))
+        runVariant.set(".*") // <- this is the default value (enabled for all variants)
     }
     
     dependencies {
