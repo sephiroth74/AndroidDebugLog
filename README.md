@@ -3,6 +3,9 @@
 Originally forked from https://github.com/Leaking/Hunter <br />
 and inspired by https://www.fatalerrors.org/a/how-to-use-transform-api-and-asm-to-implement-an-anti-quick-click-case.html.
 
+[![Maven Central](https://img.shields.io/maven-central/v/it.sephiroth.android.library.debuglog/debuglog-plugin)](https://repo1.maven.org/maven2/it/sephiroth/android/library/debuglog/debuglog-plugin/)
+
+
 
 # Installation
 
