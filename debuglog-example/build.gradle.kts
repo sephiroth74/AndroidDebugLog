@@ -81,7 +81,7 @@ dependencies {
 
     implementation("it.sephiroth.android.library.debuglog:debuglog-annotations:${Config.VERSION}")
 
-    implementation("androidx.appcompat:appcompat:1.3.1")
+    implementation("androidx.appcompat:appcompat:1.4.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.2")
 
     testImplementation("junit:junit:4.13.2")

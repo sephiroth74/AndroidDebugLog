@@ -42,7 +42,7 @@ class ASMClassVisitor(
         logger.debug("{} visitAnnotation({})", className, descriptor)
         val av = super.visitAnnotation(descriptor, visible)
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_CLASS};") {
-            classMethodData = MethodData("", "", className, simpleClassName).apply { copyFrom(pluginData) }
+            classMethodData = MethodData("", "", simpleClassName).apply { copyFrom(pluginData) }
             val av2 = ASMAnnotationVisitor(av, classMethodData!!, null)
             return av2
         }
@@ -52,7 +52,7 @@ class ASMClassVisitor(
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor? {
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions) ?: return null
 
-        val methodData = MethodData(name, descriptor, className, simpleClassName).apply { copyFrom(pluginData) }
+        val methodData = MethodData(name, descriptor, simpleClassName).apply { copyFrom(pluginData) }
 
         val mv2 = ASMMethodVisitor(name, className, access, descriptor, mv, methodData, classMethodData, object : ASMMethodVisitor.Callback {
             override fun accept(methodData: MethodData, params: List<MethodParameter>) {

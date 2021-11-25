@@ -78,7 +78,7 @@ class PostMethodVisitor(
 
         ASMVisitorUtils.visitInt(mv, methodData.logLevel)   // logLevel (int)
         mv.visitLdcInsn(methodData.debugArguments)          // printArguments (int)
-        mv.visitLdcInsn(methodData.simpleClassName)         // className (String)
+        mv.visitLdcInsn(methodData.finalTag)                // className/tag (String)
         mv.visitLdcInsn(methodData.name)                    // methodName (String)
         mv.visitVarInsn(Opcodes.LLOAD, index)               // costedMillis (long)
 
@@ -108,13 +108,10 @@ class PostMethodVisitor(
      */
     private fun printMethodStart() {
         logger.debug("[$TAG] ($className:${methodData.name}) Creating input logger injection")
-
         // val lineNumber: Int = methodData.lineNumber?.minus(1) ?: 0
-
-        // val printerLoggerIndex = newLocal(Type.getObjectType(Constants.JavaTypes.TYPE_PARAMS_LOGGER))
         mv.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
         mv.visitInsn(Opcodes.DUP)
-        mv.visitLdcInsn(methodData.simpleClassName)                 // [1] tag (String)
+        mv.visitLdcInsn(methodData.finalTag)                 // [1] tag (String)
         mv.visitLdcInsn(methodData.name)                            // [2] methodName (String)
         ASMVisitorUtils.visitInt(mv, methodData.debugArguments)     // [3] debugType (int)
 

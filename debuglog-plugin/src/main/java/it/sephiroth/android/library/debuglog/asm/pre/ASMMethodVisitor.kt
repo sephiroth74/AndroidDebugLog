@@ -25,7 +25,6 @@ class ASMMethodVisitor(
     private val labels = mutableListOf<Label>()
     private val parameters = mutableListOf<MethodParameter>()
     private var enabled = false
-    private var lineNumber: Int? = null
 
     init {
         logger.debug("[$TAG] visiting method $className::$methodName")
@@ -51,11 +50,6 @@ class ASMMethodVisitor(
         return av
     }
 
-    override fun visitLineNumber(line: Int, start: Label?) {
-        if (null == lineNumber) lineNumber = line
-        super.visitLineNumber(line, start)
-    }
-
     override fun visitLocalVariable(name: String, descriptor: String, signature: String?, start: Label, end: Label, index: Int) {
         if (enabled && "this" != name && start == labels.first()) {
             val type = Type.getType(descriptor)
@@ -76,7 +70,6 @@ class ASMMethodVisitor(
     override fun visitEnd() {
         super.visitEnd()
         if (enabled) {
-            methodData.lineNumber = lineNumber
             callback?.accept(methodData, parameters)
         }
     }

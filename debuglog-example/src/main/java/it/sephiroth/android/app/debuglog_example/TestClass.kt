@@ -5,17 +5,15 @@ import android.util.Log
 import it.sephiroth.android.library.debuglog.DebugArguments
 import it.sephiroth.android.library.debuglog.DebugLog
 import it.sephiroth.android.library.debuglog.DebugLogClass
-import it.sephiroth.android.library.debuglog.MethodResultLogger
-import java.io.BufferedInputStream
 import java.io.InputStream
 import java.io.StringBufferInputStream
 
-@DebugLogClass(debugArguments = DebugArguments.SHORT, debugResult = true)
+@DebugLogClass(debugArguments = DebugArguments.FULL, debugResult = true, logLevel = Log.WARN)
 class TestClass {
     fun testAll(context: Context) {
         val t1 = onTestReturnInt(BuildConfig.VERSION_NAME)
         val t2 = testVoidNoParams()
-        val t3 = testComplexParams(listOf("hello", "logged", "world"), context)
+        val t3 = testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
         val t4 = testInnerClass()
     }
 
@@ -30,7 +28,8 @@ class TestClass {
         }
     }
 
-    fun testComplexParams(list: List<String?>?, context: Context): Context {
+    @DebugLog(logLevel = Log.ERROR, debugArguments = DebugArguments.NONE, tag = "alessandro")
+    fun testComplexParams(list: List<String?>?, context: Context, input: IntArray): Context {
         list?.forEach {
             Log.v(this::class.java.simpleName, "item=$it")
         }
@@ -84,7 +83,7 @@ class TestClass {
         }
     }
 
-    class StaticInnerTestClass2() {
+    class StaticInnerTestClass2 {
 
         fun test01(pair: Pair<Int, Boolean>, string: String): Pair<Int, String> {
             return Pair(pair.first, "$string${pair.second}")

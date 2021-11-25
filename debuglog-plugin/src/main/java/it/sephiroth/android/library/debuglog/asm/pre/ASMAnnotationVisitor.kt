@@ -7,19 +7,22 @@ import org.objectweb.asm.AnnotationVisitor
 /**
  * @author Alessandro Crugnola on 18.11.21 - 13:56
  */
-class ASMAnnotationVisitor(av: AnnotationVisitor?,
-                           private val methodData: MethodData,
-                           private val callback: Callback?) : AnnotationVisitor(Constants.ASM_VERSION, av) {
+class ASMAnnotationVisitor(
+    av: AnnotationVisitor?,
+    private val methodData: MethodData,
+    private val callback: Callback?
+) : AnnotationVisitor(Constants.ASM_VERSION, av) {
 
     override fun visit(name: String, value: Any) {
-        if ("debugResult" == name) {
-            methodData.debugResult = value as Boolean
-        } else if ("logLevel" == name) {
-            methodData.logLevel = value as Int
-        } else if ("debugArguments" == name) {
-            methodData.debugArguments = value as Int
-        } else if ("enabled" == name) {
-            methodData.enabled = value as Boolean
+        when (name) {
+            "debugResult" -> methodData.debugResult = value as Boolean
+            "logLevel" -> methodData.logLevel = value as Int
+            "debugArguments" -> methodData.debugArguments = value as Int
+            "enabled" -> methodData.enabled = value as Boolean
+            "tag" -> {
+                val tag = value as String
+                if (tag.isNotBlank()) methodData.tag = tag
+            }
         }
         super.visit(name, value)
     }
