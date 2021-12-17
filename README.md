@@ -11,6 +11,7 @@ and inspired by https://www.fatalerrors.org/a/how-to-use-transform-api-and-asm-t
 
 [![Maven Central](https://img.shields.io/maven-central/v/it.sephiroth.android.library.debuglog/debuglog-plugin)](https://repo1.maven.org/maven2/it/sephiroth/android/library/debuglog/debuglog-plugin/)
 
+See last version here: https://search.maven.org/artifact/it.sephiroth.android.library.debuglog/debuglog-plugin
 
 
 # Installation
