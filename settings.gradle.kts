@@ -1,5 +1,9 @@
-include(":debuglog-annotations")
+include(":asm-annotations")
 
-include(":debuglog-plugin")
+include(":asm-core")
+
+include(":asm-debuglog")
+
+include(":asm-logging-level")
 
 include(":debuglog-example")

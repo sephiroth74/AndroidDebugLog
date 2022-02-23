@@ -13,9 +13,9 @@ object Config {
     const val KOTLIN_VERSION = "1.5.31"
 
     // this library version
-    const val VERSION = "0.0.4-rc3"
+    const val VERSION = "0.0.5-rc1-SNAPSHOT"
 
-    const val GROUP = "it.sephiroth.android.library.debuglog"
+    const val GROUP = "it.sephiroth.android.library.asm"
 
     val DEBUG = VERSION.endsWith("SNAPSHOT")
 
@@ -77,6 +77,12 @@ object Config {
             const val asm = "org.ow2.asm:asm:${Config.ASM_VERSION}"
             const val asmUtil = "org.ow2.asm:asm-util:${Config.ASM_VERSION}"
             const val asmCommon = "org.ow2.asm:asm-commons:${Config.ASM_VERSION}"
+        }
+
+        object AndroidDebugLog {
+            const val core = "$GROUP:asm-core:$VERSION"
+            const val debugLog = "$GROUP:asm-debuglog:$VERSION"
+            const val logging = "$GROUP:asm-logging:$VERSION"
         }
     }
 

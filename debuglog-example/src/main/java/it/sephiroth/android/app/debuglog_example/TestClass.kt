@@ -2,15 +2,18 @@ package it.sephiroth.android.app.debuglog_example
 
 import android.content.Context
 import android.util.Log
-import it.sephiroth.android.library.debuglog.DebugArguments
-import it.sephiroth.android.library.debuglog.DebugLog
-import it.sephiroth.android.library.debuglog.DebugLogClass
+import it.sephiroth.android.library.asm.annotations.debuglog.DebugArguments
+import it.sephiroth.android.library.asm.annotations.debuglog.DebugLog
+import it.sephiroth.android.app.debuglog_example.BuildConfig
+import it.sephiroth.android.library.asm.annotations.debuglog.DebugLogClass
+import timber.log.Timber
 import java.io.InputStream
 import java.io.StringBufferInputStream
 
 @DebugLogClass(debugArguments = DebugArguments.FULL, debugResult = true, logLevel = Log.WARN)
 class TestClass {
     fun testAll(context: Context) {
+        Timber.v("testAll")
         val t1 = onTestReturnInt(BuildConfig.VERSION_NAME)
         val t2 = testVoidNoParams()
         val t3 = testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))

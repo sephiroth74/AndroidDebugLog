@@ -5,7 +5,7 @@ import android.util.Log;
 
 import org.jetbrains.annotations.NotNull;
 
-import it.sephiroth.android.library.debuglog.DebugLogClass;
+import it.sephiroth.android.library.asm.annotations.debuglog.DebugLogClass;
 
 /**
  * AndroidDebugLog

@@ -1,7 +1,7 @@
 // debuglog-example/build.gradle.kts
 
-import it.sephiroth.android.library.debuglog.DebugArguments
-import it.sephiroth.android.library.debuglog.AndroidLogLevel
+//import it.sephiroth.android.library.debuglog.DebugArguments
+//import it.sephiroth.android.library.debuglog.AndroidLogLevel
 
 buildscript {
     repositories {
@@ -23,29 +23,40 @@ plugins {
     id("kotlin-android")
 
     // when using remote repo
-    id("it.sephiroth.android.library.debuglog")
+    id("it.sephiroth.android.library.asm.asm-debuglog")
+    id("it.sephiroth.android.library.asm.asm-logging-level")
 }
 
+
 // ---------  when using local buildSrc --------------
-//apply<DebugLogPlugin>()
+//apply<it.sephiroth.android.library.debuglog.DebugLogPlugin>()
 //
-//configure<DebugLogPluginExtension> {
+//configure<it.sephiroth.android.library.debuglog.DebugLogPluginExtension> {
 //    enabled.set(true)
-//    logLevel.set(AndroidLogLevel.DEBUG)
+//    logLevel.set(it.sephiroth.android.library.debuglog.AndroidLogLevel.DEBUG)
 //    debugResult.set(true)
-//    debugArguments.set(DebugArguments.Full)
-//    runVariant.set(Debug)
+//    debugArguments.set(it.sephiroth.android.library.debuglog.DebugArguments.Full)
+//    runVariant.set(".*(debug)")
 //}
 
 // ---------- when using remote repo -----------------
-androidDebugLog {
-//    enabled.set(true)
-    logLevel.set(AndroidLogLevel.VERBOSE)
-    debugResult.set(false)
-    debugArguments.set(DebugArguments.Full)
-    runVariant.set(".*(debug)")
+androidAsmDebugLog {
+    enabled.set(true)
+    logLevel.set(it.sephiroth.android.library.asm.core.AndroidLogLevel.VERBOSE)
+    debugResult.set(true)
+    debugArguments.set(it.sephiroth.android.library.asm.debuglog.DebugArguments.Full)
+    runVariant.set(".*")
 }
 
+androidAsmLoggingLevel {
+    enabled.set(true)
+    minLogLevel.set(it.sephiroth.android.library.asm.core.AndroidLogLevel.INFO)
+    includeLibs.set(true)
+}
+
+//androidDebugLogging {
+//    minLogLevel.set(6)
+//}
 
 android {
     compileSdk = Config.Android.compileSdk
@@ -56,8 +67,8 @@ android {
         targetSdk = Config.Android.targetSdk
         versionCode = 1
         versionName = "0.2.3"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -79,10 +90,11 @@ android {
 dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 
-    implementation("it.sephiroth.android.library.debuglog:debuglog-annotations:${Config.VERSION}")
+    implementation("it.sephiroth.android.library.asm:asm-annotations:${Config.VERSION}")
 
-    implementation("androidx.appcompat:appcompat:1.4.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("com.jakewharton.timber:timber:5.0.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
