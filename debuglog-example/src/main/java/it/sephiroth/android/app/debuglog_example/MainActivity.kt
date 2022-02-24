@@ -4,11 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import timber.log.Timber
 import it.sephiroth.android.library.asm.annotations.debuglog.DebugLogClass
 import it.sephiroth.android.library.asm.commons.logging.NoLog
-import timber.log.Timber
 
 @DebugLogClass
+@SuppressLint("LogNotTimber")
 class MainActivity : AppCompatActivity() {
     @SuppressLint("LogNotTimber")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         TestClass().testAll(this)
         AnotherTestClass().testAll(this)
         testPrintLn()
+        testLog("message")
     }
 
     private fun testPrintLn(): Int {
@@ -57,7 +59,9 @@ class MainActivity : AppCompatActivity() {
         return 0
     }
 
-    fun getLogLevel(): Int = Log.VERBOSE
+    private fun testLog(msg: String) {
+        Log.i("tag", msg)
+    }
 
     companion object {
         const val TAG = "MainActivity"

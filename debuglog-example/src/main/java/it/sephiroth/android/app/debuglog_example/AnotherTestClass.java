@@ -26,4 +26,15 @@ class AnotherTestClass {
             }
         });
     }
+
+    public int testLog(String message) {
+        return Log.i("TAG", message);
+    }
+
+    public int testLog(String message, Object... args) {
+        if (null != args && args.length > 0)
+            return Log.i("TAG", String.format(message, args));
+        else
+            return Log.i("TAG", message);
+    }
 }

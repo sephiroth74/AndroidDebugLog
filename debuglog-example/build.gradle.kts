@@ -60,14 +60,6 @@ androidASM {
 //    runVariant.set(".*(debug)")
 //}
 
-// ---------- when using remote repo -----------------
-//androidAsmDebugLog {
-//    enabled.set(true)
-//    logLevel.set(it.sephiroth.android.library.asm.core.AndroidLogLevel.VERBOSE)
-//    debugResult.set(true)
-//    debugArguments.set(it.sephiroth.android.library.asm.debuglog.DebugArguments.Full)
-//    runVariant.set(".*")
-//}
 
 
 android {
@@ -104,6 +96,7 @@ dependencies {
 
     // include asm-common lib
     implementation(Config.Dependencies.AndroidAsm.common)
+    implementation(Config.Dependencies.AndroidAsm.annotations)
 
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")

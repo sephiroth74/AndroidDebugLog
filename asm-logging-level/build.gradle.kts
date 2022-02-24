@@ -37,19 +37,17 @@ gradlePlugin {
         create("loggingLevelPlugin") {
             id = "it.sephiroth.android.library.asm.asm-logging-level"
             implementationClass = "it.sephiroth.android.library.asm.logginglevel.LoggingLevelPlugin"
-
             displayName = "Log level adjustment plugin for AndroidASM"
             description = "Disable some logging at compile time by changing the minimum log level allowed"
         }
     }
 }
-//
+
 //configure<GradlePluginDevelopmentExtension> {
 //    plugins {
 //        create("androidASM") {
 //            id = "it.sephiroth.android.library.asm.asm-logging-level"
 //            implementationClass = "it.sephiroth.android.library.asm.logginglevel.LoggingLevelPlugin"
-//
 //            displayName = "Log level adjustment plugin for AndroidASM"
 //            description = "Disable some logging at compile time by changing the minimum log level allowed"
 //        }
@@ -119,7 +117,6 @@ if (project.hasProperty("sonatypeUsername")
                     description.set(Config.Pom.DESCRIPTION)
                     url.set(Config.Pom.URL)
                     name.set(project.name)
-
 
                     licenses {
                         license {

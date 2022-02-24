@@ -15,7 +15,7 @@ object Config {
     const val KOTLIN_VERSION = "1.5.31"
 
     // this library version
-    const val VERSION = "0.1.0-rc1-SNAPSHOT"
+    const val VERSION = "0.1.0-rc3-SNAPSHOT"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
@@ -71,8 +71,8 @@ object Config {
         }
 
         object Android {
-            const val buildGradle       = "com.android.tools.build:gradle:7.1.1"
-            const val buildGradleApi    = "com.android.tools.build:gradle-api:7.1.1"
+            const val buildGradle       = "com.android.tools.build:gradle:7.1.0"
+            const val buildGradleApi    = "com.android.tools.build:gradle-api:7.1.0"
             const val androidCoreKtx    = "androidx.core:core-ktx:1.7.0"
         }
 
