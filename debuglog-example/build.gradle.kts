@@ -1,11 +1,6 @@
 @file:Suppress("SpellCheckingInspection")
 
-import it.sephiroth.android.library.asm.logginglevel.LoggingLevelPluginExtension
-
 // debuglog-example/build.gradle.kts
-
-//import it.sephiroth.android.library.debuglog.DebugArguments
-//import it.sephiroth.android.library.debuglog.AndroidLogLevel
 
 buildscript {
     repositories {
@@ -32,6 +27,7 @@ plugins {
     // include ams-logging-level plugin
     id("it.sephiroth.android.library.asm.asm-logging-level")
 }
+
 
 /**
  * Main androidASM container
@@ -73,16 +69,6 @@ androidASM {
 //    runVariant.set(".*")
 //}
 
-// ------------- Android ASM Logging Level ------------
-//androidAsmLoggingLevel {
-//    enabled.set(true)
-//    minLogLevel.set(it.sephiroth.android.library.asm.core.AndroidLogLevel.INFO)
-//    includeLibs.set(true)
-//}
-
-//androidDebugLogging {
-//    minLogLevel.set(6)
-//}
 
 android {
     compileSdk = Config.Android.compileSdk

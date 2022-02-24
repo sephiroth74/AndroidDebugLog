@@ -32,10 +32,9 @@ pluginBundle {
     tags = listOf("android", "compile-time", "logging")
 }
 
-
-configure<GradlePluginDevelopmentExtension> {
+gradlePlugin {
     plugins {
-        create("androidAsmLoggingLevel") {
+        create("loggingLevelPlugin") {
             id = "it.sephiroth.android.library.asm.asm-logging-level"
             implementationClass = "it.sephiroth.android.library.asm.logginglevel.LoggingLevelPlugin"
 
@@ -44,6 +43,18 @@ configure<GradlePluginDevelopmentExtension> {
         }
     }
 }
+//
+//configure<GradlePluginDevelopmentExtension> {
+//    plugins {
+//        create("androidASM") {
+//            id = "it.sephiroth.android.library.asm.asm-logging-level"
+//            implementationClass = "it.sephiroth.android.library.asm.logginglevel.LoggingLevelPlugin"
+//
+//            displayName = "Log level adjustment plugin for AndroidASM"
+//            description = "Disable some logging at compile time by changing the minimum log level allowed"
+//        }
+//    }
+//}
 
 
 dependencies {

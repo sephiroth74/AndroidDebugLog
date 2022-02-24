@@ -5,6 +5,7 @@ buildscript {
         google()
         mavenCentral()
         mavenLocal()
+        maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://plugins.gradle.org/m2/") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
         maven { url = uri("https://repo1.maven.org/maven2") }
@@ -26,18 +27,8 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
+        maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
         maven { url = uri("https://repo1.maven.org/maven2") }
-    }
-}
-
-configurations.all {
-    resolutionStrategy {
-        eachDependency {
-            println("group: ${requested.group} : ${requested.name}")
-            if ((requested.group == "org.jetbrains.kotlin") && (!requested.name.startsWith("kotlin-gradle"))) {
-                useVersion(Config.KOTLIN_VERSION)
-            }
-        }
     }
 }

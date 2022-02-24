@@ -31,16 +31,27 @@ pluginBundle {
 }
 
 
-configure<GradlePluginDevelopmentExtension> {
+gradlePlugin {
     plugins {
-        create("androidAsmDebugLog") {
+        create("debugLogPlugin") {
             id = "it.sephiroth.android.library.asm.asm-debuglog"
             implementationClass = "it.sephiroth.android.library.asm.debuglog.DebugLogPlugin"
-            displayName = "Android Debug Log"
+            displayName = "Android Debug Log Plugin"
             description = "A compile time debug library annotation for android projects"
         }
     }
 }
+
+//configure<GradlePluginDevelopmentExtension> {
+//    plugins {
+//        create("debugLogPlugin") {
+//            id = "it.sephiroth.android.library.asm.asm-debuglog"
+//            implementationClass = "it.sephiroth.android.library.asm.debuglog.DebugLogPlugin"
+//            displayName = "Android Debug Log"
+//            description = "A compile time debug library annotation for android projects"
+//        }
+//    }
+//}
 
 
 dependencies {
