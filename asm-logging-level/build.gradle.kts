@@ -1,5 +1,7 @@
 // debuglog-plugin/build.gradle.kts
 
+@file:Suppress("SpellCheckingInspection")
+
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.plugins.signing.Sign
@@ -35,9 +37,10 @@ configure<GradlePluginDevelopmentExtension> {
     plugins {
         create("androidAsmLoggingLevel") {
             id = "it.sephiroth.android.library.asm.asm-logging-level"
-            displayName = "Android Debug Log plugin for Logging"
-            description = "A compile time debug library annotation for android projects"
             implementationClass = "it.sephiroth.android.library.asm.logginglevel.LoggingLevelPlugin"
+
+            displayName = "Log level adjustment plugin for AndroidASM"
+            description = "Disable some logging at compile time by changing the minimum log level allowed"
         }
     }
 }
@@ -59,7 +62,7 @@ dependencies {
     implementation(localGroovy())
 
     // using local
-    implementation(project(":asm-core"))
+    api(project(":asm-core"))
 
     annotationProcessor(Config.Dependencies.Misc.lombok)
 }

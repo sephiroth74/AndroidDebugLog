@@ -24,7 +24,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
     private val classVisitor: Class<Q>
 ) : Transform() {
 
-    protected val tagName: String = "${extensionName}:${this::class.java.simpleName}"
+    protected val tagName: String = extensionName
     protected val logger: Logger = project.logger
 
     private lateinit var pluginExtension: T
@@ -70,9 +70,9 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
 
         // retrieve the registered plugin-extension
         @Suppress("UNCHECKED_CAST")
-        pluginExtension = project.extensions.getByName(extensionName) as T
+        pluginExtension = project.extensions.getByType(AsmCoreBasePluginExtension::class.java).extensions.getByName(extensionName) as T
 
-        logger.lifecycle("[$tagName] $extensionName[$pluginExtension]")
+        logger.lifecycle("[$tagName] $pluginExtension")
 
         val enabled = isPluginEnabled(transformInvocation, pluginExtension)
 
@@ -80,7 +80,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
 
         if (!enabled) {
             logger.lifecycle("[$tagName] transformation not enabled")
-            if (!pluginExtension.enabled.get()) {
+            if (!pluginExtension.enabled) {
                 logger.lifecycle("[$tagName] $extensionName disabled")
             } else {
                 logger.lifecycle("[$tagName] current variant `${transformInvocation.context.variantName}` not enabled")
@@ -346,14 +346,17 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
      * @return
      */
     protected open fun isPluginEnabled(transformInvocation: TransformInvocation, extension: T): Boolean {
-        if (!extension.enabled.get()) return false
+        if (!extension.enabled) return false
         return isPluginEnabledForVariant(extension, transformInvocation.context.variantName)
     }
 
     /**
      * Returns true if the plugin is enabled for the current selected variant
      */
-    abstract fun isPluginEnabledForVariant(extension: T, variantName: String): Boolean
+    protected open fun isPluginEnabledForVariant(extension: T, variantName: String): Boolean {
+        val runVariant = extension.runVariant
+        return variantName.matches(Regex(runVariant))
+    }
 
     class ResultData {
         var transformedFiles: Int = 0

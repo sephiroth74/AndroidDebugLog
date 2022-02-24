@@ -2,7 +2,6 @@ package it.sephiroth.android.library.asm.debuglog.asm.pre
 
 import it.sephiroth.android.library.asm.core.AsmClassVisitor
 import it.sephiroth.android.library.asm.core.AsmClassWriter
-import it.sephiroth.android.library.asm.core.utils.StringUtils
 import it.sephiroth.android.library.asm.core.vo.IPluginData
 import it.sephiroth.android.library.asm.debuglog.Constants
 import it.sephiroth.android.library.asm.debuglog.asm.post.PostClassVisitor
@@ -28,15 +27,12 @@ class PreClassVisitor(
     private var classMethodData: MethodData? = null
 
     val methodsParametersMap = hashMapOf<String, Pair<MethodData, List<MethodParameter>>>()
-
-    init {
-        logger.debug("[$TAG] visiting class $className")
-    }
+    val tagName = "[${Constants.makeTag(this)}]"
 
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
-        logger.debug("{} visitAnnotation({})", className, descriptor)
+        logger.debug("$tagName visitAnnotation($className, $descriptor)")
         val av = super.visitAnnotation(descriptor, visible)
-        if (descriptor == "L${it.sephiroth.android.library.asm.debuglog.Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_CLASS};") {
+        if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_CLASS};") {
             classMethodData = MethodData("", "", simpleClassName).apply { copyFrom(pluginData as DebugLogPluginData) }
             return PreAnnotationVisitor(av, classMethodData!!, null)
         }
@@ -45,13 +41,11 @@ class PreClassVisitor(
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor? {
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions) ?: return null
-
         val methodData = MethodData(name, descriptor, simpleClassName).apply { copyFrom(pluginData as DebugLogPluginData) }
-
         val mv2 = PreMethodVisitor(name, className, access, descriptor, mv, methodData, classMethodData, object : PreMethodVisitor.Callback {
             override fun accept(methodData: MethodData, params: List<MethodParameter>) {
-                logger.info("[$TAG] transformation enabled for {}::{}", className, methodData.name)
-                enabled = true
+                logger.info("$tagName second pass required for $className::${methodData.name}")
+                requireSecondPass = true
                 methodsParametersMap[methodData.uniqueKey] = Pair(methodData, params)
 
             }
@@ -59,8 +53,8 @@ class PreClassVisitor(
         return mv2
     }
 
-    override fun secondPass(classWriter: AsmClassWriter, classReader: ClassReader) {
-        logger.debug("[$TAG] executing secondPass for $className")
+    override fun executeSecondPass(classWriter: AsmClassWriter, classReader: ClassReader) {
+        logger.debug("$tagName executing secondPass on $className")
 
         classReader.accept(
             PostClassVisitor(
@@ -69,10 +63,5 @@ class PreClassVisitor(
                 methodsParametersMap
             ), ClassReader.EXPAND_FRAMES
         )
-    }
-
-
-    companion object {
-        private const val TAG = "[${Constants.DEBUGLOG_EXTENSION}]|PreClassVisitor"
     }
 }

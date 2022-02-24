@@ -1,5 +1,7 @@
 include(":asm-annotations")
 
+include(":asm-common")
+
 include(":asm-core")
 
 include(":asm-debuglog")

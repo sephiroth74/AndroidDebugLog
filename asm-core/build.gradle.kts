@@ -24,13 +24,6 @@ repositories {
 version = Config.VERSION
 group = Config.GROUP
 
-//pluginBundle {
-//    website = "https://github.com/sephiroth74/AndroidDebugLog"
-//    vcsUrl = "https://github.com/sephiroth74/AndroidDebugLog"
-//    tags = listOf("android", "annotations", "logging")
-//}
-
-
 dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
     implementation(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))

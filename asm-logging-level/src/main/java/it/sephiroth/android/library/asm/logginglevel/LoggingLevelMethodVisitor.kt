@@ -10,7 +10,7 @@ import org.objectweb.asm.Opcodes
 import org.slf4j.LoggerFactory
 
 
-@Suppress("SpellCheckingInspection")
+@Suppress("SpellCheckingInspection", "CanBeParameter", "unused")
 class LoggingLevelMethodVisitor(
     private val className: String,
     private val simpleClassName: String,
@@ -19,7 +19,7 @@ class LoggingLevelMethodVisitor(
     methodVisitor: MethodVisitor?,
     private val pluginData: LoggingPluginData,
     private val callback: Callback?
-) : MethodVisitor(Constants.ASM_VERSION, methodVisitor), Opcodes {
+) : MethodVisitor(it.sephiroth.android.library.asm.core.Constants.ASM_VERSION, methodVisitor), Opcodes {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
     private val tagName = "[${Constants.makeTag(this)}] $simpleClassName:$methodName ->"
@@ -38,12 +38,10 @@ class LoggingLevelMethodVisitor(
                 val newMethod = Constants.NullLogger.IS_LOGGABLE
                 AsmVisitorUtils.visitInt(mv, pluginData.minLogLevel.value)
                 super.visitMethodInsn(newMethod.opcode, Constants.NullLogger.CLASS_NAME, newMethod.methodName, newMethod.descriptor, false)
-
                 logger.lifecycle("$tagName replaced $owner:$name with ${Constants.NullLogger.SIMPLE_CLASS_NAME}:$newMethod")
-
                 handled = true
-                return
             }
+
         } else if (opcode == Opcodes.INVOKESTATIC) {
             // android.util.Log
             if (owner == Constants.AndroidLog.CLASS_NAME) { // method call to Log.*
@@ -54,18 +52,14 @@ class LoggingLevelMethodVisitor(
                     val newMethod = Constants.NullLogger.IS_LOGGABLE_TAG
                     AsmVisitorUtils.visitInt(mv, pluginData.minLogLevel.value)
                     super.visitMethodInsn(newMethod.opcode, Constants.NullLogger.CLASS_NAME, newMethod.methodName, newMethod.descriptor, false)
-
                     logger.lifecycle("$tagName replaced $owner:$name with ${Constants.NullLogger.SIMPLE_CLASS_NAME}:$newMethod")
-
                     handled = true
 
                 } else if (Constants.AndroidLogMethods.isIndirectMethod(name, descriptor)) { // direct call to Log.v, Log.e, Log.w, etc..
                     // Replace Log.w, Log.v, etc calls with NullLogger.w, NullLogger.v,e tc
                     if (shouldAndroidLogMethodBeReplaced(name, descriptor, pluginData.minLogLevel)) {
                         super.visitMethodInsn(opcode, Constants.NullLogger.CLASS_NAME, name, descriptor, false)
-
                         logger.lifecycle("$tagName replaced $owner:$name with ${Constants.NullLogger.SIMPLE_CLASS_NAME}:$name$descriptor")
-
                         handled = true
                     }
                 } else if (Constants.AndroidLog.PRINTLN.matches(name, descriptor, opcode)) { // direct call to Log.println
@@ -75,7 +69,6 @@ class LoggingLevelMethodVisitor(
                     super.visitMethodInsn(opcode, Constants.NullLogger.CLASS_NAME, newMethod.methodName, newMethod.descriptor, false)
 
                     logger.lifecycle("$tagName replaced $owner:$name with ${Constants.NullLogger.SIMPLE_CLASS_NAME}:${newMethod.methodName}${newMethod.descriptor}")
-
                     handled = true
                 } else {
                     logger.debug("$tagName not handled call to $owner::$name")
@@ -84,7 +77,7 @@ class LoggingLevelMethodVisitor(
         }
 
         if (handled) {
-            logger.debug("[${tagName}] $className:$methodName -> replaced call $owner::$name")
+            logger.debug("$tagName $className:$methodName -> replaced call $owner::$name")
         } else {
             super.visitMethodInsn(opcode, owner, name, descriptor, isInterface)
         }

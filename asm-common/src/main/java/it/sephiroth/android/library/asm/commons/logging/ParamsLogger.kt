@@ -1,6 +1,7 @@
-package it.sephiroth.android.library.asm.annotations.debuglog
+package it.sephiroth.android.library.asm.commons.logging
 
-import it.sephiroth.android.library.asm.annotations.debuglog.DebugLogger.instance
+import it.sephiroth.android.library.asm.annotations.debuglog.DebugArguments
+import it.sephiroth.android.library.asm.commons.logging.DebugLogger.instance
 
 @Suppress("unused")
 class ParamsLogger(

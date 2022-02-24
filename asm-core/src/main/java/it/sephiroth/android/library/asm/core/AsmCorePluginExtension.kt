@@ -4,9 +4,15 @@ import org.gradle.api.provider.Property
 
 @Suppress("LeakingThis")
 abstract class AsmCorePluginExtension {
-    abstract val enabled: Property<Boolean>
 
-    init {
-        enabled.convention(true)
-    }
+    /**
+     * If not enabled the plugin will not perform any transformation
+     */
+    var enabled: Boolean = true
+
+    /**
+     * Enable this plugin for the specified variant(s)
+     */
+    var runVariant: String = ".*"
+
 }

@@ -1,13 +1,15 @@
-package it.sephiroth.android.library.asm.annotations.debuglog
+package it.sephiroth.android.library.asm.commons.logging
 
 import android.util.Log
 
 
 /**
+ * Log nothing, as its name suggests...
+ *
  * @author Alessandro Crugnola on 23.02.22 - 10:33
  */
 @Suppress("UNUSED_PARAMETER", "unused")
-object NullLogger {
+object NoLog {
     @JvmStatic
     fun v(tag: String?, msg: String): Int = 0
 

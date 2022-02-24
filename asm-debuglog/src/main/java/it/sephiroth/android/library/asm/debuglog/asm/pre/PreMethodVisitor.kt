@@ -1,5 +1,6 @@
 package it.sephiroth.android.library.asm.debuglog.asm.pre
 
+import it.sephiroth.android.library.asm.debuglog.Constants
 import it.sephiroth.android.library.asm.debuglog.asm.vo.MethodData
 import it.sephiroth.android.library.asm.debuglog.asm.vo.MethodParameter
 import org.gradle.api.logging.Logger
@@ -22,9 +23,10 @@ class PreMethodVisitor(
     private val labels = mutableListOf<Label>()
     private val parameters = mutableListOf<MethodParameter>()
     private var enabled = false
+    private val tagName = "[${Constants.makeTag(this)}]"
 
     init {
-        logger.debug("[$TAG] visiting method $className::$methodName")
+        logger.debug("$tagName visiting method $className::$methodName")
 
         classMethodData?.let {
             methodData.copyFrom(it)
@@ -33,13 +35,13 @@ class PreMethodVisitor(
     }
 
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
-        logger.debug("[$TAG] ${className}:$methodName visitAnnotation $descriptor")
+        logger.debug("$tagName ${className}:$methodName visitAnnotation $descriptor")
         val av = super.visitAnnotation(descriptor, visible)
-        if (descriptor == "L${it.sephiroth.android.library.asm.debuglog.Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG};") {
+        if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG};") {
             val av2 = PreAnnotationVisitor(av, methodData, object : PreAnnotationVisitor.Callback {
                 override fun accept(methodData: MethodData) {
                     enabled = methodData.enabled
-                    logger.debug("[$TAG] ${className}:${methodName} now is enabled = $enabled (${methodData.enabled})")
+                    logger.debug("$tagName ${className}:${methodName} now is enabled = $enabled (${methodData.enabled})")
                 }
             })
             return av2
@@ -51,7 +53,7 @@ class PreMethodVisitor(
         if (enabled && "this" != name && start == labels.first()) {
             val type = Type.getType(descriptor)
             if (type.sort == Type.OBJECT || type.sort == Type.ARRAY) {
-                parameters.add(MethodParameter(name, "L${it.sephiroth.android.library.asm.debuglog.Constants.JavaTypes.TYPE_OBJECT};", index))
+                parameters.add(MethodParameter(name, "L${Constants.JavaTypes.TYPE_OBJECT};", index))
             } else {
                 parameters.add(MethodParameter(name, descriptor, index))
             }
@@ -69,10 +71,6 @@ class PreMethodVisitor(
         if (enabled) {
             callback?.accept(methodData, parameters)
         }
-    }
-
-    companion object {
-        private const val TAG = "${it.sephiroth.android.library.asm.debuglog.DebugLogPlugin.TAG}:PreMethodVisitor"
     }
 
     interface Callback {

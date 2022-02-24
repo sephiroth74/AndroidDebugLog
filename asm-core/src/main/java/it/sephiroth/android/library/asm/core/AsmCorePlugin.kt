@@ -4,9 +4,11 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.LibraryPlugin
 import it.sephiroth.android.library.asm.core.vo.IPluginData
+import org.gradle.api.Action
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.PluginCollection
+import org.gradle.api.provider.Property
 
 abstract class AsmCorePlugin<T, R, Q>(
     protected val extensionName: String,
@@ -14,24 +16,31 @@ abstract class AsmCorePlugin<T, R, Q>(
 ) : Plugin<Project> where T : AsmCorePluginExtension, R: IPluginData, Q: AsmClassVisitor {
 
     override fun apply(project: Project) {
-        val log = project.logger
+        val logger = project.logger
         val hasApp: PluginCollection<AppPlugin> = project.plugins.withType(AppPlugin::class.java)
         val hasLib: PluginCollection<LibraryPlugin> = project.plugins.withType(LibraryPlugin::class.java)
 
-        log.debug("project: ${project.name} hasApp: $hasApp, hasLib: $hasLib")
+        logger.debug("project: ${project.name} hasApp: $hasApp, hasLib: $hasLib")
 
         if (hasApp.isEmpty() && hasLib.isEmpty()) {
             throw IllegalStateException("'android-application' or 'android-library' plugin required.")
         }
 
         // create the extension at project level
-        project.extensions.create(extensionName, extensionClass)
+        val base = if(project.extensions.findByName(Constants.BASE_EXTENSION_NAME) == null) {
+            project.extensions.create(Constants.BASE_EXTENSION_NAME, AsmCoreBasePluginExtension::class.java)
+        } else {
+            project.extensions.getByType(AsmCoreBasePluginExtension::class.java)
+        }
+
+        logger.lifecycle("Registering ${Constants.BASE_EXTENSION_NAME}.$extensionName")
+        base.extensions.create(extensionName, extensionClass)
 
         // register the plugin
         val appExtension = project.extensions.getByType(AppExtension::class.java)
         appExtension.registerTransform(getTransformer(project))
 
-        log.lifecycle("Registered `${extensionName}` extension for ${extensionClass.name}")
+        logger.lifecycle("Registered `${extensionName}` extension for ${extensionClass.simpleName}")
     }
 
     abstract fun getTransformer(project: Project): AsmTransformer<T, R, Q>

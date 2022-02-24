@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 import org.gradle.api.JavaVersion
 
 
@@ -13,7 +15,7 @@ object Config {
     const val KOTLIN_VERSION = "1.5.31"
 
     // this library version
-    const val VERSION = "0.0.5-rc1-SNAPSHOT"
+    const val VERSION = "0.1.0-rc1-SNAPSHOT"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
@@ -55,35 +57,39 @@ object Config {
     }
 
     object Dependencies {
+        // @formatter:off
 
         object Misc {
             const val commonsIo = "commons-io:commons-io:2.6"
-            const val guava = "com.google.guava:guava:31.0.1-jre"
-            const val lombok = "org.projectlombok:lombok:1.18.12"
+            const val guava     = "com.google.guava:guava:31.0.1-jre"
+            const val lombok    = "org.projectlombok:lombok:1.18.12"
         }
 
         object JetBrains {
             const val kolinGradlePlugin = "gradle-plugin:$KOTLIN_VERSION"
-            const val stdLib = "stdlib-jdk8:$KOTLIN_VERSION"
+            const val stdLib            = "stdlib-jdk8:$KOTLIN_VERSION"
         }
 
         object Android {
-            const val buildGradle = "com.android.tools.build:gradle:7.0.3"
-            const val buildGradleApi = "com.android.tools.build:gradle-api:7.0.3"
-            const val androidCoreKtx = "androidx.core:core-ktx:1.7.0"
+            const val buildGradle       = "com.android.tools.build:gradle:7.1.1"
+            const val buildGradleApi    = "com.android.tools.build:gradle-api:7.1.1"
+            const val androidCoreKtx    = "androidx.core:core-ktx:1.7.0"
         }
 
         object Asm {
-            const val asm = "org.ow2.asm:asm:${Config.ASM_VERSION}"
-            const val asmUtil = "org.ow2.asm:asm-util:${Config.ASM_VERSION}"
-            const val asmCommon = "org.ow2.asm:asm-commons:${Config.ASM_VERSION}"
+            const val asm       = "org.ow2.asm:asm:$ASM_VERSION"
+            const val asmUtil   = "org.ow2.asm:asm-util:$ASM_VERSION"
+            const val asmCommon = "org.ow2.asm:asm-commons:$ASM_VERSION"
         }
 
-        object AndroidDebugLog {
-            const val core = "$GROUP:asm-core:$VERSION"
-            const val debugLog = "$GROUP:asm-debuglog:$VERSION"
-            const val logging = "$GROUP:asm-logging:$VERSION"
+        object AndroidAsm {
+            const val annotations   = "$GROUP:asm-annotations:$VERSION"
+            const val common        = "$GROUP:asm-common:$VERSION"
+            const val core          = "$GROUP:asm-core:$VERSION"
+            const val debugLog      = "$GROUP:asm-debuglog:$VERSION"
+            const val logging       = "$GROUP:asm-logging:$VERSION"
         }
+        // @formatter:on
     }
 
 }

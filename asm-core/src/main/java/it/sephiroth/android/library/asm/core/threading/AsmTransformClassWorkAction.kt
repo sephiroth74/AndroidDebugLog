@@ -72,10 +72,10 @@ abstract class AsmTransformClassWorkAction : WorkAction<AsmTransformClassWorkAct
                 //3. Call back the content read by ClassReader to ClassVisitor interface
                 classReader.accept(preClassVisitor, ClassReader.EXPAND_FRAMES)
 
-                if (preClassVisitor.enabled) {
+                if (preClassVisitor.requireSecondPass) {
                     logger.debug("[$tagName] Proceed with second pass")
                     classWriter = AsmClassWriter(classReader.className, classReader.superName, ClassWriter.COMPUTE_FRAMES, classLoader)
-                    preClassVisitor.secondPass(classWriter, classReader)
+                    preClassVisitor.executeSecondPass(classWriter, classReader)
                 }
 
                 //4. Get the complete byte stream through toByteArray method of classWriter object

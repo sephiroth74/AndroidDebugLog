@@ -1,7 +1,8 @@
-package it.sephiroth.android.library.asm.annotations.debuglog
+package it.sephiroth.android.library.asm.commons.logging
 
-import it.sephiroth.android.library.asm.annotations.debuglog.ParamsLogger.Companion.arrayToHashCode
-import it.sephiroth.android.library.asm.annotations.debuglog.ParamsLogger.Companion.objectToHashCode
+import it.sephiroth.android.library.asm.annotations.debuglog.DebugArguments
+import it.sephiroth.android.library.asm.commons.logging.ParamsLogger.Companion.arrayToHashCode
+import it.sephiroth.android.library.asm.commons.logging.ParamsLogger.Companion.objectToHashCode
 
 @Suppress("unused", "UNUSED_PARAMETER")
 object MethodResultLogger {

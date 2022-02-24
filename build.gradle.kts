@@ -15,7 +15,6 @@ buildscript {
         classpath(Config.Dependencies.Android.buildGradle)
         classpath(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))
 
-        classpath("it.sephiroth.android.library.asm:asm-core:${Config.VERSION}")
         classpath("it.sephiroth.android.library.asm:asm-debuglog:${Config.VERSION}")
         classpath("it.sephiroth.android.library.asm:asm-logging-level:${Config.VERSION}")
     }
@@ -29,5 +28,16 @@ allprojects {
         mavenLocal()
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
         maven { url = uri("https://repo1.maven.org/maven2") }
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            println("group: ${requested.group} : ${requested.name}")
+            if ((requested.group == "org.jetbrains.kotlin") && (!requested.name.startsWith("kotlin-gradle"))) {
+                useVersion(Config.KOTLIN_VERSION)
+            }
+        }
     }
 }

@@ -10,6 +10,8 @@ package it.sephiroth.android.library.asm.core
 object Constants {
     const val ASM_VERSION = BuildConfig.ASM_VERSION
 
+    const val BASE_EXTENSION_NAME = "androidASM"
+
     object JavaTypes {
         const val TYPE_OBJECT = "java/lang/Object"
     }

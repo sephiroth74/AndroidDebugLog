@@ -1,15 +1,16 @@
 package it.sephiroth.android.app.debuglog_example
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import it.sephiroth.android.library.asm.annotations.debuglog.DebugLogClass
-import it.sephiroth.android.library.asm.annotations.debuglog.NullLogger
+import it.sephiroth.android.library.asm.commons.logging.NoLog
 import timber.log.Timber
-import java.io.IOException
 
 @DebugLogClass
 class MainActivity : AppCompatActivity() {
+    @SuppressLint("LogNotTimber")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        NullLogger.println(Log.VERBOSE, "a", "b", Log.DEBUG)
+        NoLog.println(Log.VERBOSE, "a", "b", Log.DEBUG)
 
         Log.v("MainActivity", "onCreate(VERBOSE)")
         Log.v("MainActivity", "onCreate(VERBOSE)")
@@ -44,16 +45,15 @@ class MainActivity : AppCompatActivity() {
         Timber.d("onResume")
         TestClass().testAll(this)
         AnotherTestClass().testAll(this)
+        testPrintLn()
     }
 
-    fun testPrintLn(): Int {
-//        Log.println(getLogLevel(), TAG, "using println(" + System.currentTimeMillis() + ")")
+    private fun testPrintLn(): Int {
         Log.println(Log.VERBOSE, TAG, "using println(" + System.currentTimeMillis() + ")")
         Log.println(Log.DEBUG, "MainActivity_DEBUG", "using println( " + 2 + ")")
         Log.println(Log.INFO, "MainActivity_INFO", "using println()")
         Log.println(Log.WARN, "MainActivity_WARN", "using println()")
         Log.println(Log.ERROR, "MainActivity_ERROR", "using println()")
-//        Log.println(Log.ASSERT, "MainActivity_ASSERT", "using println()")
         return 0
     }
 

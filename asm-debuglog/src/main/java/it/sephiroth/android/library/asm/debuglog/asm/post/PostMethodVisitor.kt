@@ -11,6 +11,7 @@ import org.objectweb.asm.Type
 import org.objectweb.asm.commons.LocalVariablesSorter
 import org.slf4j.LoggerFactory
 
+@Suppress("SpellCheckingInspection")
 class PostMethodVisitor(
     private val className: String,
     private val parameters: List<MethodParameter>,
@@ -21,7 +22,7 @@ class PostMethodVisitor(
 ) : LocalVariablesSorter(Constants.ASM_VERSION, access, descriptor, methodVisitor), Opcodes {
 
     private val logger = LoggerFactory.getLogger(PostMethodVisitor::class.java) as Logger
-    private val tagName: String = it.sephiroth.android.library.asm.debuglog.Constants.makeTag(this)
+    private val tagName: String = "[${it.sephiroth.android.library.asm.debuglog.Constants.makeTag(this)}]"
     private var timingStartVarIndex: Int? = null
 
     override fun visitCode() {
@@ -40,10 +41,10 @@ class PostMethodVisitor(
      * Create the needed code injection in order to add the "MethodResultLogger" invocation
      */
     private fun printMethodEnd(opcode: Int) {
-        logger.lifecycle("[$tagName] ($className:${methodData.name}) Creating output logger injection")
+        logger.lifecycle("$tagName ($className:${methodData.name}) Creating output logger injection")
 
         if (null == timingStartVarIndex) {
-            logger.warn("[$tagName] timingStartVarIndex should not be null here")
+            logger.warn("$tagName timingStartVarIndex should not be null here")
             return
         }
 
@@ -67,7 +68,7 @@ class PostMethodVisitor(
             mv.visitVarInsn(storeOpcocde, resultTempValIndex)
         }
 
-        logger.debug("[$tagName] $className:${methodData.name} opcode=$opcode, returnType=$returnType, returnDesc=$returnDesc")
+        logger.debug("$tagName $className:${methodData.name} opcode=$opcode, returnType=$returnType, returnDesc=$returnDesc")
 
         // Timing: parameter1 parameter2
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false)
@@ -107,7 +108,7 @@ class PostMethodVisitor(
      * Create the needed code injection in order to add the "ParamsLogger" invocation
      */
     private fun printMethodStart() {
-        logger.lifecycle("[$tagName] ($className:${methodData.name}) Creating input logger injection")
+        logger.lifecycle("$tagName ($className:${methodData.name}) Creating input logger injection")
         // val lineNumber: Int = methodData.lineNumber?.minus(1) ?: 0
         mv.visitTypeInsn(Opcodes.NEW, it.sephiroth.android.library.asm.debuglog.Constants.JavaTypes.TYPE_PARAMS_LOGGER)
         mv.visitInsn(Opcodes.DUP)

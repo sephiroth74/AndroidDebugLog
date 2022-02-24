@@ -6,7 +6,7 @@ import org.gradle.api.Project
 
 
 class LoggingLevelPlugin : AsmCorePlugin<LoggingLevelPluginExtension, LoggingPluginData, LoggingLevelClassVisitor>(
-    Constants.DEBUGLOG_EXTENSION,
+    BuildConfig.EXTENSION_NAME,
     LoggingLevelPluginExtension::class.java
 ) {
 

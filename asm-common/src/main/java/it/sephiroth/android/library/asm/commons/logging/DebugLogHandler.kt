@@ -1,4 +1,4 @@
-package it.sephiroth.android.library.asm.annotations.debuglog
+package it.sephiroth.android.library.asm.commons.logging
 
 open class DebugLogHandler {
 

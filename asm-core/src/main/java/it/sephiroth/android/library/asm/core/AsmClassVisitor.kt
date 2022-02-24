@@ -23,8 +23,10 @@ abstract class AsmClassVisitor(
 
     protected val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
 
-    var enabled = false
+    // set to true to allow the parent class visitor to call "secondPass" after the
+    // first pass is done
+    var requireSecondPass = false
         protected set
 
-    abstract fun secondPass(classWriter: AsmClassWriter, classReader: ClassReader)
+    abstract fun executeSecondPass(classWriter: AsmClassWriter, classReader: ClassReader)
 }

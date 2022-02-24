@@ -10,13 +10,8 @@ import org.gradle.api.Project
 @Suppress("DEPRECATION")
 class DebugLogTransformer(project: Project, extensionName: String) : AsmTransformer<DebugLogPluginExtension, DebugLogPluginData, PreClassVisitor>(project, extensionName, PreClassVisitor::class.java) {
 
-    override fun isPluginEnabledForVariant(extension: DebugLogPluginExtension, variantName: String): Boolean {
-        val runVariant = extension.runVariant.get()
-        return variantName.matches(Regex(runVariant))
-    }
-
     override fun generatePluginData(pluginExtension: DebugLogPluginExtension): DebugLogPluginData {
-        return DebugLogPluginData(pluginExtension.logLevel.get(), pluginExtension.debugResult.get(), pluginExtension.debugArguments.get())
+        return DebugLogPluginData(pluginExtension.logLevel, pluginExtension.debugResult, pluginExtension.debugArguments)
     }
 
     override fun processJars(pluginExtension: DebugLogPluginExtension): Boolean {

@@ -137,9 +137,9 @@ abstract class AsmTransformJarWorkAction : WorkAction<TransformJarParams> {
         val classVisitor = getClassVisitor(classWriter, className, superName, pluginData)
         classReader.accept(classVisitor, ClassReader.EXPAND_FRAMES)
 
-        if (classVisitor.enabled) {
+        if (classVisitor.requireSecondPass) {
             classWriter = AsmClassWriter(className, superName, ClassWriter.COMPUTE_FRAMES, classLoader)
-            classVisitor.secondPass(classWriter, classReader)
+            classVisitor.executeSecondPass(classWriter, classReader)
         }
 
         return classWriter.toByteArray()

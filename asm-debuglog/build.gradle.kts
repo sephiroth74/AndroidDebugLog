@@ -35,9 +35,9 @@ configure<GradlePluginDevelopmentExtension> {
     plugins {
         create("androidAsmDebugLog") {
             id = "it.sephiroth.android.library.asm.asm-debuglog"
+            implementationClass = "it.sephiroth.android.library.asm.debuglog.DebugLogPlugin"
             displayName = "Android Debug Log"
             description = "A compile time debug library annotation for android projects"
-            implementationClass = "it.sephiroth.android.library.asm.debuglog.DebugLogPlugin"
         }
     }
 }
@@ -58,7 +58,7 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
 
-    implementation(project(":asm-core"))
+    api(project(":asm-core"))
 
     annotationProcessor(Config.Dependencies.Misc.lombok)
 }

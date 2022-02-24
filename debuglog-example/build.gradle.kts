@@ -1,3 +1,7 @@
+@file:Suppress("SpellCheckingInspection")
+
+import it.sephiroth.android.library.asm.logginglevel.LoggingLevelPluginExtension
+
 // debuglog-example/build.gradle.kts
 
 //import it.sephiroth.android.library.debuglog.DebugArguments
@@ -22,9 +26,30 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
 
-    // when using remote repo
+    // include asm-debuglog plugin
     id("it.sephiroth.android.library.asm.asm-debuglog")
+
+    // include ams-logging-level plugin
     id("it.sephiroth.android.library.asm.asm-logging-level")
+}
+
+/**
+ * Main androidASM container
+ * It will contain all the included plugins specific options
+ */
+androidASM {
+
+    debugLog {
+        runVariant = ".*debug"
+        debugResult = true
+        debugArguments = it.sephiroth.android.library.asm.debuglog.DebugArguments.Full
+        logLevel = it.sephiroth.android.library.asm.core.AndroidLogLevel.DEBUG
+    }
+
+    loggingLevel {
+        minLogLevel = it.sephiroth.android.library.asm.core.AndroidLogLevel.ERROR
+        includeLibs = true
+    }
 }
 
 
@@ -40,19 +65,20 @@ plugins {
 //}
 
 // ---------- when using remote repo -----------------
-androidAsmDebugLog {
-    enabled.set(true)
-    logLevel.set(it.sephiroth.android.library.asm.core.AndroidLogLevel.VERBOSE)
-    debugResult.set(true)
-    debugArguments.set(it.sephiroth.android.library.asm.debuglog.DebugArguments.Full)
-    runVariant.set(".*")
-}
+//androidAsmDebugLog {
+//    enabled.set(true)
+//    logLevel.set(it.sephiroth.android.library.asm.core.AndroidLogLevel.VERBOSE)
+//    debugResult.set(true)
+//    debugArguments.set(it.sephiroth.android.library.asm.debuglog.DebugArguments.Full)
+//    runVariant.set(".*")
+//}
 
-androidAsmLoggingLevel {
-    enabled.set(true)
-    minLogLevel.set(it.sephiroth.android.library.asm.core.AndroidLogLevel.INFO)
-    includeLibs.set(true)
-}
+// ------------- Android ASM Logging Level ------------
+//androidAsmLoggingLevel {
+//    enabled.set(true)
+//    minLogLevel.set(it.sephiroth.android.library.asm.core.AndroidLogLevel.INFO)
+//    includeLibs.set(true)
+//}
 
 //androidDebugLogging {
 //    minLogLevel.set(6)
@@ -90,7 +116,8 @@ android {
 dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 
-    implementation("it.sephiroth.android.library.asm:asm-annotations:${Config.VERSION}")
+    // include asm-common lib
+    implementation(Config.Dependencies.AndroidAsm.common)
 
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")

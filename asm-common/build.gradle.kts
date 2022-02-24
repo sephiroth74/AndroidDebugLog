@@ -2,6 +2,9 @@
 
 @file:Suppress("LocalVariableName")
 
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.plugins.signing.Sign
+
 plugins {
     id("com.android.library")
     id("maven-publish")
@@ -34,6 +37,8 @@ android {
 dependencies {
     implementation(Config.Dependencies.Android.androidCoreKtx)
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
+
+    api(project(":asm-annotations"))
 }
 
 
@@ -115,5 +120,4 @@ afterEvaluate {
         // empty
     }
 }
-
 

@@ -29,7 +29,7 @@ class LoggingLevelClassVisitor(
 
         val mv2 = LoggingLevelMethodVisitor(className, simpleClassName, name, descriptor, mv, data, object : LoggingLevelMethodVisitor.Callback {
             override fun accept() {
-                enabled = true
+                requireSecondPass = true
             }
         })
         return mv2
@@ -38,7 +38,7 @@ class LoggingLevelClassVisitor(
 
     }
 
-    override fun secondPass(classWriter: AsmClassWriter, classReader: ClassReader) {
+    override fun executeSecondPass(classWriter: AsmClassWriter, classReader: ClassReader) {
         // do nothing
     }
 
