@@ -7,14 +7,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-import it.sephiroth.android.library.asm.commons.logging.SimpleLog;
+import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLogClass;
+import it.sephiroth.android.library.asm.runtime.logging.Trunk;
+import timber.log.Timber;
 
 /**
  * AndroidDebugLog
  *
  * @author Alessandro Crugnola on 19.11.21 - 18:14
  */
-//@DebugLogClass(debugResult = false, logLevel = Log.INFO)
+@DebugLogClass(debugResult = false, logLevel = Log.INFO)
 class AnotherTestClass {
     public void execute(Runnable action) {
         action.run();
@@ -28,18 +30,20 @@ class AnotherTestClass {
     }
 
     public int testLog1(String message) {
-//        SimpleLog.v(message);
+        Trunk.v(message);
 //        SimpleLog.v(new IOException("test io exception"), message);
 //        SimpleLog.v(new RuntimeException("runtime exception"));
 
-        SimpleLog.wtf(message);
-        SimpleLog.wtf(new IOException("test io exception"), message);
-        SimpleLog.wtf(new RuntimeException("warning exception"));
+        Timber.v("[timber] $message");
+        Timber.v(new IOException("test io exception"), "[timber] $message with exception");
+        Timber.v(new RuntimeException("[timber] warning exception"));
+
 
         return 0;
     }
 
     public int testLog2(String message, Object... args) {
+        Timber.v("[timber] " + message, args);
 //        SimpleLog.v(message, args);
 //        SimpleLog.v(new RuntimeException("testing runtime exception"), message, args);
 //        Timber.v(message, args);

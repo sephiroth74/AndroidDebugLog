@@ -22,13 +22,13 @@ plugins {
     id("kotlin-android")
 
     // include asm-debuglog plugin
-//    id("it.sephiroth.android.library.asm.asm-debuglog")
-
-    // include ams-logging-level plugin
-//    id("it.sephiroth.android.library.asm.asm-logging-level")
+    id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
 
     // include ams-logging plugin
-    id("it.sephiroth.android.library.asm.asm-logging")
+    id("it.sephiroth.android.library.asm.asm-logging-plugin")
+
+    // include ams-logging-level plugin (should be the last plugin inside the plugins block)
+    id("it.sephiroth.android.library.asm.asm-logging-level-plugin")
 }
 
 
@@ -38,21 +38,26 @@ plugins {
  */
 androidASM {
     logging {
-        enabled = true
+        enabled = false
+        runVariant = ".*debug"
+        replaceTimber = false
     }
 
-//
-//    debugLog {
-//        runVariant = ".*debug"
-//        debugResult = true
-//        debugArguments = it.sephiroth.android.library.asm.debuglog.DebugArguments.Full
-//        logLevel = it.sephiroth.android.library.asm.core.AndroidLogLevel.DEBUG
-//    }
-//
-//    loggingLevel {
-//        minLogLevel = it.sephiroth.android.library.asm.core.AndroidLogLevel.ERROR
-//        includeLibs = true
-//    }
+
+    debugLog {
+        enabled = false
+        runVariant = ".*debug"
+        debugResult = true
+        debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
+        logLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
+    }
+
+    loggingLevel {
+        enabled = false
+        runVariant = ".*debug"
+        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.ERROR
+        includeLibs = true
+    }
 }
 
 
@@ -90,9 +95,10 @@ android {
 dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 
-    // include asm-common lib
-    implementation(Config.Dependencies.AndroidAsm.common)
-    implementation(Config.Dependencies.AndroidAsm.annotations)
+    // include asm runtime libs
+    implementation(Config.Dependencies.AndroidAsm.debuglogRuntime)
+    implementation(Config.Dependencies.AndroidAsm.loggingRuntime)
+    implementation(Config.Dependencies.AndroidAsm.loggingLevelRuntime)
 
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")

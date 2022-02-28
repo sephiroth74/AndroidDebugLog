@@ -83,12 +83,16 @@ object Config {
         }
 
         object AndroidAsm {
-            const val annotations   = "$GROUP:asm-annotations:$VERSION"
-            const val common        = "$GROUP:asm-common:$VERSION"
-            const val core          = "$GROUP:asm-core:$VERSION"
-            const val debugLog      = "$GROUP:asm-debuglog:$VERSION"
-            const val logging       = "$GROUP:asm-logging:$VERSION"
+            const val debuglogRuntime     = "$GROUP:asm-debuglog-runtime:$VERSION"
+            const val loggingRuntime      = "$GROUP:asm-logging-runtime:$VERSION"
+            const val loggingLevelRuntime = "$GROUP:asm-logging-level-runtime:$VERSION"
+
+            const val corePlugin          = "$GROUP:asm-core-plugin:$VERSION"
+            const val debugLogPlugin      = "$GROUP:asm-debuglog-plugin:$VERSION"
+            const val loggingPlugin       = "$GROUP:asm-logging-plugin:$VERSION"
+            const val loggingLevelPlugin  = "$GROUP:asm-logging-level-plugin:$VERSION"
         }
+
         // @formatter:on
     }
 

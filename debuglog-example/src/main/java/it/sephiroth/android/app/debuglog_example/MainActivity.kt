@@ -4,41 +4,26 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLog
+import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLogClass
 import timber.log.Timber
-import it.sephiroth.android.library.asm.annotations.debuglog.DebugLogClass
-import it.sephiroth.android.library.asm.commons.logging.NoLog
 
-@DebugLogClass
 @SuppressLint("LogNotTimber")
+@DebugLogClass
 class MainActivity : AppCompatActivity() {
+
     @SuppressLint("LogNotTimber")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val tree = object : Timber.DebugTree() {}
-
-        Timber.plant(tree)
+        Timber.plant(Timber.DebugTree())
 
         setContentView(R.layout.activity_main)
 
-//        NoLog.println(Log.VERBOSE, "a", "b", Log.DEBUG)
-//        Log.v("MainActivity", "onCreate(VERBOSE)")
-//        Log.v("MainActivity", "onCreate(VERBOSE)")
-//        Log.d("MainActivity", "onCreate(DEBUG)")
-//        Log.i("MainActivity", "onCreate(INFO)")
-//        Log.w("MainActivity", "onCreate(WARNING)")
-//        Log.e("MainActivity", "onCreate(ERROR)")
-//        Log.wtf("MainActivity", "onCreate(WTF)")
-//        Timber.wtf("Timber($this)" + System.currentTimeMillis())
-//        Timber.e("Timber($this)")
-//        Timber.w("Timber($this)")
-//        Timber.i("Timber($this)")
-//        Timber.d("Timber($this)")
-//        Timber.v("Timber($this)" + System.currentTimeMillis())
-//
-//        Timber.tag("ciccio-pasticcio").v("test ciccio pasticcio")
+        Timber.tag("ciccio-pasticcio").v("[timber] test ciccio pasticcio")
     }
 
+    @DebugLog
     override fun onResume() {
         super.onResume()
 //        Timber.d("onResume")

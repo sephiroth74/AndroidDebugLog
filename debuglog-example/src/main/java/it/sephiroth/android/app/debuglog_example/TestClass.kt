@@ -2,11 +2,10 @@ package it.sephiroth.android.app.debuglog_example
 
 import android.content.Context
 import android.util.Log
-import it.sephiroth.android.library.asm.annotations.debuglog.DebugArguments
-import it.sephiroth.android.library.asm.annotations.debuglog.DebugLog
-import it.sephiroth.android.app.debuglog_example.BuildConfig
-import it.sephiroth.android.library.asm.annotations.debuglog.DebugLogClass
-import it.sephiroth.android.library.asm.commons.logging.SimpleLog
+import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugArguments
+import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLog
+import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLogClass
+import it.sephiroth.android.library.asm.runtime.logging.Trunk
 import timber.log.Timber
 import java.io.InputStream
 import java.io.StringBufferInputStream
@@ -22,7 +21,14 @@ class TestClass {
     }
 
     fun testLog() {
-        SimpleLog.v("$this = testLog")
+        Trunk.v("$this = testLog")
+        Timber.v("[timber] $this = testLog")
+
+        fun anonymous() {
+            Timber.d("[timber] anonymous: %d", System.currentTimeMillis())
+        }
+
+        anonymous()
     }
 
     fun onTestReturnInt(version: String?): Int {
