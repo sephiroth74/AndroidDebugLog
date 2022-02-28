@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 //        TestClass().testAll(this)
         AnotherTestClass().testAll(this)
         TestClass().testLog()
+        TestLoggingLevel.test()
 //        testPrintLn()
 //        testLog("message")
     }

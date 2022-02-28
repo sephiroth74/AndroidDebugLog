@@ -53,9 +53,9 @@ androidASM {
     }
 
     loggingLevel {
-        enabled = false
+        enabled = true
         runVariant = ".*debug"
-        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.ERROR
+        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.WARN
         includeLibs = true
     }
 }

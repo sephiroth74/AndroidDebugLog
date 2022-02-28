@@ -34,8 +34,8 @@ class AnotherTestClass {
 //        SimpleLog.v(new IOException("test io exception"), message);
 //        SimpleLog.v(new RuntimeException("runtime exception"));
 
-        Timber.v("[timber] $message");
-        Timber.v(new IOException("test io exception"), "[timber] $message with exception");
+        Timber.v("[timber] " + message);
+        Timber.v(new IOException("test io exception"), "[timber] " + message + " with exception");
         Timber.v(new RuntimeException("[timber] warning exception"));
 
 
