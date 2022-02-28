@@ -2,6 +2,7 @@ package it.sephiroth.android.library.asm.logginglevel
 
 import it.sephiroth.android.library.asm.core.AndroidLogLevel
 import it.sephiroth.android.library.asm.core.utils.StringUtils
+import it.sephiroth.android.library.asm.core.vo.ClassMethodVo
 import org.objectweb.asm.Opcodes
 
 @Suppress("SpellCheckingInspection", "unused")
@@ -16,23 +17,23 @@ object Constants {
 
         val SIMPLE_CLASS_NAME = StringUtils.getSimpleClassName(CLASS_NAME)
 
-        val IS_LOGGABLE = MethodVo("isLoggable", "(II)Z", Opcodes.INVOKESTATIC)
+        val IS_LOGGABLE = ClassMethodVo(CLASS_NAME, "isLoggable", "(II)Z", Opcodes.INVOKESTATIC)
 
-        val IS_LOGGABLE_TAG = MethodVo("isLoggable", "(Ljava/lang/String;II)Z", Opcodes.INVOKESTATIC)
-        val PRINTLN_MIN_LEVEL = MethodVo("println", "(ILjava/lang/String;Ljava/lang/String;I)I", Opcodes.INVOKESTATIC)
-        val PRINTLN = MethodVo("println", "(ILjava/lang/String;Ljava/lang/String;)I", Opcodes.INVOKESTATIC)
+        val IS_LOGGABLE_TAG = ClassMethodVo(CLASS_NAME, "isLoggable", "(Ljava/lang/String;II)Z", Opcodes.INVOKESTATIC)
+        val PRINTLN_MIN_LEVEL = ClassMethodVo(CLASS_NAME, "println", "(ILjava/lang/String;Ljava/lang/String;I)I", Opcodes.INVOKESTATIC)
+        val PRINTLN = ClassMethodVo(CLASS_NAME, "println", "(ILjava/lang/String;Ljava/lang/String;)I", Opcodes.INVOKESTATIC)
     }
 
     object TimberTree {
         const val CLASS_NAME = "timber/log/Timber\$Tree"
-        val IS_LOGGABLE = MethodVo("isLoggable", "(I)Z", Opcodes.INVOKEVIRTUAL)
+        val IS_LOGGABLE = ClassMethodVo(CLASS_NAME, "isLoggable", "(I)Z", Opcodes.INVOKEVIRTUAL)
     }
 
 
     object AndroidLog {
         const val CLASS_NAME = "android/util/Log"
-        val IS_LOGGABLE = MethodVo("isLoggable", "(Ljava/lang/String;I)Z", Opcodes.INVOKESTATIC)
-        val PRINTLN = MethodVo("println", "(ILjava/lang/String;Ljava/lang/String;)I", Opcodes.INVOKESTATIC)
+        val IS_LOGGABLE = ClassMethodVo(CLASS_NAME, "isLoggable", "(Ljava/lang/String;I)Z", Opcodes.INVOKESTATIC)
+        val PRINTLN = ClassMethodVo(CLASS_NAME, "println", "(ILjava/lang/String;Ljava/lang/String;)I", Opcodes.INVOKESTATIC)
     }
 
     enum class AndroidLogMethods(
@@ -102,14 +103,4 @@ object Constants {
         }
     }
 
-    data class MethodVo(val methodName: String, val descriptor: String, val opcode: Int) {
-
-        fun matches(methodName: String?, descriptor: String?, opcode: Int): Boolean {
-            return this.methodName == methodName && this.descriptor == descriptor && this.opcode == opcode
-        }
-
-        override fun toString(): String {
-            return "$methodName$descriptor"
-        }
-    }
 }

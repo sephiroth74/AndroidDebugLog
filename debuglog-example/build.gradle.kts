@@ -22,10 +22,13 @@ plugins {
     id("kotlin-android")
 
     // include asm-debuglog plugin
-    id("it.sephiroth.android.library.asm.asm-debuglog")
+//    id("it.sephiroth.android.library.asm.asm-debuglog")
 
     // include ams-logging-level plugin
-    id("it.sephiroth.android.library.asm.asm-logging-level")
+//    id("it.sephiroth.android.library.asm.asm-logging-level")
+
+    // include ams-logging plugin
+    id("it.sephiroth.android.library.asm.asm-logging")
 }
 
 
@@ -34,31 +37,24 @@ plugins {
  * It will contain all the included plugins specific options
  */
 androidASM {
-
-    debugLog {
-        runVariant = ".*debug"
-        debugResult = true
-        debugArguments = it.sephiroth.android.library.asm.debuglog.DebugArguments.Full
-        logLevel = it.sephiroth.android.library.asm.core.AndroidLogLevel.DEBUG
+    logging {
+        enabled = true
     }
 
-    loggingLevel {
-        minLogLevel = it.sephiroth.android.library.asm.core.AndroidLogLevel.ERROR
-        includeLibs = true
-    }
+//
+//    debugLog {
+//        runVariant = ".*debug"
+//        debugResult = true
+//        debugArguments = it.sephiroth.android.library.asm.debuglog.DebugArguments.Full
+//        logLevel = it.sephiroth.android.library.asm.core.AndroidLogLevel.DEBUG
+//    }
+//
+//    loggingLevel {
+//        minLogLevel = it.sephiroth.android.library.asm.core.AndroidLogLevel.ERROR
+//        includeLibs = true
+//    }
 }
 
-
-// ---------  when using local buildSrc --------------
-//apply<it.sephiroth.android.library.debuglog.DebugLogPlugin>()
-//
-//configure<it.sephiroth.android.library.debuglog.DebugLogPluginExtension> {
-//    enabled.set(true)
-//    logLevel.set(it.sephiroth.android.library.debuglog.AndroidLogLevel.DEBUG)
-//    debugResult.set(true)
-//    debugArguments.set(it.sephiroth.android.library.debuglog.DebugArguments.Full)
-//    runVariant.set(".*(debug)")
-//}
 
 
 

@@ -6,6 +6,7 @@ import it.sephiroth.android.library.asm.annotations.debuglog.DebugArguments
 import it.sephiroth.android.library.asm.annotations.debuglog.DebugLog
 import it.sephiroth.android.app.debuglog_example.BuildConfig
 import it.sephiroth.android.library.asm.annotations.debuglog.DebugLogClass
+import it.sephiroth.android.library.asm.commons.logging.SimpleLog
 import timber.log.Timber
 import java.io.InputStream
 import java.io.StringBufferInputStream
@@ -18,6 +19,10 @@ class TestClass {
         val t2 = testVoidNoParams()
         val t3 = testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
         val t4 = testInnerClass()
+    }
+
+    fun testLog() {
+        SimpleLog.v("$this = testLog")
     }
 
     fun onTestReturnInt(version: String?): Int {

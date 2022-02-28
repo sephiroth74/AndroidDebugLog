@@ -21,33 +21,32 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        NoLog.println(Log.VERBOSE, "a", "b", Log.DEBUG)
-
-        Log.v("MainActivity", "onCreate(VERBOSE)")
-        Log.v("MainActivity", "onCreate(VERBOSE)")
-        Log.d("MainActivity", "onCreate(DEBUG)")
-        Log.i("MainActivity", "onCreate(INFO)")
-        Log.w("MainActivity", "onCreate(WARNING)")
-        Log.e("MainActivity", "onCreate(ERROR)")
-        Log.wtf("MainActivity", "onCreate(WTF)")
-
-        Timber.wtf("Timber($this)" + System.currentTimeMillis())
-        Timber.e("Timber($this)")
-        Timber.w("Timber($this)")
-        Timber.i("Timber($this)")
-        Timber.d("Timber($this)")
-        Timber.v("Timber($this)" + System.currentTimeMillis())
-
-        Timber.tag("ciccio-pasticcio").v("test ciccio pasticcio")
+//        NoLog.println(Log.VERBOSE, "a", "b", Log.DEBUG)
+//        Log.v("MainActivity", "onCreate(VERBOSE)")
+//        Log.v("MainActivity", "onCreate(VERBOSE)")
+//        Log.d("MainActivity", "onCreate(DEBUG)")
+//        Log.i("MainActivity", "onCreate(INFO)")
+//        Log.w("MainActivity", "onCreate(WARNING)")
+//        Log.e("MainActivity", "onCreate(ERROR)")
+//        Log.wtf("MainActivity", "onCreate(WTF)")
+//        Timber.wtf("Timber($this)" + System.currentTimeMillis())
+//        Timber.e("Timber($this)")
+//        Timber.w("Timber($this)")
+//        Timber.i("Timber($this)")
+//        Timber.d("Timber($this)")
+//        Timber.v("Timber($this)" + System.currentTimeMillis())
+//
+//        Timber.tag("ciccio-pasticcio").v("test ciccio pasticcio")
     }
 
     override fun onResume() {
         super.onResume()
-        Timber.d("onResume")
-        TestClass().testAll(this)
+//        Timber.d("onResume")
+//        TestClass().testAll(this)
         AnotherTestClass().testAll(this)
-        testPrintLn()
-        testLog("message")
+        TestClass().testLog()
+//        testPrintLn()
+//        testLog("message")
     }
 
     private fun testPrintLn(): Int {

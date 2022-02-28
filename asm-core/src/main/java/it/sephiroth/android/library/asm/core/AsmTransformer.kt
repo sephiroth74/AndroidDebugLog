@@ -94,7 +94,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         // log total execution time
         val endTime = System.currentTimeMillis()
         val totalTime = endTime - startTime
-        logger.lifecycle("[$tagName] DebugLog Transformation SUCCESS in ${totalTime}ms")
+        logger.lifecycle("[$tagName] Transformation SUCCESS in ${totalTime}ms")
         logger.lifecycle("[$tagName] Processed ${resultData.transformedFiles} classes")
         logger.lifecycle("[$tagName] Processed ${resultData.transformedJars} jars")
     }
@@ -118,9 +118,12 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         // 3. proceed with the transformation, using the provided context worker queue
         transformInvocation.inputs.forEach { input ->
 
+            // plugin requested to process also third party jars
+            val shouldProcessJars = processJars(getPluginExtension())
+
             // jar inputs
             input.jarInputs.forEach { jarInput ->
-                processJarInput(workQueue, transformInvocation, enabled, jarInput, classPaths)
+                processJarInput(workQueue, transformInvocation, enabled, shouldProcessJars, jarInput, classPaths)
             }
 
             // directory inputs
@@ -147,6 +150,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         workQueue: WorkQueue,
         transformInvocation: TransformInvocation,
         enabled: Boolean,
+        processJarsEnabled: Boolean,
         jarInput: JarInput,
         classPaths: List<URL>
     ) {
@@ -164,7 +168,8 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             when (status) {
                 Status.ADDED,
                 Status.CHANGED ->
-                    if (!enabled) {
+                    if (!enabled || !processJarsEnabled) {
+                        // just copy the file as it is
                         FileUtils.copyFile(jarInput.file, destFile)
                     } else {
                         FileUtils.touch(destFile)
@@ -185,10 +190,11 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
                 cleanDexBuilderFolder(destFile)
             }
 
-            if (enabled) {
+            if (enabled && processJarsEnabled) {
                 FileUtils.touch(destFile)
                 transformJar(workQueue, jarInput.file, destFile, classPaths)
             } else {
+                // just copy the file as it is
                 FileUtils.copyFile(jarInput.file, destFile)
             }
         }
