@@ -10,4 +10,4 @@ include(":asm-logging-level-plugin")
 include(":asm-logging-plugin")
 
 // demo app
-include(":debuglog-example")
+//include(":debuglog-example")

@@ -22,14 +22,14 @@ class AnotherTestClass {
         action.run();
     }
 
-    public void testAll(@NotNull Context context) {
+    public void test(@NotNull Context context) {
         execute(() -> {
             testLog1("test message: " + Log.isLoggable("AnotherTestClass", Log.INFO));
             testLog2("second test: %s, %s", "arg1", "arg2");
         });
     }
 
-    public int testLog1(String message) {
+    private int testLog1(String message) {
         Trunk.v(message);
         Timber.v("[timber] " + message);
         Timber.v(new IOException("test io exception"), "[timber] " + message + " with exception");
@@ -39,7 +39,7 @@ class AnotherTestClass {
         return 0;
     }
 
-    public int testLog2(String message, Object... args) {
+    private int testLog2(String message, Object... args) {
         Timber.v("[timber] " + message, args);
         return 0;
     }

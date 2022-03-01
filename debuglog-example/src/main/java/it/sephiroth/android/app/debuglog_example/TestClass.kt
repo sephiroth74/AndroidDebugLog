@@ -14,11 +14,12 @@ import java.io.StringBufferInputStream
 class TestClass {
 
     fun test(context: Context) {
-        Timber.v("testAll")
+        Timber.v("test")
         onTestReturnInt(BuildConfig.VERSION_NAME)
         testVoidNoParams()
         testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
         testInnerClass()
+        testLog()
     }
 
     private fun testLog() {

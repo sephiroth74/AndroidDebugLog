@@ -25,10 +25,10 @@ plugins {
     id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
 
     // include ams-logging plugin
-//    id("it.sephiroth.android.library.asm.asm-logging-plugin")
+    id("it.sephiroth.android.library.asm.asm-logging-plugin")
 
     // include ams-logging-level plugin (should be the last plugin inside the plugins block)
-//    id("it.sephiroth.android.library.asm.asm-logging-level-plugin")
+    id("it.sephiroth.android.library.asm.asm-logging-level-plugin")
 }
 
 
@@ -37,11 +37,11 @@ plugins {
  * It will contain all the included plugins specific options
  */
 androidASM {
-//    logging {
-//        enabled = true
-//        runVariant = ".*debug"
-//        replaceTimber = true
-//    }
+    logging {
+        enabled = true
+        runVariant = ".*debug"
+        replaceTimber = true
+    }
 
 
     debugLog {
@@ -52,12 +52,12 @@ androidASM {
         logLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.INFO
     }
 
-//    loggingLevel {
-//        enabled = false
-//        runVariant = ".*debug"
-//        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.WARN
-//        includeLibs = true
-//    }
+    loggingLevel {
+        enabled = true
+        runVariant = ".*debug"
+        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
+        includeLibs = true
+    }
 }
 
 

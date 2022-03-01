@@ -25,9 +25,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun runTests() {
         Completable.create { emitter ->
-//            AnotherTestClass().testAll(this)
-//            TestClass().testLog()
-//            TestLoggingLevel.test()
+            AnotherTestClass().test(this)
+            TestClass().test(this)
+            TestLoggingLevel.test()
             TestDebugLog().test()
 
             emitter.onComplete()
