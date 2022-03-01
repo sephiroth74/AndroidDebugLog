@@ -9,7 +9,7 @@ import org.gradle.api.Project
 
 @Suppress("DEPRECATION")
 class DebugLogTransformer(project: Project, extensionName: String) :
-    AsmTransformer<DebugLogPluginExtension, DebugLogPluginData, PreClassVisitor>(project, extensionName, PreClassVisitor::class.java) {
+    AsmTransformer<DebugLogPluginExtension, DebugLogPluginData, PreClassVisitor>(project, extensionName, DebugLogPluginExtension::class.java, PreClassVisitor::class.java) {
 
     override fun generatePluginData(pluginExtension: DebugLogPluginExtension): DebugLogPluginData {
         return DebugLogPluginData(pluginExtension.logLevel, pluginExtension.debugResult, pluginExtension.debugArguments)

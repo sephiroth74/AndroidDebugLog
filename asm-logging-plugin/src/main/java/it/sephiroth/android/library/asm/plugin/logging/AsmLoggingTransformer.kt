@@ -11,6 +11,7 @@ class AsmLoggingTransformer(project: Project, extensionName: String) :
     AsmTransformer<LoggingPluginExtension, LoggingPluginData, LoggingClassVisitor>(
         project,
         extensionName,
+        LoggingPluginExtension::class.java,
         LoggingClassVisitor::class.java
     ) {
 

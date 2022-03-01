@@ -25,10 +25,10 @@ plugins {
     id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
 
     // include ams-logging plugin
-    id("it.sephiroth.android.library.asm.asm-logging-plugin")
+//    id("it.sephiroth.android.library.asm.asm-logging-plugin")
 
     // include ams-logging-level plugin (should be the last plugin inside the plugins block)
-    id("it.sephiroth.android.library.asm.asm-logging-level-plugin")
+//    id("it.sephiroth.android.library.asm.asm-logging-level-plugin")
 }
 
 
@@ -37,27 +37,27 @@ plugins {
  * It will contain all the included plugins specific options
  */
 androidASM {
-    logging {
-        enabled = false
-        runVariant = ".*debug"
-        replaceTimber = false
-    }
+//    logging {
+//        enabled = true
+//        runVariant = ".*debug"
+//        replaceTimber = true
+//    }
 
 
     debugLog {
-        enabled = false
+        enabled = true
         runVariant = ".*debug"
         debugResult = true
         debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
-        logLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
+        logLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.INFO
     }
 
-    loggingLevel {
-        enabled = true
-        runVariant = ".*debug"
-        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.WARN
-        includeLibs = true
-    }
+//    loggingLevel {
+//        enabled = false
+//        runVariant = ".*debug"
+//        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.WARN
+//        includeLibs = true
+//    }
 }
 
 
@@ -103,6 +103,8 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.3")
     implementation("com.jakewharton.timber:timber:5.0.1")
+
+    implementation("io.reactivex.rxjava3:rxjava:3.1.3")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

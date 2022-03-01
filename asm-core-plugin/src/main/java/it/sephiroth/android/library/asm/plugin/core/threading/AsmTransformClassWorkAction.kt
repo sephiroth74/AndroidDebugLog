@@ -21,7 +21,7 @@ import java.net.URLClassLoader
 abstract class AsmTransformClassWorkAction : WorkAction<AsmTransformClassWorkAction.TransformClassParams> {
 
     protected val logger: Logger = LoggerFactory.getLogger(AsmTransformClassWorkAction::class.java) as Logger
-    protected val tagName: String by lazy { "${parameters.getPluginName().get()}:${this::class.java.simpleName}" }
+    protected val tagName: String by lazy { parameters.getPluginName().get() }
 
     override fun execute() {
         val inputFile = parameters.getSrcFile().get().asFile

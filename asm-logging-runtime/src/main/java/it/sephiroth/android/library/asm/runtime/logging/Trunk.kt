@@ -185,7 +185,7 @@ object Trunk {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun isLoggable(tag: String?, priority: Int) = true//android.util.Log.isLoggable(tag, priority)
+    private fun isLoggable(tag: String?, priority: Int) = android.util.Log.isLoggable(tag, priority)
 
     private const val MAX_LOG_LENGTH = 4000
 

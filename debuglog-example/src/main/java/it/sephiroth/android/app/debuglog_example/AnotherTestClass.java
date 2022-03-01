@@ -31,9 +31,6 @@ class AnotherTestClass {
 
     public int testLog1(String message) {
         Trunk.v(message);
-//        SimpleLog.v(new IOException("test io exception"), message);
-//        SimpleLog.v(new RuntimeException("runtime exception"));
-
         Timber.v("[timber] " + message);
         Timber.v(new IOException("test io exception"), "[timber] " + message + " with exception");
         Timber.v(new RuntimeException("[timber] warning exception"));
@@ -44,9 +41,6 @@ class AnotherTestClass {
 
     public int testLog2(String message, Object... args) {
         Timber.v("[timber] " + message, args);
-//        SimpleLog.v(message, args);
-//        SimpleLog.v(new RuntimeException("testing runtime exception"), message, args);
-//        Timber.v(message, args);
         return 0;
     }
 

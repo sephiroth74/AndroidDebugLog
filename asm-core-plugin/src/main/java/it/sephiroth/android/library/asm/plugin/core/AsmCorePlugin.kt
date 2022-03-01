@@ -13,7 +13,7 @@ import org.gradle.api.provider.Property
 abstract class AsmCorePlugin<T, R, Q>(
     protected val extensionName: String,
     protected val extensionClass: Class<T>
-) : Plugin<Project> where T : AsmCorePluginExtension, R: IPluginData, Q: AsmClassVisitor {
+) : Plugin<Project> where T : AsmCorePluginExtension, R : IPluginData, Q : AsmClassVisitor {
 
     override fun apply(project: Project) {
         val logger = project.logger
@@ -27,20 +27,20 @@ abstract class AsmCorePlugin<T, R, Q>(
         }
 
         // create the extension at project level
-        val base = if(project.extensions.findByName(Constants.BASE_EXTENSION_NAME) == null) {
+        val base = if (project.extensions.findByName(Constants.BASE_EXTENSION_NAME) == null) {
             project.extensions.create(Constants.BASE_EXTENSION_NAME, AsmCoreBasePluginExtension::class.java)
         } else {
             project.extensions.getByType(AsmCoreBasePluginExtension::class.java)
         }
 
-        logger.lifecycle("Registering ${Constants.BASE_EXTENSION_NAME}.$extensionName")
+        logger.lifecycle("[${extensionName}] registering ${Constants.BASE_EXTENSION_NAME}.$extensionName")
         base.extensions.create(extensionName, extensionClass)
 
         // register the plugin
         val appExtension = project.extensions.getByType(AppExtension::class.java)
         appExtension.registerTransform(getTransformer(project))
 
-        logger.lifecycle("Registered `${extensionName}` extension for ${extensionClass.simpleName}")
+        logger.debug("Registered `${extensionName}` extension for ${extensionClass.simpleName}")
     }
 
     abstract fun getTransformer(project: Project): AsmTransformer<T, R, Q>

@@ -3,6 +3,7 @@
 package it.sephiroth.android.library.asm.plugin.core
 
 import com.android.build.api.transform.*
+import com.android.build.api.variant.VariantInfo
 import com.android.build.gradle.internal.pipeline.TransformManager
 import it.sephiroth.android.library.asm.plugin.core.threading.AsmTransformClassWorkAction
 import it.sephiroth.android.library.asm.plugin.core.threading.AsmTransformJarWorkAction
@@ -21,30 +22,26 @@ import java.net.URL
 abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : AsmClassVisitor>(
     private val project: Project,
     private val extensionName: String,
+    private val extensionClass: Class<T>,
     private val classVisitor: Class<Q>
 ) : Transform() {
 
     protected val tagName: String = extensionName
     protected val logger: Logger = project.logger
 
-    private lateinit var pluginExtension: T
+    @Suppress("UNCHECKED_CAST")
+    protected val pluginExtension: T = project.extensions.getByType(AsmCoreBasePluginExtension::class.java).extensions.getByType(extensionClass)
 
-    private val pluginScopes: HashSet<QualifiedContent.Scope> = HashSet()
+    private val pluginScopes: HashSet<QualifiedContent.Scope> = hashSetOf(QualifiedContent.Scope.PROJECT, QualifiedContent.Scope.SUB_PROJECTS)
 
     private val resultData = ResultData()
 
     init {
-        pluginScopes.add(QualifiedContent.Scope.PROJECT)
-        pluginScopes.add(QualifiedContent.Scope.SUB_PROJECTS)
-        pluginScopes.add(QualifiedContent.Scope.EXTERNAL_LIBRARIES)
         logger.debug("[$tagName] ${this::class.java.simpleName} added to project $project.name")
     }
 
     abstract fun processJars(pluginExtension: T): Boolean
 
-    private fun getPluginExtension(): T {
-        return pluginExtension
-    }
 
     override fun getName(): String {
         return this::class.java.simpleName
@@ -62,15 +59,21 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         return true
     }
 
+    override fun applyToVariant(variant: VariantInfo): Boolean {
+        val enabledForVariant = isPluginEnabled(variant.fullVariantName, pluginExtension)
+        if (enabledForVariant) {
+            logger.lifecycle("[$tagName] enabled for variant `${variant.fullVariantName}`")
+        } else {
+            logger.debug("[$tagName] disabled for variant `${variant.fullVariantName}`")
+        }
+        return enabledForVariant
+    }
+
     override fun transform(transformInvocation: TransformInvocation) {
         super.transform(transformInvocation)
 
         // save transformation start time
         val startTime = System.currentTimeMillis()
-
-        // retrieve the registered plugin-extension
-        @Suppress("UNCHECKED_CAST")
-        pluginExtension = project.extensions.getByType(AsmCoreBasePluginExtension::class.java).extensions.getByName(extensionName) as T
 
         logger.lifecycle("[$tagName] $pluginExtension")
 
@@ -119,7 +122,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         transformInvocation.inputs.forEach { input ->
 
             // plugin requested to process also third party jars
-            val shouldProcessJars = processJars(getPluginExtension())
+            val shouldProcessJars = processJars(pluginExtension)
 
             // jar inputs
             input.jarInputs.forEach { jarInput ->
@@ -154,7 +157,6 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         jarInput: JarInput,
         classPaths: List<URL>
     ) {
-        logger.debug("[$tagName] processing jat `${jarInput.file.name}`")
 
         val status = jarInput.status
         val destFile = transformInvocation.outputProvider.getContentLocation(
@@ -163,6 +165,8 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             jarInput.scopes,
             Format.JAR
         )
+
+        logger.lifecycle("[$tagName] processing jar `${jarInput.file.name}` -> $destFile")
 
         if (transformInvocation.isIncremental) {
             when (status) {
@@ -293,7 +297,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         destFile: File,
         classPaths: List<URL>
     ) {
-        val pluginData: R = generatePluginData(getPluginExtension())
+        val pluginData: R = generatePluginData(pluginExtension)
 
         workQueue.submit(AsmTransformClassWorkAction::class.java) {
             getSrcFile().set(inputFile)
@@ -309,14 +313,13 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
 
     abstract fun generatePluginData(pluginExtension: T): R
 
-
     protected fun transformJar(
         workQueue: WorkQueue,
         srcJar: File,
         destJar: File,
         classPaths: List<URL>
     ) {
-        val pluginData: R = generatePluginData(getPluginExtension())
+        val pluginData: R = generatePluginData(pluginExtension)
 
         workQueue.submit(AsmTransformJarWorkAction::class.java) {
             getSrcFile().set(srcJar)
@@ -324,7 +327,6 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             getClassPaths().set(classPaths)
             getPluginData().set(pluginData)
             getClassVisitorClassName().set(classVisitor.canonicalName)
-            getProcessJar().set(processJars(getPluginExtension()))
             getPluginName().set(extensionName)
         }
 
@@ -352,8 +354,18 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
      * @return
      */
     protected open fun isPluginEnabled(transformInvocation: TransformInvocation, extension: T): Boolean {
-        if (!extension.enabled) return false
         return isPluginEnabledForVariant(extension, transformInvocation.context.variantName)
+    }
+
+    /**
+     * Returns if the plugin should be executed given the current context and build variant
+     * @param fullVariantName full variant name
+     * @param extension current plugin extension
+     * @return
+     */
+    protected open fun isPluginEnabled(fullVariantName: String, extension: T): Boolean {
+        if (!extension.enabled) return false
+        return isPluginEnabledForVariant(extension, fullVariantName)
     }
 
     /**

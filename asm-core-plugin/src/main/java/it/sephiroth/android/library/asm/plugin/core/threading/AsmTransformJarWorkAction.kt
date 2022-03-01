@@ -31,7 +31,7 @@ import java.util.zip.ZipOutputStream
 @Suppress("MemberVisibilityCanBePrivate")
 abstract class AsmTransformJarWorkAction : WorkAction<TransformJarParams> {
     protected val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
-    protected val tagName: String by lazy { "${parameters.getPluginName().get()}:${this::class.java.simpleName}" }
+    protected val tagName: String by lazy { parameters.getPluginName().get() }
 
     fun getClassVisitor(
         classWriter: AsmClassWriter,
@@ -60,17 +60,15 @@ abstract class AsmTransformJarWorkAction : WorkAction<TransformJarParams> {
         val destFile = parameters.getDstFile().get().asFile
         val pluginData = parameters.getPluginData().get()
         val classLoader = URLClassLoader(parameters.getClassPaths().get().toTypedArray())
-        val processJar = parameters.getProcessJar().get()
 
-        if (processJar) {
-            try {
-                transformSingleFile(pluginData, inputFile, destFile, classLoader)
-            } catch (t: Throwable) {
-                copyFile(inputFile, destFile)
-            }
-        } else {
+        logger.debug("[$tagName] processing $inputFile -> $destFile")
+
+        try {
+            transformSingleFile(pluginData, inputFile, destFile, classLoader)
+        } catch (t: Throwable) {
             copyFile(inputFile, destFile)
         }
+
     }
 
     private fun copyFile(inputFile: File, destFile: File) {
@@ -163,7 +161,6 @@ interface TransformJarParams : WorkParameters {
     fun getDstFile(): RegularFileProperty
     fun getClassPaths(): ListProperty<URL>
     fun getPluginData(): Property<IPluginData>
-    fun getProcessJar(): Property<Boolean>
     fun getClassVisitorClassName(): Property<String>
     fun getPluginName(): Property<String>
 }

@@ -12,15 +12,16 @@ import java.io.StringBufferInputStream
 
 @DebugLogClass(debugArguments = DebugArguments.FULL, debugResult = true, logLevel = Log.WARN)
 class TestClass {
-    fun testAll(context: Context) {
+
+    fun test(context: Context) {
         Timber.v("testAll")
-        val t1 = onTestReturnInt(BuildConfig.VERSION_NAME)
-        val t2 = testVoidNoParams()
-        val t3 = testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
-        val t4 = testInnerClass()
+        onTestReturnInt(BuildConfig.VERSION_NAME)
+        testVoidNoParams()
+        testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
+        testInnerClass()
     }
 
-    fun testLog() {
+    private fun testLog() {
         Trunk.v("$this = testLog")
         Timber.v("[timber] $this = testLog")
 
@@ -31,26 +32,26 @@ class TestClass {
         anonymous()
     }
 
-    fun onTestReturnInt(version: String?): Int {
+    private fun onTestReturnInt(version: String?): Int {
         testReturnNull({})
         return BuildConfig.VERSION_CODE
     }
 
-    fun testVoidNoParams() {
+    private fun testVoidNoParams() {
         if (true) {
             return
         }
     }
 
     @DebugLog(logLevel = Log.ERROR, debugArguments = DebugArguments.NONE, tag = "alessandro")
-    fun testComplexParams(list: List<String?>?, context: Context, input: IntArray): Context {
+    private fun testComplexParams(list: List<String?>?, context: Context, input: IntArray): Context {
         list?.forEach {
             Log.v(this::class.java.simpleName, "item=$it")
         }
         return context
     }
 
-    fun testReturnNull(type: Runnable?): Runnable? {
+    private fun testReturnNull(type: Runnable?): Runnable? {
         val newType = type
         if (newType != null) {
             return Runnable { type.run() }
@@ -58,7 +59,7 @@ class TestClass {
         return null
     }
 
-    fun testInnerClass() {
+    private fun testInnerClass() {
         StaticInnerTestClass().apply {
             try {
                 test01()
@@ -108,7 +109,7 @@ class TestClass {
         }
     }
 
-    inner class InnerTestClass() {
+    inner class InnerTestClass {
 
         @DebugLog
         fun helloInnerTest() {
