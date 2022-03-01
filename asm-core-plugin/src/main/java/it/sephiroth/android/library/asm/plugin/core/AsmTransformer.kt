@@ -32,7 +32,10 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
     @Suppress("UNCHECKED_CAST")
     protected val pluginExtension: T = project.extensions.getByType(AsmCoreBasePluginExtension::class.java).extensions.getByType(extensionClass)
 
-    private val pluginScopes: HashSet<QualifiedContent.Scope> = hashSetOf(QualifiedContent.Scope.PROJECT, QualifiedContent.Scope.SUB_PROJECTS)
+    private val pluginScopes: HashSet<QualifiedContent.Scope> = hashSetOf(
+        QualifiedContent.Scope.PROJECT,
+        QualifiedContent.Scope.SUB_PROJECTS
+    )
 
     private val resultData = ResultData()
 
@@ -64,7 +67,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         if (enabledForVariant) {
             logger.lifecycle("[$tagName] enabled for variant `${variant.fullVariantName}`")
         } else {
-            logger.debug("[$tagName] disabled for variant `${variant.fullVariantName}`")
+            logger.lifecycle("[$tagName] disabled for variant `${variant.fullVariantName}`")
         }
         return enabledForVariant
     }
@@ -166,7 +169,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             Format.JAR
         )
 
-        logger.lifecycle("[$tagName] processing jar `${jarInput.file.name}` -> $destFile")
+        logger.debug("[$tagName] processing jar `${jarInput.file.name}` -> $destFile")
 
         if (transformInvocation.isIncremental) {
             when (status) {
@@ -373,7 +376,9 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
      */
     protected open fun isPluginEnabledForVariant(extension: T, variantName: String): Boolean {
         val runVariant = extension.runVariant
-        return variantName.matches(Regex(runVariant))
+        val pattern = Regex(runVariant, RegexOption.IGNORE_CASE)
+        logger.debug("$runVariant matches $variantName = ${variantName.matches(pattern)}")
+        return variantName.matches(pattern)
     }
 
     class ResultData {

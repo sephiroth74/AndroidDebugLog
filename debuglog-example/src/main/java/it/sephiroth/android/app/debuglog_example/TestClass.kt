@@ -14,7 +14,7 @@ import java.io.StringBufferInputStream
 class TestClass {
 
     fun test(context: Context) {
-        Timber.v("test")
+        Timber.v("[timber] test")
         onTestReturnInt(BuildConfig.VERSION_NAME)
         testVoidNoParams()
         testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
@@ -22,7 +22,11 @@ class TestClass {
         testLog()
     }
 
-    private fun testLog() {
+    fun testLog() {
+        Trunk.wtf("$this = testLog")
+        Trunk.e("$this = testLog")
+        Trunk.i("$this = testLog")
+        Trunk.d("$this = testLog")
         Trunk.v("$this = testLog")
         Timber.v("[timber] $this = testLog")
 
@@ -47,7 +51,7 @@ class TestClass {
     @DebugLog(logLevel = Log.ERROR, debugArguments = DebugArguments.NONE, tag = "alessandro")
     private fun testComplexParams(list: List<String?>?, context: Context, input: IntArray): Context {
         list?.forEach {
-            Log.v(this::class.java.simpleName, "item=$it")
+            Log.v(this::class.java.simpleName, "android.util.Log item=$it")
         }
         return context
     }

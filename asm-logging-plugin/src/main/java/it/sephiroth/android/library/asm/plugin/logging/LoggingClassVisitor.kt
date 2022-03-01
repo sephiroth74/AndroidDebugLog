@@ -24,9 +24,7 @@ class LoggingClassVisitor(
         logger.debug("[$tagName] visitMethod(className=$className, methodName=$name, signature=$signature, exceptions=$exceptions)")
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
         val data = pluginData as LoggingPluginData
-
         return LoggingMethodVisitor(className, simpleClassName, name, descriptor, mv, data)
-
     }
 
     override fun executeSecondPass(classWriter: AsmClassWriter, classReader: ClassReader) {

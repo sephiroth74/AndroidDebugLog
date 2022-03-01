@@ -45,7 +45,7 @@ androidASM {
 
 
     debugLog {
-        enabled = true
+        enabled = false
         runVariant = ".*debug"
         debugResult = true
         debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
@@ -53,7 +53,7 @@ androidASM {
     }
 
     loggingLevel {
-        enabled = true
+        enabled = false
         runVariant = ".*debug"
         minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
         includeLibs = true

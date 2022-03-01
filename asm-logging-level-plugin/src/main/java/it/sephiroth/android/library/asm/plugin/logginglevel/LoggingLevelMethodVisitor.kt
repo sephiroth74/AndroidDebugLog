@@ -4,7 +4,6 @@ import it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel
 import it.sephiroth.android.library.asm.plugin.core.utils.AsmVisitorUtils
 import it.sephiroth.android.library.asm.plugin.logginglevel.vo.LoggingPluginData
 import org.gradle.api.logging.Logger
-import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.slf4j.LoggerFactory
@@ -23,8 +22,6 @@ class LoggingLevelMethodVisitor(
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
     private val tagName = "[${Constants.makeTag(this)}] $simpleClassName:$methodName ->"
-
-    private val labels = mutableListOf<Label>()
     private var enabled = false
 
     override fun visitMethodInsn(opcode: Int, owner: String?, name: String?, descriptor: String?, isInterface: Boolean) {
@@ -85,11 +82,6 @@ class LoggingLevelMethodVisitor(
 
     private fun shouldAndroidLogMethodBeReplaced(name: String?, descriptor: String?, minLevel: AndroidLogLevel): Boolean {
         return Constants.AndroidLogMethods.contains(name, descriptor)?.let { method -> method.level < minLevel } ?: false
-    }
-
-    override fun visitLabel(label: Label) {
-        labels.add(label)
-        super.visitLabel(label)
     }
 
     override fun visitEnd() {

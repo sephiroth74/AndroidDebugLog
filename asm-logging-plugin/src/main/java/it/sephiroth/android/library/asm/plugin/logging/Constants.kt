@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes
 @Suppress("SpellCheckingInspection", "unused")
 object Constants {
 
-    val DEFAULT_REPLACE_TIMBER = false
+    const val DEFAULT_REPLACE_TIMBER = false
 
     @Suppress("UNUSED_PARAMETER")
     fun makeTag(obj: Any): String = BuildConfig.EXTENSION_NAME

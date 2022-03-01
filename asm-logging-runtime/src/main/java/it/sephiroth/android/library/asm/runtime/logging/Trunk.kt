@@ -7,103 +7,87 @@ import java.io.StringWriter
 
 
 /**
- * Must be used together with the asm-logging plugin
+ * Must be used together with the asm-logging plugin.
+ * If the asm-logging-plugin is not applied, or not enabled, logging
+ * from this class will be swallowed and forgotten.
+ *
  * @author Alessandro Crugnola on 24.02.22 - 17:19
  */
-@Suppress("unused")
+@Suppress("unused", "UNUSED_PARAMETER")
 @Keep
 object Trunk {
 
     // ----------------------------------------------------
     // region API visible methods
 
-
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun v(message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun v(throwable: Throwable?, message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun v(throwable: Throwable?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun d(message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun d(throwable: Throwable?, message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun d(throwable: Throwable?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun i(message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun i(throwable: Throwable?, message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun i(throwable: Throwable?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun w(message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun w(throwable: Throwable?, message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun w(throwable: Throwable?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun e(message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun e(throwable: Throwable?, message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun e(throwable: Throwable?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun wtf(message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun wtf(throwable: Throwable?, message: String?, vararg args: Any?) {
     }
 
-    @Suppress("UNUSED_PARAMETER")
     @JvmStatic
     fun wtf(throwable: Throwable?) {
     }
@@ -185,9 +169,8 @@ object Trunk {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun isLoggable(tag: String?, priority: Int) = android.util.Log.isLoggable(tag, priority)
-
-    private const val MAX_LOG_LENGTH = 4000
-
-    private const val MAX_TAG_LENGTH = 23
+    private fun isLoggable(tag: String?, priority: Int): Boolean {
+        return true;
+        //return android.util.Log.isLoggable(tag, priority)
+    }
 }

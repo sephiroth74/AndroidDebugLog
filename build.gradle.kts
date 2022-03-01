@@ -15,9 +15,9 @@ buildscript {
         classpath(Config.Dependencies.Android.buildGradle)
         classpath(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))
 
-//        classpath(Config.Dependencies.AndroidAsm.loggingPlugin)
-//        classpath(Config.Dependencies.AndroidAsm.debugLogPlugin)
-//        classpath(Config.Dependencies.AndroidAsm.loggingLevelPlugin)
+        classpath(Config.Dependencies.AndroidAsm.loggingPlugin)
+        classpath(Config.Dependencies.AndroidAsm.debugLogPlugin)
+        classpath(Config.Dependencies.AndroidAsm.loggingLevelPlugin)
     }
 }
 
