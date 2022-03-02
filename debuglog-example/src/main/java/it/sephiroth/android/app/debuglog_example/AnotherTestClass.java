@@ -31,7 +31,6 @@ class AnotherTestClass {
 
     private int testLog1(String message) {
         Trunk.v(message);
-        Timber.v("[timber] " + message);
         Timber.v(new IOException("test io exception"), "[timber] " + message + " with exception");
         Timber.v(new RuntimeException("[timber] warning exception"));
 

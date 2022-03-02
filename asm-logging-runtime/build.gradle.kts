@@ -33,11 +33,17 @@ android {
     kotlinOptions {
         jvmTarget = Config.Kotlin.jvmVersion
     }
+
+    lint {
+        textReport = true
+    }
 }
 
 dependencies {
     implementation(Config.Dependencies.Android.androidCoreKtx)
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
+
+    lintPublish(project(":asm-logging-lint-runtime"))
 }
 
 

@@ -1,6 +1,7 @@
 // runtime
 include(":asm-debuglog-runtime")
 include(":asm-logging-runtime")
+include(":asm-logging-lint-runtime")
 include(":asm-logging-level-runtime")
 
 // plugins

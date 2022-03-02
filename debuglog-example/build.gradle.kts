@@ -38,7 +38,7 @@ plugins {
  */
 androidASM {
     logging {
-        enabled = false
+        enabled = true
         runVariant = ".*debug"
     }
 

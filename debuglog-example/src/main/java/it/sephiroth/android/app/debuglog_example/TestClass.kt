@@ -10,7 +10,7 @@ import java.io.StringBufferInputStream
 class TestClass {
 
     fun test(context: Context) {
-        Timber.v("[timber] test")
+        Trunk.v("[trunk] test: %d, %d, %d", 1, 2, 3)
         onTestReturnInt(BuildConfig.VERSION_NAME)
         testVoidNoParams()
         testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
@@ -46,7 +46,7 @@ class TestClass {
 
     private fun testComplexParams(list: List<String?>?, context: Context, input: IntArray): Context {
         list?.forEach {
-            Log.v(this::class.java.simpleName, "android.util.Log item=$it")
+            Trunk.v("android.util.Log item=$it")
         }
         return context
     }
