@@ -2,6 +2,7 @@ package it.sephiroth.android.library.asm.plugin.logginglevel
 
 import it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel
 import it.sephiroth.android.library.asm.plugin.core.utils.StringUtils
+import it.sephiroth.android.library.asm.plugin.core.vo.ClassFieldVo
 import it.sephiroth.android.library.asm.plugin.core.vo.ClassMethodVo
 import org.objectweb.asm.Opcodes
 
@@ -11,24 +12,26 @@ object Constants {
     @Suppress("UNUSED_PARAMETER")
     fun makeTag(obj: Any): String = BuildConfig.EXTENSION_NAME
 
-    object NullLogger {
-        // from asm-common
-        const val CLASS_NAME = "it/sephiroth/android/library/asm/runtime/logginglevel/NoLog"
-
+    object LoggingLevel {
+        const val CLASS_NAME = "it/sephiroth/android/library/asm/runtime/logginglevel/LoggingLevel"
         val SIMPLE_CLASS_NAME = StringUtils.getSimpleClassName(CLASS_NAME)
 
-        val IS_LOGGABLE = ClassMethodVo(CLASS_NAME, "isLoggable", "(II)Z", Opcodes.INVOKESTATIC)
+        // field: MIN_PRIORITY
+        val MIN_PRIORITY = ClassFieldVo(CLASS_NAME, "MIN_PRIORITY", "I")
 
-        val IS_LOGGABLE_TAG = ClassMethodVo(CLASS_NAME, "isLoggable", "(Ljava/lang/String;II)Z", Opcodes.INVOKESTATIC)
-        val PRINTLN_MIN_LEVEL = ClassMethodVo(CLASS_NAME, "println", "(ILjava/lang/String;Ljava/lang/String;I)I", Opcodes.INVOKESTATIC)
+        // static method: isLoggable
+        val IS_LOGGABLE = ClassMethodVo(CLASS_NAME, "isLoggable", "(Ljava/lang/String;I)Z", Opcodes.INVOKESTATIC)
+
+        // static method: getMinPriority
+        val GET_MIN_PRIORITY = ClassMethodVo(CLASS_NAME, "getMinPriority", "()I", Opcodes.INVOKESTATIC)
+    }
+
+    object NullLogger {
+        const val CLASS_NAME = "it/sephiroth/android/library/asm/runtime/logginglevel/NoLog"
+        val SIMPLE_CLASS_NAME = StringUtils.getSimpleClassName(CLASS_NAME)
+
         val PRINTLN = ClassMethodVo(CLASS_NAME, "println", "(ILjava/lang/String;Ljava/lang/String;)I", Opcodes.INVOKESTATIC)
     }
-
-    object TimberTree {
-        const val CLASS_NAME = "timber/log/Timber\$Tree"
-        val IS_LOGGABLE = ClassMethodVo(CLASS_NAME, "isLoggable", "(I)Z", Opcodes.INVOKEVIRTUAL)
-    }
-
 
     object AndroidLog {
         const val CLASS_NAME = "android/util/Log"

@@ -32,21 +32,19 @@ class PreMethodVisitor(
         classMethodData?.let {
             methodData.copyFrom(it)
             enabled = it.enabled
-
-            if (!enabled) {
-                logger.lifecycle("$tagName $className:$methodName -> should be skipped")
-            }
+            logger.info("$tagName $methodData")
         }
     }
 
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
         logger.debug("$tagName ${className}:$methodName visitAnnotation $descriptor")
+
         val av = super.visitAnnotation(descriptor, visible)
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG};") {
             val av2 = PreAnnotationVisitor(av, methodData, object : PreAnnotationVisitor.Callback {
                 override fun accept(methodData: MethodData) {
                     enabled = methodData.enabled
-                    logger.debug("$tagName ${className}:${methodName} now is enabled = $enabled (${methodData.enabled})")
+                    logger.lifecycle("$tagName ${className}:${methodName} -> is enabled = $enabled (${methodData})")
                 }
             })
             return av2
@@ -59,7 +57,7 @@ class PreMethodVisitor(
     }
 
     override fun visitLocalVariable(name: String, descriptor: String, signature: String?, start: Label, end: Label, index: Int) {
-        if (!methodData.skipMethod && enabled && "this" != name && start == labels.first()) {
+        if (enabled && "this" != name && start == labels.first()) {
             val type = Type.getType(descriptor)
             if (type.sort == Type.OBJECT || type.sort == Type.ARRAY) {
                 parameters.add(MethodParameter(name, "L${Constants.JavaTypes.TYPE_OBJECT};", index))
@@ -77,7 +75,7 @@ class PreMethodVisitor(
 
     override fun visitEnd() {
         super.visitEnd()
-        if (enabled && !methodData.skipMethod) {
+        if (enabled) {
             callback?.accept(methodData, parameters)
         }
     }

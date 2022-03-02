@@ -7,10 +7,13 @@ import org.gradle.api.tasks.Input
 
 data class DebugLogPluginData(
     override val logLevel: AndroidLogLevel,
-    override val debugResult: Boolean,
+    override val debugExit: Boolean,
     override val debugArguments: DebugArguments
 ) : IDebugLogPluginData {
-    constructor(input: IDebugLogPluginData) : this(input.logLevel, input.debugResult, input.debugArguments)
+    constructor(input: IDebugLogPluginData) : this(input.logLevel, input.debugExit, input.debugArguments)
+
+    override val debugEnter: Boolean
+        get() = true
 }
 
 interface IDebugLogPluginData : IPluginData {
@@ -18,7 +21,10 @@ interface IDebugLogPluginData : IPluginData {
     val logLevel: AndroidLogLevel
 
     @get:Input
-    val debugResult: Boolean
+    val debugExit: Boolean
+
+    @get:Input
+    val debugEnter: Boolean
 
     @get:Input
     val debugArguments: DebugArguments

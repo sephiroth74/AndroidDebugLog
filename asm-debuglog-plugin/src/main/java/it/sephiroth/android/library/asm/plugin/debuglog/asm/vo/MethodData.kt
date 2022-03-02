@@ -12,14 +12,15 @@ data class MethodData(
     val descriptor: String,
     val simpleClassName: String
 ) {
-    var debugResult: Boolean = false
+    var debugExit: Boolean = false
+    var debugEnter: Boolean = true
     var logLevel: Int = Constants.DEFAULT_LOG_LEVEL.value
     var debugArguments: Int = Constants.DEFAULT_DEBUG_ARGUMENTS.value
     var tag: String? = null
     var skipMethod: Boolean = false
 
     var enabled: Boolean = true
-        get() = field && !skipMethod
+        get() = field && !skipMethod && (debugEnter || debugExit)
 
     val uniqueKey = generateUniqueKey(name, descriptor)
 
@@ -27,18 +28,24 @@ data class MethodData(
         get() = tag?.takeIf { it.isNotBlank() } ?: simpleClassName
 
     fun copyFrom(input: IDebugLogPluginData) {
-        debugResult = input.debugResult
+        debugExit = input.debugExit
+        debugEnter = input.debugEnter
         logLevel = input.logLevel.value
         debugArguments = input.debugArguments.value
     }
 
     fun copyFrom(input: MethodData) {
-        debugResult = input.debugResult
+        debugExit = input.debugExit
+        debugEnter = input.debugEnter
         logLevel = input.logLevel
         debugArguments = input.debugArguments
         enabled = input.enabled
         skipMethod = input.skipMethod
         tag = input.tag
+    }
+
+    override fun toString(): String {
+        return "MethodData(name='$name', simpleClassName='$simpleClassName', debugExit=$debugExit, debugEnter=$debugEnter, logLevel=$logLevel, debugArguments=$debugArguments, tag=$tag, skipMethod=$skipMethod, enabled=$enabled)"
     }
 
     companion object {

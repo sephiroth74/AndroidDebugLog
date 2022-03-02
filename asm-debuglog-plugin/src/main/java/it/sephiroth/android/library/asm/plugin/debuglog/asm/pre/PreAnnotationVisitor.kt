@@ -15,7 +15,8 @@ class PreAnnotationVisitor(
 
     override fun visit(name: String, value: Any) {
         when (name) {
-            "debugResult" -> methodData.debugResult = value as Boolean
+            "debugExit" -> methodData.debugExit = value as Boolean
+            "debugEnter" -> methodData.debugEnter = value as Boolean
             "logLevel" -> methodData.logLevel = value as Int
             "debugArguments" -> methodData.debugArguments = value as Int
             "enabled" -> methodData.enabled = value as Boolean

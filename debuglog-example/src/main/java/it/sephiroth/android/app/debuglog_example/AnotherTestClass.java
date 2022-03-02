@@ -16,7 +16,7 @@ import timber.log.Timber;
  *
  * @author Alessandro Crugnola on 19.11.21 - 18:14
  */
-@DebugLogClass(debugResult = false, logLevel = Log.INFO)
+@DebugLogClass(debugExit = false, logLevel = Log.INFO)
 class AnotherTestClass {
     public void execute(Runnable action) {
         action.run();

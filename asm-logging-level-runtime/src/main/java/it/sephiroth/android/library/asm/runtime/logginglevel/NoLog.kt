@@ -53,16 +53,7 @@ object NoLog {
     fun wtf(tag: String?, msg: String?, tr: Throwable?): Int = 0
 
     @JvmStatic
-    fun println(priority: Int, tag: String?, msg: String): Int = 0
-
-    @JvmStatic
-    fun println(priority: Int, tag: String?, msg: String, minPriority: Int): Int {
-        return if (priority >= minPriority) Log.println(priority, tag, msg) else 0
+    fun println(priority: Int, tag: String?, msg: String): Int {
+        return if (LoggingLevel.isLoggable(tag, priority)) Log.println(priority, tag, msg) else 0
     }
-
-    @JvmStatic
-    fun isLoggable(priority: Int, minPriority: Int): Boolean = priority >= minPriority
-
-    @JvmStatic
-    fun isLoggable(msg: String?, priority: Int, minPriority: Int): Boolean = priority >= minPriority
 }

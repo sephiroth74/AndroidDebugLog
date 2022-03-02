@@ -17,6 +17,12 @@ import java.io.StringWriter
 @Keep
 object Trunk {
 
+    /**
+     * Can be replaced at runtime to enable/disable logging
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    var isLoggable: ((String?, Int) -> Boolean)? = null
+
     // ----------------------------------------------------
     // region API visible methods
 
@@ -170,7 +176,6 @@ object Trunk {
 
     @Suppress("UNUSED_PARAMETER")
     private fun isLoggable(tag: String?, priority: Int): Boolean {
-        return true;
-        //return android.util.Log.isLoggable(tag, priority)
+        return isLoggable?.invoke(tag, priority) ?: true
     }
 }

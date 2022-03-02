@@ -14,7 +14,9 @@ abstract class DebugLogPluginExtension : AsmCorePluginExtension() {
     /**
      * If true by default each method will log also its result and its result timing
      */
-    var debugResult: Boolean = Constants.DEFAULT_DEBUG_RESULT
+    var debugExit: Boolean = Constants.DEFAULT_DEBUG_EXIT
+
+    // var debugEnter: Boolean = Constants.DEFAULT_DEBUG_ENTER
 
     /**
      * Set the default level of a method parameter logging
@@ -23,6 +25,6 @@ abstract class DebugLogPluginExtension : AsmCorePluginExtension() {
 
 
     override fun toString(): String {
-        return "${BuildConfig.EXTENSION_NAME}(enabled=${enabled}, logLevel=${logLevel}, debugResult=${debugResult}, debugArguments=${debugArguments}, runVariant=${runVariant})"
+        return "${BuildConfig.EXTENSION_NAME}(enabled=${enabled}, logLevel=${logLevel}, debugExit=${debugExit}, debugArguments=${debugArguments}, runVariant=${runVariant})"
     }
 }

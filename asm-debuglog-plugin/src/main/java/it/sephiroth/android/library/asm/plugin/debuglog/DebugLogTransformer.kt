@@ -12,7 +12,7 @@ class DebugLogTransformer(project: Project, extensionName: String) :
     AsmTransformer<DebugLogPluginExtension, DebugLogPluginData, PreClassVisitor>(project, extensionName, DebugLogPluginExtension::class.java, PreClassVisitor::class.java) {
 
     override fun generatePluginData(pluginExtension: DebugLogPluginExtension): DebugLogPluginData {
-        return DebugLogPluginData(pluginExtension.logLevel, pluginExtension.debugResult, pluginExtension.debugArguments)
+        return DebugLogPluginData(pluginExtension.logLevel, pluginExtension.debugExit, pluginExtension.debugArguments)
     }
 
     override fun processJars(pluginExtension: DebugLogPluginExtension): Boolean {

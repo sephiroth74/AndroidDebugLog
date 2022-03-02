@@ -3,7 +3,8 @@ package it.sephiroth.android.library.asm.runtime.debuglog.annotations
 import android.util.Log
 
 /**
- * @param debugResult       if set to true also the return value of the method will be printed
+ * @param debugExit       if set to true it will log the method exit
+ * @param debugEnter        if set to true it will log the method enter
  * @param logLevel          set the log level for the final log output
  * @param debugArguments    defines how the input arguments will be logged (see [DebugArguments])
  * @param enabled           if set to false no output will be produced
@@ -16,7 +17,8 @@ import android.util.Log
 )
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
 annotation class DebugLogClass(
-    val debugResult: Boolean = false,
+    val debugExit: Boolean = false,
+    val debugEnter: Boolean = true,
     val logLevel: Int = Log.INFO,
     val debugArguments: Int = DebugArguments.FULL,
     val enabled: Boolean = true,

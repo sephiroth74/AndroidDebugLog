@@ -20,14 +20,14 @@ import java.util.*
  * @author Alessandro Crugnola on 01.03.22 - 08:15
  */
 @SuppressLint("LogNotTimber")
-@DebugLogClass(debugResult = true, logLevel = Log.INFO, debugArguments = DebugArguments.FULL)
+@DebugLogClass(logLevel = Log.INFO, debugArguments = DebugArguments.FULL, debugEnter = false, debugExit = true)
 class TestDebugLog {
 
     init {
         Log.wtf(TestDebugLog::class.java.simpleName, "TestDebugLog::init")
     }
 
-    @DebugLog(debugResult = false, logLevel = Log.DEBUG, debugArguments = DebugArguments.SHORT)
+    @DebugLog(logLevel = Log.VERBOSE, debugArguments = DebugArguments.SHORT)
     fun test(context: Context) {
         val input = test1()
         val input2 = test2(input)
@@ -47,7 +47,7 @@ class TestDebugLog {
         return System.currentTimeMillis()
     }
 
-    @DebugLogSkip
+    @DebugLog(debugExit = false)
     private fun test2(input: Long): Pair<Long, String> {
         return Pair(input, UUID.randomUUID().toString())
     }
@@ -61,7 +61,7 @@ class TestDebugLog {
         return input.map { it.toString() }.toList()
     }
 
-    @DebugLog(logLevel = Log.DEBUG, debugArguments = DebugArguments.SHORT)
+    @DebugLog(logLevel = Log.DEBUG, debugArguments = DebugArguments.SHORT, debugEnter = true)
     private fun test5(input: Array<Any>): List<String> {
         return input.map { it.toString() }.toList()
     }
@@ -115,15 +115,11 @@ class TestDebugLog {
 
     private fun test10() {
         StaticInnerTestClass1().test()
-
         StaticInnerTestClass2().test()
-
-        InnerTestClass3().apply {
-            helloInnerTest()
-        }
+        InnerTestClass3().apply { helloInnerTest() }
     }
 
-    @DebugLogClass(logLevel = Log.WARN, debugArguments = DebugArguments.NONE, debugResult = false)
+    @DebugLogClass(logLevel = Log.WARN, debugArguments = DebugArguments.NONE, debugExit = false)
     class StaticInnerTestClass1 {
 
         init {

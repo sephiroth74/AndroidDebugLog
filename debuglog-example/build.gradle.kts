@@ -46,13 +46,13 @@ androidASM {
     debugLog {
         enabled = true
         runVariant = ".*debug"
-        debugResult = true
+        debugExit = true
         debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
         logLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.INFO
     }
 
     loggingLevel {
-        enabled = false
+        enabled = true
         runVariant = ".*debug"
         minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
         includeLibs = true
@@ -80,6 +80,8 @@ android {
             isMinifyEnabled = false
         }
     }
+
+    sourceSets.getAt("release").java.srcDir("src/release/java")
 
     compileOptions {
         sourceCompatibility = Config.Java.version

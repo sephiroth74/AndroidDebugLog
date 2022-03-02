@@ -28,13 +28,13 @@ class PostMethodVisitor(
 
     override fun visitCode() {
         super.visitCode()
-        if (!methodData.skipMethod) {
+        if (methodData.enabled) {
             printMethodStart()
         }
     }
 
     override fun visitInsn(opcode: Int) {
-        if (!methodData.skipMethod && methodData.debugResult && (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN || opcode == Opcodes.ATHROW)) {
+        if (methodData.enabled && methodData.debugExit && (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN || opcode == Opcodes.ATHROW)) {
             printMethodEnd(opcode)
         }
         super.visitInsn(opcode)
@@ -111,36 +111,38 @@ class PostMethodVisitor(
      * Create the needed code injection in order to add the "ParamsLogger" invocation
      */
     private fun printMethodStart() {
-        logger.lifecycle("$tagName $className:${methodData.name} -> creating input logging injection")
-        mv.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
-        mv.visitInsn(Opcodes.DUP)
-        mv.visitLdcInsn(methodData.finalTag)                 // [1] tag (String)
-        mv.visitLdcInsn(methodData.name)                            // [2] methodName (String)
-        AsmVisitorUtils.visitInt(mv, methodData.debugArguments)     // [3] debugType (int)
+        if (methodData.debugEnter) {
+            logger.lifecycle("$tagName $className:${methodData.name} -> creating input logging injection")
+            mv.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
+            mv.visitInsn(Opcodes.DUP)
+            mv.visitLdcInsn(methodData.finalTag)                 // [1] tag (String)
+            mv.visitLdcInsn(methodData.name)                            // [2] methodName (String)
+            AsmVisitorUtils.visitInt(mv, methodData.debugArguments)     // [3] debugType (int)
 
-        mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "<init>", "(Ljava/lang/String;Ljava/lang/String;I)V", false)
+            mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "<init>", "(Ljava/lang/String;Ljava/lang/String;I)V", false)
 
-        //if (methodData.debugArguments != DebugArguments.None.value) {
-        parameters.forEach { parameter ->
-            val name = parameter.name
-            val descriptor = parameter.descriptor
-            val index = parameter.index
-            if (methodData.debugArguments == DebugArguments.None.value) {
-                val fullyDesc = String.format("(Ljava/lang/String;)L%s;", Constants.JavaTypes.TYPE_PARAMS_LOGGER)
-                printMethodArgument(name, fullyDesc)
-            } else {
-                val opcode = AsmVisitorUtils.getLoadOpcodeFromDesc(descriptor)
-                val fullyDesc = String.format("(Ljava/lang/String;%s)L%s;", descriptor, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
-                printMethodArgumentAndValue(index, opcode, name, fullyDesc)
+            //if (methodData.debugArguments != DebugArguments.None.value) {
+            parameters.forEach { parameter ->
+                val name = parameter.name
+                val descriptor = parameter.descriptor
+                val index = parameter.index
+                if (methodData.debugArguments == DebugArguments.None.value) {
+                    val fullyDesc = String.format("(Ljava/lang/String;)L%s;", Constants.JavaTypes.TYPE_PARAMS_LOGGER)
+                    printMethodArgument(name, fullyDesc)
+                } else {
+                    val opcode = AsmVisitorUtils.getLoadOpcodeFromDesc(descriptor)
+                    val fullyDesc = String.format("(Ljava/lang/String;%s)L%s;", descriptor, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
+                    printMethodArgumentAndValue(index, opcode, name, fullyDesc)
+                }
             }
-        }
-        //}
+            //}
 
-        AsmVisitorUtils.visitInt(mv, methodData.logLevel)
-        mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "print", "(I)V", false)
+            AsmVisitorUtils.visitInt(mv, methodData.logLevel)
+            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "print", "(I)V", false)
+        }
 
         // Insert a start local variable containing the current time in ms
-        if (methodData.debugResult) {
+        if (methodData.debugExit) {
             logger.debug("[$tagName] $className:${methodData.name} -> adding currentTimeMillis variable")
             timingStartVarIndex = newLocal(Type.LONG_TYPE)
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false)
