@@ -41,7 +41,11 @@ class PreClassVisitor(
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor? {
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions) ?: return null
-        val methodData = MethodData(name, descriptor, simpleClassName).apply { copyFrom(pluginData as DebugLogPluginData) }
+
+        val methodData = MethodData(name, descriptor, simpleClassName).apply {
+            copyFrom(pluginData as DebugLogPluginData)
+        }
+
         val mv2 = PreMethodVisitor(name, className, access, descriptor, mv, methodData, classMethodData, object : PreMethodVisitor.Callback {
             override fun accept(methodData: MethodData, params: List<MethodParameter>) {
                 logger.info("$tagName second pass required for $className::${methodData.name}")

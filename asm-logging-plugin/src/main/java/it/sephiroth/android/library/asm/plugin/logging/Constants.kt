@@ -7,7 +7,7 @@ import org.objectweb.asm.Opcodes
 @Suppress("SpellCheckingInspection", "unused")
 object Constants {
 
-    const val DEFAULT_REPLACE_TIMBER = false
+    // const val DEFAULT_REPLACE_TIMBER = false
 
     @Suppress("UNUSED_PARAMETER")
     fun makeTag(obj: Any): String = BuildConfig.EXTENSION_NAME
@@ -80,7 +80,7 @@ object Constants {
         const val CLASS_NAME = "timber/log/Timber\$Forest"
 
         // original calls
-        private val V = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKEVIRTUAL)
+        val V = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKEVIRTUAL)
         private val V_THROWABLE = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKEVIRTUAL)
         private val V_THROWABLE_ONLY = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/Throwable;)V", Opcodes.INVOKEVIRTUAL)
 

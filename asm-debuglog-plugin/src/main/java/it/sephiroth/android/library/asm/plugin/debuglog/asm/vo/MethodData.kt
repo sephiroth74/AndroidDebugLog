@@ -15,8 +15,11 @@ data class MethodData(
     var debugResult: Boolean = false
     var logLevel: Int = Constants.DEFAULT_LOG_LEVEL.value
     var debugArguments: Int = Constants.DEFAULT_DEBUG_ARGUMENTS.value
-    var enabled: Boolean = true
     var tag: String? = null
+    var skipMethod: Boolean = false
+
+    var enabled: Boolean = true
+        get() = field && !skipMethod
 
     val uniqueKey = generateUniqueKey(name, descriptor)
 
@@ -34,6 +37,7 @@ data class MethodData(
         logLevel = input.logLevel
         debugArguments = input.debugArguments
         enabled = input.enabled
+        skipMethod = input.skipMethod
         tag = input.tag
     }
 

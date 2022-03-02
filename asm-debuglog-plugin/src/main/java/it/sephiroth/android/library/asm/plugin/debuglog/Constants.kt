@@ -25,6 +25,7 @@ object Constants {
 
         // from asm-annotations project
         const val TYPE_ANNOTATION_DEBUGLOG = "it/sephiroth/android/library/asm/runtime/debuglog/annotations/DebugLog"
+        const val TYPE_ANNOTATION_DEBUGLOG_SKIP = "it/sephiroth/android/library/asm/runtime/debuglog/annotations/DebugLogSkip"
         const val TYPE_ANNOTATION_DEBUGLOG_CLASS = "it/sephiroth/android/library/asm/runtime/debuglog/annotations/DebugLogClass"
 
         const val TYPE_OBJECT = "java/lang/Object"

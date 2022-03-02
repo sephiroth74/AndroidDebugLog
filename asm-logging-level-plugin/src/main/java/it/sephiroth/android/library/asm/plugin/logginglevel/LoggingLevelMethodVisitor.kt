@@ -42,7 +42,7 @@ class LoggingLevelMethodVisitor(
         } else if (opcode == Opcodes.INVOKESTATIC) {
             // android.util.Log
             if (owner == Constants.AndroidLog.CLASS_NAME) { // method call to Log.*
-                logger.debug("[$tagName] ${className}:$methodName -> checking opcode=$opcode, $owner:$name$descriptor")
+                logger.debug("$tagName checking opcode=$opcode, $owner:$name$descriptor")
 
                 if (Constants.AndroidLog.IS_LOGGABLE.matches(name, descriptor, opcode)) {
                     // 2. replace Log.isLoggable calls with NullLogger.isLoggable
@@ -74,7 +74,7 @@ class LoggingLevelMethodVisitor(
         }
 
         if (handled) {
-            logger.debug("$tagName $className:$methodName -> replaced call $owner::$name")
+            logger.debug("$tagName replaced call $owner::$name")
         } else {
             super.visitMethodInsn(opcode, owner, name, descriptor, isInterface)
         }

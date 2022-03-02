@@ -1,5 +1,7 @@
 //file:noinspection GrDeprecatedAPIUsage
 
+@file:Suppress("DEPRECATION")
+
 package it.sephiroth.android.library.asm.plugin.core
 
 import com.android.build.api.transform.*
@@ -67,7 +69,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         if (enabledForVariant) {
             logger.lifecycle("[$tagName] enabled for variant `${variant.fullVariantName}`")
         } else {
-            logger.lifecycle("[$tagName] disabled for variant `${variant.fullVariantName}`")
+            logger.debug("[$tagName] disabled for variant `${variant.fullVariantName}`")
         }
         return enabledForVariant
     }

@@ -27,10 +27,10 @@ class MainActivity : AppCompatActivity() {
     private fun runTests() {
         Completable.create { emitter ->
             Trunk.i("runTests")
-            AnotherTestClass().test(this)
-            TestClass().test(this)
-            TestLoggingLevel.test()
-            TestDebugLog().test()
+//            AnotherTestClass().test(this)
+//            TestClass().test(this)
+//            TestLoggingLevel.test()
+            TestDebugLog().test(this)
 
             emitter.onComplete()
         }.subscribeOn(Schedulers.computation()).subscribe {

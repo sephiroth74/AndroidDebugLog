@@ -20,10 +20,11 @@ class PreMethodVisitor(
 ) : LocalVariablesSorter(it.sephiroth.android.library.asm.plugin.core.Constants.ASM_VERSION, access, descriptor, methodVisitor), Opcodes {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
+    private val tagName = "[${Constants.makeTag(this)}]"
+
     private val labels = mutableListOf<Label>()
     private val parameters = mutableListOf<MethodParameter>()
     private var enabled = false
-    private val tagName = "[${Constants.makeTag(this)}]"
 
     init {
         logger.debug("$tagName visiting method $className::$methodName")
@@ -31,6 +32,10 @@ class PreMethodVisitor(
         classMethodData?.let {
             methodData.copyFrom(it)
             enabled = it.enabled
+
+            if (!enabled) {
+                logger.lifecycle("$tagName $className:$methodName -> should be skipped")
+            }
         }
     }
 
@@ -45,12 +50,16 @@ class PreMethodVisitor(
                 }
             })
             return av2
+        } else if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_SKIP};") {
+            enabled = false
+            methodData.skipMethod = true
+            logger.lifecycle("$tagName $className:$methodName -> should be skipped")
         }
         return av
     }
 
     override fun visitLocalVariable(name: String, descriptor: String, signature: String?, start: Label, end: Label, index: Int) {
-        if (enabled && "this" != name && start == labels.first()) {
+        if (!methodData.skipMethod && enabled && "this" != name && start == labels.first()) {
             val type = Type.getType(descriptor)
             if (type.sort == Type.OBJECT || type.sort == Type.ARRAY) {
                 parameters.add(MethodParameter(name, "L${Constants.JavaTypes.TYPE_OBJECT};", index))
@@ -68,7 +77,7 @@ class PreMethodVisitor(
 
     override fun visitEnd() {
         super.visitEnd()
-        if (enabled) {
+        if (enabled && !methodData.skipMethod) {
             callback?.accept(methodData, parameters)
         }
     }

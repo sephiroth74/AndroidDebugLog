@@ -16,7 +16,7 @@ class AsmLoggingTransformer(project: Project, extensionName: String) :
     ) {
 
     override fun generatePluginData(pluginExtension: LoggingPluginExtension): LoggingPluginData {
-        return LoggingPluginData(pluginExtension.replaceTimber)
+        return LoggingPluginData()
     }
 
     override fun processJars(pluginExtension: LoggingPluginExtension): Boolean {

@@ -2,15 +2,11 @@ package it.sephiroth.android.app.debuglog_example
 
 import android.content.Context
 import android.util.Log
-import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugArguments
-import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLog
-import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLogClass
 import it.sephiroth.android.library.asm.runtime.logging.Trunk
 import timber.log.Timber
 import java.io.InputStream
 import java.io.StringBufferInputStream
 
-@DebugLogClass(debugArguments = DebugArguments.FULL, debugResult = true, logLevel = Log.WARN)
 class TestClass {
 
     fun test(context: Context) {
@@ -48,7 +44,6 @@ class TestClass {
         }
     }
 
-    @DebugLog(logLevel = Log.ERROR, debugArguments = DebugArguments.NONE, tag = "alessandro")
     private fun testComplexParams(list: List<String?>?, context: Context, input: IntArray): Context {
         list?.forEach {
             Log.v(this::class.java.simpleName, "android.util.Log item=$it")
@@ -115,10 +110,7 @@ class TestClass {
     }
 
     inner class InnerTestClass {
-
-        @DebugLog
         fun helloInnerTest() {
-
         }
     }
 

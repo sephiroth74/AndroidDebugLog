@@ -10,16 +10,6 @@ class LoggingPlugin : AsmCorePlugin<LoggingPluginExtension, LoggingPluginData, L
     LoggingPluginExtension::class.java
 ) {
 
-    override fun apply(project: Project) {
-        super.apply(project)
-//        project.configurations.forEach { configuration ->
-//            println("configuration: ${configuration.name}")
-//            configuration.dependencies.forEach { dependency ->
-//                println("${dependency.group}:${dependency.name}:${dependency.version}")
-//            }
-//        }
-    }
-
     override fun getTransformer(project: Project): AsmLoggingTransformer {
         return AsmLoggingTransformer(project, extensionName)
     }

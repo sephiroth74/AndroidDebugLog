@@ -1,5 +1,7 @@
 //file:noinspection GrDeprecatedAPIUsage
 
+@file:Suppress("DEPRECATION")
+
 package it.sephiroth.android.library.asm.plugin.logginglevel
 
 import com.android.build.api.transform.QualifiedContent
@@ -9,7 +11,6 @@ import it.sephiroth.android.library.asm.plugin.core.AsmTransformer
 import it.sephiroth.android.library.asm.plugin.logginglevel.vo.LoggingPluginData
 import org.gradle.api.Project
 
-@Suppress("DEPRECATION")
 class AsmLoggingLevelTransformer(project: Project, extensionName: String) :
     AsmTransformer<LoggingLevelPluginExtension, LoggingPluginData, LoggingLevelClassVisitor>(
         project,

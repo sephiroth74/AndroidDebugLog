@@ -28,11 +28,13 @@ class PostMethodVisitor(
 
     override fun visitCode() {
         super.visitCode()
-        printMethodStart()
+        if (!methodData.skipMethod) {
+            printMethodStart()
+        }
     }
 
     override fun visitInsn(opcode: Int) {
-        if (methodData.debugResult && (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN || opcode == Opcodes.ATHROW)) {
+        if (!methodData.skipMethod && methodData.debugResult && (opcode >= Opcodes.IRETURN && opcode <= Opcodes.RETURN || opcode == Opcodes.ATHROW)) {
             printMethodEnd(opcode)
         }
         super.visitInsn(opcode)
@@ -42,10 +44,10 @@ class PostMethodVisitor(
      * Create the needed code injection in order to add the "MethodResultLogger" invocation
      */
     private fun printMethodEnd(opcode: Int) {
-        logger.lifecycle("$tagName ($className:${methodData.name}) Creating output logger injection")
+        logger.lifecycle("$tagName $className:${methodData.name} -> creating output logging injection")
 
         if (null == timingStartVarIndex) {
-            logger.warn("$tagName timingStartVarIndex should not be null here")
+            logger.warn("$tagName $className:${methodData.name} -> timingStartVarIndex should not be null here")
             return
         }
 
@@ -69,7 +71,7 @@ class PostMethodVisitor(
             mv.visitVarInsn(storeOpcocde, resultTempValIndex)
         }
 
-        logger.debug("$tagName $className:${methodData.name} opcode=$opcode, returnType=$returnType, returnDesc=$returnDesc")
+        logger.debug("$tagName $className:${methodData.name} -> opcode=$opcode, returnType=$returnType, returnDesc=$returnDesc")
 
         // Timing: parameter1 parameter2
         mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false)
@@ -109,20 +111,12 @@ class PostMethodVisitor(
      * Create the needed code injection in order to add the "ParamsLogger" invocation
      */
     private fun printMethodStart() {
-        logger.lifecycle("$tagName ($className:${methodData.name}) Creating input logger injection")
-        // val lineNumber: Int = methodData.lineNumber?.minus(1) ?: 0
+        logger.lifecycle("$tagName $className:${methodData.name} -> creating input logging injection")
         mv.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
         mv.visitInsn(Opcodes.DUP)
         mv.visitLdcInsn(methodData.finalTag)                 // [1] tag (String)
         mv.visitLdcInsn(methodData.name)                            // [2] methodName (String)
         AsmVisitorUtils.visitInt(mv, methodData.debugArguments)     // [3] debugType (int)
-
-        // [4] lineNumber (int)
-        // if (lineNumber > 0) {
-        //    ASMVisitorUtils.visitInt(mv, lineNumber)
-        //} else {
-        //    mv.visitInsn(Opcodes.ACONST_NULL)
-        //}
 
         mv.visitMethodInsn(Opcodes.INVOKESPECIAL, Constants.JavaTypes.TYPE_PARAMS_LOGGER, "<init>", "(Ljava/lang/String;Ljava/lang/String;I)V", false)
 
@@ -147,7 +141,7 @@ class PostMethodVisitor(
 
         // Insert a start local variable containing the current time in ms
         if (methodData.debugResult) {
-            logger.debug("[$tagName] ($className:${methodData.name}) Adding currentTimeMillis variable")
+            logger.debug("[$tagName] $className:${methodData.name} -> adding currentTimeMillis variable")
             timingStartVarIndex = newLocal(Type.LONG_TYPE)
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false)
             mv.visitVarInsn(Opcodes.LSTORE, timingStartVarIndex!!)
