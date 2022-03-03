@@ -13,13 +13,13 @@ class AsmClassWriter(val className: String, private val superName: String, flags
 
     override fun getCommonSuperClass(type1: String?, type2: String?): String {
         if (logger.isDebugEnabled) {
-            logger.debug("Getting common super class. type1={}, type2={}", type1, type2)
+            logger.debug("Getting common super class (type1={}, type2={})", type1, type2)
         }
 
         val className = get(type1, type2)
 
         if (logger.isDebugEnabled) {
-            logger.debug("Common super class is '{}'. type1={}, type2={}", className, type1, type2)
+            logger.debug("Common super class is '{}' (type1={}, type2={})", className, type1, type2)
         }
         return className
     }
@@ -45,7 +45,7 @@ class AsmClassWriter(val className: String, private val superName: String, flags
         val type1ClassReader = getClassReader(type1)
         val type2ClassReader = getClassReader(type2)
         if (type1ClassReader == null || type2ClassReader == null) {
-            logger.warn("Skip get common super class. not found class {type1={}, reader={}}, {type2={}, reader={}}", type1, type1ClassReader, type2, type2ClassReader)
+            logger.warn("Skip get common super class. not found class (type=$type1, type2=$type2) ", type1, type1ClassReader, type2, type2ClassReader)
             return Constants.JavaTypes.TYPE_OBJECT
         }
 

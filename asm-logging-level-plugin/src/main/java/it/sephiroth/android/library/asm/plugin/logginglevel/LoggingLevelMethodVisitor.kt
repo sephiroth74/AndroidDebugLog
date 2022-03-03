@@ -27,19 +27,7 @@ class LoggingLevelMethodVisitor(
     override fun visitMethodInsn(opcode: Int, owner: String?, name: String?, descriptor: String?, isInterface: Boolean) {
         var handled = false
 
-        if (opcode == Opcodes.INVOKEVIRTUAL) {
-            // timber.log.Timber
-
-            // 1. Replace Timber$Tree isLoggable with NullLogger.isLoggable
-//            if (Constants.TimberTree.CLASS_NAME == owner && Constants.TimberTree.IS_LOGGABLE.matches(name, descriptor, opcode)) {
-//                val newMethod = Constants.NullLogger.IS_LOGGABLE
-//                AsmVisitorUtils.visitInt(mv, pluginData.minLogLevel.value)
-//                super.visitMethodInsn(newMethod.opcode, Constants.NullLogger.CLASS_NAME, newMethod.methodName, newMethod.descriptor, false)
-//                logger.lifecycle("$tagName replaced $owner:$name with ${Constants.NullLogger.SIMPLE_CLASS_NAME}:$newMethod")
-//                handled = true
-//            }
-
-        } else if (opcode == Opcodes.INVOKESTATIC) {
+        if (opcode == Opcodes.INVOKESTATIC) {
             // android.util.Log
             if (owner == Constants.AndroidLog.CLASS_NAME) { // method call to Log.*
                 logger.debug("$tagName checking opcode=$opcode, $owner:$name$descriptor")

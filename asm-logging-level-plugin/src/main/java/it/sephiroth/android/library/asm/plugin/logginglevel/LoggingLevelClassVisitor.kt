@@ -44,8 +44,6 @@ class LoggingLevelClassVisitor(
         if (className == Constants.LoggingLevel.CLASS_NAME) {
             if (Constants.LoggingLevel.GET_MIN_PRIORITY.matches(name, descriptor)) {
                 return GetMinPriorityMethodVisitor(mv, data.minLogLevel.value)
-            } else if (Constants.LoggingLevel.IS_LOGGABLE.matches(name, descriptor)) {
-//                return IsLoggableMethodVisitor(mv, data.minLogLevel.value)
             }
             return mv
         }
