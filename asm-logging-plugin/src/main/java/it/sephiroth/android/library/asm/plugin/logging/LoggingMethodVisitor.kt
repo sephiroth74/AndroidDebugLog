@@ -42,7 +42,7 @@ class LoggingMethodVisitor(
         }
 
         if (handled) {
-            logger.lifecycle("$tagName replaced call $owner::$name")
+            logger.info("$tagName replaced call $owner::$name")
             enabled = true
         } else {
             logger.debug("$tagName not handled $owner:$name$descriptor (opcode=$opcode) in $className::$methodName[$lineNumber]")

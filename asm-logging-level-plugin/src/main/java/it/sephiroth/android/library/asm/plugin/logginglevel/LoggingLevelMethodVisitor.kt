@@ -36,14 +36,14 @@ class LoggingLevelMethodVisitor(
                     // 2. replace Log.isLoggable calls with NullLogger.isLoggable
                     val newMethod = Constants.LoggingLevel.IS_LOGGABLE
                     super.visitMethodInsn(newMethod.opcode, newMethod.className, newMethod.methodName, newMethod.descriptor, false)
-                    logger.lifecycle("$tagName replaced $owner:$name with $newMethod")
+                    logger.info("$tagName replaced $owner:$name with $newMethod")
                     handled = true
 
                 } else if (Constants.AndroidLogMethods.isIndirectMethod(name, descriptor)) { // direct call to Log.v, Log.e, Log.w, etc..
                     // Replace Log.w, Log.v, etc calls with NullLogger.w, NullLogger.v,e tc
                     if (shouldAndroidLogMethodBeReplaced(name, descriptor, pluginData.minLogLevel)) {
                         super.visitMethodInsn(opcode, Constants.NullLogger.CLASS_NAME, name, descriptor, false)
-                        logger.lifecycle("$tagName replaced $owner:$name with ${Constants.NullLogger.SIMPLE_CLASS_NAME}:$name$descriptor")
+                        logger.info("$tagName replaced $owner:$name with ${Constants.NullLogger.SIMPLE_CLASS_NAME}:$name$descriptor")
                         handled = true
                     }
                 } else if (Constants.AndroidLog.PRINTLN.matches(name, descriptor, opcode)) { // direct call to Log.println
@@ -51,7 +51,7 @@ class LoggingLevelMethodVisitor(
                     val newMethod = Constants.NullLogger.PRINTLN
 
                     super.visitMethodInsn(opcode, newMethod.className, newMethod.methodName, newMethod.descriptor, false)
-                    logger.lifecycle("$tagName replaced $owner:$name with $newMethod")
+                    logger.info("$tagName replaced $owner:$name with $newMethod")
                     handled = true
                 } else {
                     logger.debug("$tagName not handled call to $owner::$name")

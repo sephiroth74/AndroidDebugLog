@@ -44,7 +44,7 @@ class PostMethodVisitor(
      * Create the needed code injection in order to add the "MethodResultLogger" invocation
      */
     private fun printMethodEnd(opcode: Int) {
-        logger.lifecycle("$tagName $className:${methodData.name} -> creating output logging injection")
+        logger.info("$tagName $className:${methodData.name} -> creating output logging injection")
 
         if (null == timingStartVarIndex) {
             logger.warn("$tagName $className:${methodData.name} -> timingStartVarIndex should not be null here")
@@ -112,7 +112,7 @@ class PostMethodVisitor(
      */
     private fun printMethodStart() {
         if (methodData.debugEnter) {
-            logger.lifecycle("$tagName $className:${methodData.name} -> creating input logging injection")
+            logger.info("$tagName $className:${methodData.name} -> creating input logging injection")
             mv.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
             mv.visitInsn(Opcodes.DUP)
             mv.visitLdcInsn(methodData.finalTag)                 // [1] tag (String)

@@ -16,6 +16,9 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.filefilter.TrueFileFilter
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
+import org.gradle.internal.logging.progress.ProgressLogger
+import org.gradle.internal.logging.progress.ProgressLoggerFactory
+import org.gradle.kotlin.dsl.support.serviceOf
 import org.gradle.workers.WorkQueue
 import java.io.File
 import java.net.URL
@@ -31,6 +34,9 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
     protected val tagName: String = extensionName
     protected val logger: Logger = project.logger
 
+    private val progressLoggerFactory = project.serviceOf<ProgressLoggerFactory>()
+    protected val progressLogger: ProgressLogger = progressLoggerFactory.newOperation(this.javaClass)
+
     @Suppress("UNCHECKED_CAST")
     protected val pluginExtension: T = project.extensions.getByType(AsmCoreBasePluginExtension::class.java).extensions.getByType(extensionClass)
 
@@ -43,6 +49,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
 
     init {
         logger.debug("[$tagName] ${this::class.java.simpleName} added to project $project.name")
+        progressLogger.description = "[$tagName] Transform Input"
     }
 
     abstract fun processJars(pluginExtension: T): Boolean
@@ -97,7 +104,11 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             logger.lifecycle("[$tagName] transformation enabled: $enabled")
         }
 
+        progressLogger.started()
+
         processInput(transformInvocation, enabled)
+
+        progressLogger.completed()
 
         // log total execution time
         val endTime = System.currentTimeMillis()
@@ -171,7 +182,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             Format.JAR
         )
 
-        logger.debug("[$tagName] processing jar `${jarInput.file.name}` -> $destFile")
+        progressLogger.progress("[$tagName] processing jar ${jarInput.file.name} -> $destFile")
 
         if (transformInvocation.isIncremental) {
             when (status) {
@@ -217,9 +228,6 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         classPaths: List<URL>
     ) {
 
-        logger.debug("[$tagName] processDirectoryInput(${directoryInput.file})")
-
-
         val dest = transformInvocation.outputProvider.getContentLocation(
             directoryInput.name,
             directoryInput.contentTypes,
@@ -230,6 +238,8 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         FileUtils.forceMkdir(dest)
 
         if (transformInvocation.isIncremental) {
+            progressLogger.progress("[$tagName] processing directory $directoryInput.file")
+
             val srcDirPath = directoryInput.file.absolutePath
             val destDirPath = dest.absolutePath
             val fileStatusMap = directoryInput.changedFiles
@@ -240,7 +250,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
                 val destFilePath = inputFile.absolutePath.replace(srcDirPath, destDirPath)
                 val destFile = File(destFilePath)
 
-                logger.debug("[$tagName] inputFile: $inputFile, destFile: $destFile")
+                progressLogger.progress("[$tagName] processing file $inputFile -> $destFile")
 
                 when (status) {
                     Status.ADDED,
@@ -273,7 +283,8 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         classPaths: List<URL>
     ) {
 
-        logger.debug("[$tagName] transformDirectory(enabled=$enabled, $inputDir, $outputDir)")
+        progressLogger.progress("[$tagName] processing directory $inputDir")
+
         if (!enabled) {
             FileUtils.copyDirectory(inputDir, outputDir)
             return
@@ -285,9 +296,9 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             FileUtils.listFilesAndDirs(inputDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE)
                 .forEach { file ->
                     if (file.isFile) {
-                        logger.debug("[$tagName] Checking file $file (is file: ${file.isFile})")
                         val filePath = file.absolutePath
                         val outputFile = File(filePath.replace(inputDirPath, outputDirPath))
+                        progressLogger.progress("[$tagName] processing file $file -> $outputFile")
                         transformSingleFile(workQueue, file, outputFile, classPaths)
                     }
                 }
@@ -339,7 +350,7 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
     }
 
     private fun cleanDexBuilderFolder(dest: File) {
-        logger.debug("[$tagName] cleanDexBuilderFolder($dest)")
+        logger.debug("[$tagName] cleaning dexBuilder folder: $dest")
         try {
             val dexBuilderDir = StringUtils.replaceLastPart(dest.absolutePath, name, "dexBuilder")
             // intermediates/transforms/dexBuilder/debug

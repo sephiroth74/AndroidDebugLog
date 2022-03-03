@@ -44,14 +44,14 @@ class PreMethodVisitor(
             val av2 = PreAnnotationVisitor(av, methodData, object : PreAnnotationVisitor.Callback {
                 override fun accept(methodData: MethodData) {
                     enabled = methodData.enabled
-                    logger.lifecycle("$tagName ${className}:${methodName} -> is enabled = $enabled (${methodData})")
+                    logger.debug("$tagName ${className}:${methodName} -> is enabled = $enabled (${methodData})")
                 }
             })
             return av2
         } else if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_SKIP};") {
             enabled = false
             methodData.skipMethod = true
-            logger.lifecycle("$tagName $className:$methodName -> should be skipped")
+            logger.info("$tagName $className:$methodName -> should be skipped")
         }
         return av
     }

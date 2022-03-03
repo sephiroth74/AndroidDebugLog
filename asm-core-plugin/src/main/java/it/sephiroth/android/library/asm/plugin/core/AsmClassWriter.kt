@@ -45,7 +45,7 @@ class AsmClassWriter(val className: String, private val superName: String, flags
         val type1ClassReader = getClassReader(type1)
         val type2ClassReader = getClassReader(type2)
         if (type1ClassReader == null || type2ClassReader == null) {
-            logger.warn("Skip get common super class. not found class (type=$type1, type2=$type2) ", type1, type1ClassReader, type2, type2ClassReader)
+            logger.info("Skip get common super class. not found class (type=$type1, type2=$type2) ", type1, type1ClassReader, type2, type2ClassReader)
             return Constants.JavaTypes.TYPE_OBJECT
         }
 
