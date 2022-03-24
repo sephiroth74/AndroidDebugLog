@@ -14,13 +14,6 @@ plugins {
 }
 
 
-repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    mavenLocal()
-    google()
-}
-
 version = Config.VERSION
 group = Config.GROUP
 

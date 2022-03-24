@@ -1,5 +1,3 @@
-// debuglog-plugin/build.gradle.kts
-
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.plugins.signing.Sign
@@ -45,7 +43,7 @@ dependencies {
 tasks {
     val sourcesJar by creating(Jar::class) {
         archiveClassifier.set("sources")
-//        from(sourceSets.main.get().allSource)
+        //        from(sourceSets.main.get().allSource)
     }
 
     val javadocJar by creating(Jar::class) {
@@ -55,8 +53,8 @@ tasks {
     }
 
     artifacts {
-//        archives(sourcesJar)
-//        archives(javadocJar)
+        //        archives(sourcesJar)
+        //        archives(javadocJar)
         archives(jar)
     }
 }

@@ -23,7 +23,9 @@ abstract class AsmCorePlugin<T, R, Q>(
         logger.debug("project: ${project.name} hasApp: $hasApp, hasLib: $hasLib")
 
         if (hasApp.isEmpty() && hasLib.isEmpty()) {
-            throw IllegalStateException("'android-application' or 'android-library' plugin required.")
+            logger.warn("'com.android.application' or 'com.android.library' plugin required.")
+            return
+            //throw IllegalStateException("'android-application' or 'android-library' plugin required.")
         }
 
         // create the extension at project level
