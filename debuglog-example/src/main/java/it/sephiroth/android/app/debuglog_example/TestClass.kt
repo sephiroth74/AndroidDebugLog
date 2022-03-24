@@ -2,41 +2,56 @@ package it.sephiroth.android.app.debuglog_example
 
 import android.content.Context
 import android.util.Log
-import it.sephiroth.android.library.debuglog.DebugArguments
-import it.sephiroth.android.library.debuglog.DebugLog
-import it.sephiroth.android.library.debuglog.DebugLogClass
+import it.sephiroth.android.library.asm.runtime.logging.Trunk
+import timber.log.Timber
 import java.io.InputStream
 import java.io.StringBufferInputStream
 
-@DebugLogClass(debugArguments = DebugArguments.FULL, debugResult = true, logLevel = Log.WARN)
 class TestClass {
-    fun testAll(context: Context) {
-        val t1 = onTestReturnInt(BuildConfig.VERSION_NAME)
-        val t2 = testVoidNoParams()
-        val t3 = testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
-        val t4 = testInnerClass()
+
+    fun test(context: Context) {
+        Trunk.v("[trunk] test: %d, %d, %d", 1, 2, 3)
+        onTestReturnInt(BuildConfig.VERSION_NAME)
+        testVoidNoParams()
+        testComplexParams(listOf("hello", "logged", "world"), context, intArrayOf(1, 2, 3))
+        testInnerClass()
+        testLog()
     }
 
-    fun onTestReturnInt(version: String?): Int {
+    fun testLog() {
+        Trunk.wtf("$this = testLog")
+        Trunk.e("$this = testLog")
+        Trunk.i("$this = testLog")
+        Trunk.d("$this = testLog")
+        Trunk.v("$this = testLog")
+        Timber.v("[timber] $this = testLog")
+
+        fun anonymous() {
+            Timber.d("[timber] anonymous: %d", System.currentTimeMillis())
+        }
+
+        anonymous()
+    }
+
+    private fun onTestReturnInt(version: String?): Int {
         testReturnNull({})
         return BuildConfig.VERSION_CODE
     }
 
-    fun testVoidNoParams() {
+    private fun testVoidNoParams() {
         if (true) {
             return
         }
     }
 
-    @DebugLog(logLevel = Log.ERROR, debugArguments = DebugArguments.NONE, tag = "alessandro")
-    fun testComplexParams(list: List<String?>?, context: Context, input: IntArray): Context {
+    private fun testComplexParams(list: List<String?>?, context: Context, input: IntArray): Context {
         list?.forEach {
-            Log.v(this::class.java.simpleName, "item=$it")
+            Trunk.v("android.util.Log item=$it")
         }
         return context
     }
 
-    fun testReturnNull(type: Runnable?): Runnable? {
+    private fun testReturnNull(type: Runnable?): Runnable? {
         val newType = type
         if (newType != null) {
             return Runnable { type.run() }
@@ -44,7 +59,7 @@ class TestClass {
         return null
     }
 
-    fun testInnerClass() {
+    private fun testInnerClass() {
         StaticInnerTestClass().apply {
             try {
                 test01()
@@ -94,11 +109,8 @@ class TestClass {
         }
     }
 
-    inner class InnerTestClass() {
-
-        @DebugLog
+    inner class InnerTestClass {
         fun helloInnerTest() {
-
         }
     }
 

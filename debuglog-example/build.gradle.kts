@@ -1,7 +1,6 @@
-// debuglog-example/build.gradle.kts
+@file:Suppress("SpellCheckingInspection")
 
-import it.sephiroth.android.library.debuglog.DebugArguments
-import it.sephiroth.android.library.debuglog.AndroidLogLevel
+// debuglog-example/build.gradle.kts
 
 buildscript {
     repositories {
@@ -22,29 +21,45 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
 
-    // when using remote repo
-    id("it.sephiroth.android.library.debuglog")
+    // include asm-debuglog plugin
+    id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
+
+    // include ams-logging plugin
+    id("it.sephiroth.android.library.asm.asm-logging-plugin")
+
+    // include ams-logging-level plugin (should be the last plugin inside the plugins block)
+    id("it.sephiroth.android.library.asm.asm-logging-level-plugin")
 }
 
-// ---------  when using local buildSrc --------------
-//apply<DebugLogPlugin>()
-//
-//configure<DebugLogPluginExtension> {
-//    enabled.set(true)
-//    logLevel.set(AndroidLogLevel.DEBUG)
-//    debugResult.set(true)
-//    debugArguments.set(DebugArguments.Full)
-//    runVariant.set(Debug)
-//}
 
-// ---------- when using remote repo -----------------
-androidDebugLog {
-//    enabled.set(true)
-    logLevel.set(AndroidLogLevel.VERBOSE)
-    debugResult.set(false)
-    debugArguments.set(DebugArguments.Full)
-    runVariant.set(".*(debug)")
+/**
+ * Main androidASM container
+ * It will contain all the included plugins specific options
+ */
+androidASM {
+    logging {
+        enabled = true
+        runVariant = ".*debug"
+    }
+
+
+    debugLog {
+        enabled = true
+        runVariant = ".*debug"
+        debugExit = true
+        debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
+        logLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.INFO
+    }
+
+    loggingLevel {
+        enabled = true
+        runVariant = ".*debug"
+        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
+        includeLibs = true
+    }
 }
+
+
 
 
 android {
@@ -56,8 +71,8 @@ android {
         targetSdk = Config.Android.targetSdk
         versionCode = 1
         versionName = "0.2.3"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -65,6 +80,8 @@ android {
             isMinifyEnabled = false
         }
     }
+
+    sourceSets.getAt("release").java.srcDir("src/release/java")
 
     compileOptions {
         sourceCompatibility = Config.Java.version
@@ -79,10 +96,16 @@ android {
 dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 
-    implementation("it.sephiroth.android.library.debuglog:debuglog-annotations:${Config.VERSION}")
+    // include asm runtime libs
+    implementation(Config.Dependencies.AndroidAsm.debuglogRuntime)
+    implementation(Config.Dependencies.AndroidAsm.loggingRuntime)
+    implementation(Config.Dependencies.AndroidAsm.loggingLevelRuntime)
 
-    implementation("androidx.appcompat:appcompat:1.4.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
+    implementation("io.reactivex.rxjava3:rxjava:3.1.3")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

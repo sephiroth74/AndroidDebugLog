@@ -14,7 +14,10 @@ buildscript {
     dependencies {
         classpath(Config.Dependencies.Android.buildGradle)
         classpath(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))
-        classpath("it.sephiroth.android.library.debuglog:debuglog-plugin:${Config.VERSION}")
+
+        classpath(Config.Dependencies.AndroidAsm.loggingPlugin)
+        classpath(Config.Dependencies.AndroidAsm.debugLogPlugin)
+        classpath(Config.Dependencies.AndroidAsm.loggingLevelPlugin)
     }
 }
 
