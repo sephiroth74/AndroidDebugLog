@@ -1,6 +1,8 @@
 package it.sephiroth.android.app.debuglog_example;
 
 import android.annotation.SuppressLint;
+import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.util.Log;
 
 import it.sephiroth.android.library.asm.runtime.logging.Trunk;
@@ -17,6 +19,9 @@ class TestLoggingLevel {
         testAndroidLog();
         testTimberLog();
         testTrunkLog();
+
+        testReturnCursor();
+        testReturnMatrixCursor();
     }
 
     private static void testAndroidLog() {
@@ -56,6 +61,18 @@ class TestLoggingLevel {
         Trunk.v(new RuntimeException(), "test trunk exception");
         Trunk.w(new RuntimeException());
         Trunk.e(new RuntimeException(), "test exception");
+    }
+
+    public static Cursor testReturnCursor() {
+        Cursor c = new MatrixCursor(new String[]{"ID"});
+        ((MatrixCursor) c).newRow().add(1);
+        return c;
+    }
+
+    public static MatrixCursor testReturnMatrixCursor() {
+        MatrixCursor c = new MatrixCursor(new String[]{"ID"});
+        c.newRow().add(1);
+        return DebugCursorWrapper.create(c);
     }
 
     static final String TAG = TestLoggingLevel.class.getSimpleName();

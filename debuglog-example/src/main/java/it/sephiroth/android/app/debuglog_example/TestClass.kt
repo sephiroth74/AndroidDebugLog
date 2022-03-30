@@ -1,6 +1,8 @@
 package it.sephiroth.android.app.debuglog_example
 
 import android.content.Context
+import android.database.Cursor
+import android.database.MatrixCursor
 import android.util.Log
 import it.sephiroth.android.library.asm.runtime.logging.Trunk
 import timber.log.Timber
@@ -57,6 +59,12 @@ class TestClass {
             return Runnable { type.run() }
         }
         return null
+    }
+
+    private fun testReturnCursor(): Cursor {
+        val cursor = MatrixCursor(arrayOf("ID"))
+        cursor.newRow().add("ciao")
+        return cursor
     }
 
     private fun testInnerClass() {

@@ -15,7 +15,7 @@ object Config {
     const val KOTLIN_VERSION = "1.6.10"
 
     // this library version
-    const val VERSION = "1.0.1-rc5-SNAPSHOT"
+    const val VERSION = "1.0.1-rc5"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 

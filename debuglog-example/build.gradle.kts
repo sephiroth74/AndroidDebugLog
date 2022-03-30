@@ -37,14 +37,14 @@ plugins {
  * It will contain all the included plugins specific options
  */
 androidASM {
+
     logging {
-        enabled = true
+        enabled = false
         runVariant = ".*debug"
     }
 
-
     debugLog {
-        enabled = true
+        enabled = false
         runVariant = ".*debug"
         debugExit = true
         debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
@@ -52,7 +52,7 @@ androidASM {
     }
 
     loggingLevel {
-        enabled = true
+        enabled = false
         runVariant = ".*debug"
         minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
         includeLibs = true
