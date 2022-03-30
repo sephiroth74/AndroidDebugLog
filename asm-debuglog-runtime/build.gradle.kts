@@ -1,11 +1,9 @@
-// debuglog-annotations/build.gradle.kts
-
 @file:Suppress("LocalVariableName")
 
 plugins {
     id("com.android.library")
-    id("maven-publish")
     id("kotlin-android")
+    id("maven-publish")
     signing
 }
 
