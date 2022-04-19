@@ -18,45 +18,65 @@ See last version here: https://search.maven.org/artifact/it.sephiroth.android.li
 
 Add the classpath `it.sephiroth.android.library.debuglog:debuglog-plugin:*version` to your root **build.gradle** file:
 
-    buildscript {
+buildscript {
+    ext.debuglog_version = "1.0.0-rc4"
+
+    dependencies {
+        ...
+        classpath "it.sephiroth.android.library.asm:asm-debuglog-plugin:$debuglog_version"
+        classpath "it.sephiroth.android.library.asm:asm-logging-plugin:$debuglog_version"
+        classpath "it.sephiroth.android.library.asm:asm-logging-level-plugin:$debuglog_version"
+    }
+}
+
+
+then in your root settings.gradle file:
+
+
+    pluginManagement {
         repositories {
+            gradlePluginPortal()
+            google()
+            mavenCentral()
             ...
             maven { url = uri("https://repo1.maven.org/maven2") }
         }
-
-        dependencies {
-            ...
-            classpath("it.sephiroth.android.library.debuglog:debuglog-plugin:*version*")
-        }
     }
 
-
-    allprojects {
-        repositories {
-            ...
-            maven { url = uri("https://repo1.maven.org/maven2") }
-        }
-    }
 
 Then, your in your module **build.gradle** file, enable the plugin:
 
     plugins {
         ...
-        id("it.sephiroth.android.library.debuglog")
+        id 'it.sephiroth.android.library.asm.asm-debuglog-plugin'
+        id 'it.sephiroth.android.library.asm.asm-logging-plugin'
+        id 'it.sephiroth.android.library.asm.asm-logging-level-plugin'
     }
 
-    // it can be configured globally in this way:
-    androidDebugLog {
-        enabled.set(true)
-        logLevel.set(AndroidLogLevel.VERBOSE)
-        debugResult.set(false)
-        debugArguments.set(DebugArguments.Full)
-        runVariant.set(".*") // <- this is the default value (enabled for all variants)
-    }
     
-    dependencies {
-        ...
-        implementation("it.sephiroth.android.library.debuglog:debuglog-annotations:*version")
+    // android asm plugins configuration block
+    androidASM {
+
+        // configuration for the Trunk logging
+        logging {
+            enabled = true
+        }
+
+        // configuration for DebugLog and DebugLogClass annotations
+        debugLog {
+            enabled = true
+            debugExit = false
+            debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
+            logLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
+        }
+
+        // configuration for the logging level plugin
+        loggingLevel {
+            enabled = true
+            runVariant = ".*release"
+            minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
+            includeLibs = true
+        }
     }
 
 # Usage
