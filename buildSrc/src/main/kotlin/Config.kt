@@ -12,17 +12,17 @@ import org.gradle.api.JavaVersion
 object Config {
     const val ASM_VERSION = "9.2"
 
-    const val KOTLIN_VERSION = "1.6.10"
+    const val KOTLIN_VERSION = "1.6.21"
 
     // this library version
-    const val VERSION = "1.0.1-rc5"
+    const val VERSION = "1.0.2"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
     val DEBUG = VERSION.endsWith("SNAPSHOT")
 
     object Versions {
-        const val androidGradlePlugin = "7.1.2"
+        const val androidGradlePlugin = "7.2.0"
         const val androidTools = "30.0.0"
         const val autoService = "1.0-rc7"
     }
@@ -92,8 +92,8 @@ object Config {
         }
 
         object Android {
-            const val buildGradle = "com.android.tools.build:gradle:7.1.2"
-            const val buildGradleApi = "com.android.tools.build:gradle-api:7.1.2"
+            const val buildGradle = "com.android.tools.build:gradle:${Versions.androidGradlePlugin}"
+            const val buildGradleApi = "com.android.tools.build:gradle-api:${Versions.androidGradlePlugin}"
             const val androidCoreKtx = "androidx.core:core-ktx:1.7.0"
         }
 

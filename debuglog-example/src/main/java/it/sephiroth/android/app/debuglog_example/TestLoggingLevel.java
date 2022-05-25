@@ -72,7 +72,7 @@ class TestLoggingLevel {
     public static MatrixCursor testReturnMatrixCursor() {
         MatrixCursor c = new MatrixCursor(new String[]{"ID"});
         c.newRow().add(1);
-        return DebugCursorWrapper.create(c);
+        return c;
     }
 
     static final String TAG = TestLoggingLevel.class.getSimpleName();

@@ -1,5 +1,6 @@
 package it.sephiroth.android.library.asm.runtime.logging
 
+import android.os.Build
 import android.util.Log
 import androidx.annotation.Keep
 import java.io.PrintWriter
@@ -16,6 +17,8 @@ import java.io.StringWriter
 @Suppress("unused", "UNUSED_PARAMETER")
 @Keep
 object Trunk {
+    private const val MAX_LOG_LENGTH = 4000
+    private const val MAX_TAG_LENGTH = 23
 
     /**
      * Can be replaced at runtime to enable/disable logging
@@ -153,14 +156,41 @@ object Trunk {
             }
         }
 
-        logToAndroidLog(priority, tag, msg)
+        logToAndroidLog(priority, reduceTag(tag), msg)
+    }
+
+    private fun reduceTag(tag: String): String {
+        return if (Build.VERSION.SDK_INT >= 26 || tag.length <= MAX_TAG_LENGTH) tag
+        else tag.substring(0, MAX_TAG_LENGTH)
     }
 
     private fun logToAndroidLog(priority: Int, tag: String?, message: String) {
-        if (priority == Log.ASSERT) {
-            Log.wtf(tag, message)
-        } else {
-            Log.println(priority, tag, message)
+        if (message.length < MAX_LOG_LENGTH) {
+            if (priority == Log.ASSERT) {
+                Log.wtf(tag, message)
+            } else {
+                Log.println(priority, tag, message)
+            }
+            return
+        }
+
+        // Split by line to fit into Log's maximum length.
+        var i = 0
+        val length = message.length
+        while (i < length) {
+            var newline = message.indexOf('\n', i)
+            newline = if (newline != -1) newline else length
+            do {
+                val end = newline.coerceAtMost(i + MAX_LOG_LENGTH)
+                val part = message.substring(i, end)
+                if (priority == Log.ASSERT) {
+                    Log.wtf(tag, part)
+                } else {
+                    Log.println(priority, tag, part)
+                }
+                i = end
+            } while (i < newline)
+            i++
         }
     }
 

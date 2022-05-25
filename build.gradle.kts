@@ -1,9 +1,9 @@
 buildscript {
 
     dependencies {
-        //classpath("it.sephiroth.android.library.asm:asm-debuglog-plugin:${Config.VERSION}")
-        //classpath("it.sephiroth.android.library.asm:asm-logging-plugin:${Config.VERSION}")
-        //classpath("it.sephiroth.android.library.asm:asm-logging-level-plugin:${Config.VERSION}")
+//        classpath("it.sephiroth.android.library.asm:asm-debuglog-plugin:${Config.VERSION}")
+//        classpath("it.sephiroth.android.library.asm:asm-logging-plugin:${Config.VERSION}")
+//        classpath("it.sephiroth.android.library.asm:asm-logging-level-plugin:${Config.VERSION}")
     }
 }
 

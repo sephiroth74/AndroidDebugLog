@@ -39,12 +39,12 @@ plugins {
 androidASM {
 
     logging {
-        enabled = false
+        enabled = true
         runVariant = ".*debug"
     }
 
     debugLog {
-        enabled = false
+        enabled = true
         runVariant = ".*debug"
         debugExit = true
         debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
