@@ -108,7 +108,9 @@ class ParamsLogger(
                     paramsList.append(String.format(PARAMETER_PRINT_FORMAT, name, value))
                 }
             } else if (debugArguments == DebugArguments.SHORT) {
-                if (value.javaClass.isArray) {
+                if (value is IDebugLog) {
+                    paramsList.append(String.format(PARAMETER_PRINT_FORMAT, name, value.toStringShort()))
+                } else if (value.javaClass.isArray) {
                     paramsList.append(String.format(PARAMETER_PRINT_FORMAT, name, arrayToHashCode(value)))
                 } else if (value is String || value is Enum<*>) {
                     paramsList.append(String.format(PARAMETER_PRINT_FORMAT, name, value))
