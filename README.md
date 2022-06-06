@@ -53,6 +53,13 @@ Then, your in your module **build.gradle** file, enable the plugin:
         id 'it.sephiroth.android.library.asm.asm-logging-plugin'
         id 'it.sephiroth.android.library.asm.asm-logging-level-plugin'
     }
+    
+    dependencies {
+        ...
+        implementation "it.sephiroth.android.library.asm:asm-debuglog-runtime:$debuglog_version"
+        implementation "it.sephiroth.android.library.asm:asm-logging-runtime:$debuglog_version"
+        implementation "it.sephiroth.android.library.asm:asm-logging-level-runtime:$debuglog_version"        
+    }
 
     
     // android asm plugins configuration block
