@@ -18,8 +18,9 @@ See last version here: https://search.maven.org/artifact/it.sephiroth.android.li
 
 Add the classpath `it.sephiroth.android.library.debuglog:debuglog-plugin:*version` to your root **build.gradle** file:
 
+
 buildscript {
-    ext.debuglog_version = "1.0.0-rc4"
+    ext.debuglog_version = "1.0.4"
 
     dependencies {
         ...
