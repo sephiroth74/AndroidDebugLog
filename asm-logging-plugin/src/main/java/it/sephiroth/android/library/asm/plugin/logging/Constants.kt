@@ -1,7 +1,7 @@
 package it.sephiroth.android.library.asm.plugin.logging
 
-import it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel
-import it.sephiroth.android.library.asm.plugin.core.vo.ClassMethodVo
+import it.sephiroth.android.library.asm.commons.AndroidLogLevel
+import it.sephiroth.android.library.asm.commons.vo.ClassMethodVo
 import org.objectweb.asm.Opcodes
 
 @Suppress("SpellCheckingInspection", "unused")
@@ -16,9 +16,9 @@ object Constants {
         const val CLASS_NAME = "it/sephiroth/android/library/asm/runtime/logging/Trunk"
 
         // original calls
-        internal val ONCE = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
-        internal val ONCE_THROWABLE = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
-        internal val ONCE_THROWABLE_ONLY = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/Throwable;)V", Opcodes.INVOKESTATIC)
+        private val ONCE = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
+        private val ONCE_THROWABLE = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
+        private val ONCE_THROWABLE_ONLY = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/Throwable;)V", Opcodes.INVOKESTATIC)
 
         private val V = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
         private val V_THROWABLE = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
@@ -88,7 +88,7 @@ object Constants {
     }
 
     object TimberForest {
-        const val CLASS_NAME = "timber/log/Timber\$Forest"
+        private const val CLASS_NAME = "timber/log/Timber\$Forest"
 
         // original calls
         val V = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKEVIRTUAL)
@@ -148,7 +148,7 @@ object Constants {
     }
 
     object Timber {
-        const val CLASS_NAME = "timber/log/Timber"
+        private const val CLASS_NAME = "timber/log/Timber"
 
         // original calls
         private val V = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)

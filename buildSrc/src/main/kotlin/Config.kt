@@ -15,7 +15,7 @@ object Config {
     const val KOTLIN_VERSION = "1.7.20"
 
     // this library version
-    const val VERSION = "1.0.9"
+    const val VERSION = "2.0.0-SNAPSHOT"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
@@ -112,6 +112,7 @@ object Config {
             const val debugLogPlugin = "$GROUP:asm-debuglog-plugin:$VERSION"
             const val loggingPlugin = "$GROUP:asm-logging-plugin:$VERSION"
             const val loggingLevelPlugin = "$GROUP:asm-logging-level-plugin:$VERSION"
+            const val commons = "$GROUP:asm-commons:$VERSION"
         }
 
         // @formatter:on

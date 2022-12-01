@@ -1,37 +1,31 @@
 package it.sephiroth.android.library.asm.plugin.logging
 
-import it.sephiroth.android.library.asm.plugin.core.AsmClassVisitor
-import it.sephiroth.android.library.asm.plugin.core.AsmClassWriter
-import it.sephiroth.android.library.asm.plugin.core.vo.IPluginData
-import it.sephiroth.android.library.asm.plugin.logging.vo.LoggingPluginData
-import org.objectweb.asm.ClassReader
+import com.android.build.api.instrumentation.ClassContext
+import it.sephiroth.android.library.asm.commons.Constants.ASM_VERSION
+import it.sephiroth.android.library.asm.commons.utils.StringUtils
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.MethodVisitor
+import org.slf4j.LoggerFactory
 
 
 /**
  * @author Alessandro Crugnola on 16.11.21 - 15:34
  */
 class LoggingClassVisitor(
-    cv: AsmClassWriter,
-    className: String,
-    superName: String,
-    pluginData: IPluginData
-) : AsmClassVisitor(cv, className, superName, pluginData) {
-
+    visitor: ClassVisitor,
+    private val classContext: ClassContext,
+    private val classWriter: ClassWriter,
+) : ClassVisitor(ASM_VERSION, visitor) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
     private val tagName = Constants.makeTag(this)
-
-    init {
-        logger.debug("$tagName visiting $className...")
-    }
+    private val simpleClassName = StringUtils.getSimpleClassName(classContext.currentClassData.className)
+    private val className = classContext.currentClassData.className
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor {
         logger.debug("[$tagName] visitMethod(className=$className, methodName=$name, signature=$signature, exceptions=$exceptions)")
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
-        val data = pluginData as LoggingPluginData
-        return LoggingMethodVisitor(className, simpleClassName, name, descriptor, mv, data)
+        return LoggingMethodVisitor(className, simpleClassName, name, descriptor, mv)
     }
 
-    override fun executeSecondPass(classWriter: AsmClassWriter, classReader: ClassReader) {
-        // do nothing
-    }
 }

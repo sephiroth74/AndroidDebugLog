@@ -1,7 +1,7 @@
 package it.sephiroth.android.library.asm.plugin.logging
 
-import it.sephiroth.android.library.asm.plugin.core.utils.AsmVisitorUtils
-import it.sephiroth.android.library.asm.plugin.logging.vo.LoggingPluginData
+import it.sephiroth.android.library.asm.commons.Constants.ASM_VERSION
+import it.sephiroth.android.library.asm.commons.utils.AsmVisitorUtils
 import org.gradle.api.logging.Logger
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
@@ -16,12 +16,9 @@ class LoggingMethodVisitor(
     private val methodName: String,
     private val descriptor: String,
     methodVisitor: MethodVisitor?,
-    private val pluginData: LoggingPluginData,
+//    private val pluginData: LoggingPluginData,
     private val callback: Callback? = null
-) : MethodVisitor(
-    it.sephiroth.android.library.asm.plugin.core.Constants.ASM_VERSION,
-    methodVisitor
-), Opcodes {
+) : MethodVisitor(ASM_VERSION, methodVisitor), Opcodes {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
     private val tagName = "[${Constants.makeTag(this)}] $simpleClassName:$methodName ->"

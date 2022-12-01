@@ -1,7 +1,3 @@
-// debuglog-plugin/build.gradle.kts
-
-@file:Suppress("SpellCheckingInspection")
-
 import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.plugins.signing.Sign
@@ -26,24 +22,6 @@ repositories {
 version = Config.VERSION
 group = Config.GROUP
 
-pluginBundle {
-    website = "https://github.com/sephiroth74/AndroidDebugLog"
-    vcsUrl = "https://github.com/sephiroth74/AndroidDebugLog"
-    tags = listOf("android", "compile-time", "logging")
-}
-
-gradlePlugin {
-    plugins {
-        create("loggingPlugin") {
-            id = "it.sephiroth.android.library.asm.${project.name}"
-            implementationClass = "it.sephiroth.android.library.asm.plugin.logging.LoggingPlugin"
-            displayName = "Log level plugin for AndroidASM"
-            description = "Logging tag made at compile time"
-        }
-    }
-}
-
-
 dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
     implementation(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))
@@ -59,16 +37,13 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
 
-    // using local
-//    api(project(":asm-core-plugin"))
-    api(project(":asm-commons"))
-
     annotationProcessor(Config.Dependencies.Misc.lombok)
 }
 
 tasks {
     val sourcesJar by creating(Jar::class) {
         archiveClassifier.set("sources")
+        //        from(sourceSets.main.get().allSource)
     }
 
     val javadocJar by creating(Jar::class) {
@@ -78,6 +53,8 @@ tasks {
     }
 
     artifacts {
+        //        archives(sourcesJar)
+        //        archives(javadocJar)
         archives(jar)
     }
 }
@@ -90,6 +67,8 @@ if (project.hasProperty("sonatypeUsername")
     val SONATYPE_RELEASE_URL: String by project
     val SONATYPE_SNAPSHOT_URL: String by project
     val publishingUrl = if (Config.DEBUG == false) SONATYPE_RELEASE_URL else SONATYPE_SNAPSHOT_URL
+
+    println("publishing to $publishingUrl")
 
     publishing {
         publications {
@@ -104,6 +83,7 @@ if (project.hasProperty("sonatypeUsername")
                     description.set(Config.Pom.DESCRIPTION)
                     url.set(Config.Pom.URL)
                     name.set(project.name)
+
 
                     licenses {
                         license {

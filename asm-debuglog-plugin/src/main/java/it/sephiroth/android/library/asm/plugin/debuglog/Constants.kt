@@ -1,6 +1,7 @@
 package it.sephiroth.android.library.asm.plugin.debuglog
 
 import it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel
+import org.objectweb.asm.Opcodes
 
 object Constants {
 
@@ -18,6 +19,16 @@ object Constants {
     const val DEFAULT_DEBUG_ENTER = true
 
     val DEFAULT_DEBUG_ARGUMENTS = DebugArguments.Full
+
+    object ASMPlugin {
+        const val ASM_VERSION: Int = Opcodes.ASM9
+
+        const val BASE_EXTENSION_NAME = "androidASM"
+
+        object JavaTypes {
+            const val TYPE_OBJECT = "java/lang/Object"
+        }
+    }
 
     object JavaTypes {
         // from asm-common project
