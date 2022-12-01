@@ -11,6 +11,7 @@ import it.sephiroth.android.library.asm.runtime.debuglog.DebugLogger.DefaultDebu
 import it.sephiroth.android.library.asm.runtime.logging.Trunk
 import it.sephiroth.android.library.asm.runtime.logginglevel.LoggingLevel
 import timber.log.Timber
+import java.io.IOException
 
 @SuppressLint("LogNotTimber")
 class MainActivity : AppCompatActivity() {
@@ -51,6 +52,13 @@ class MainActivity : AppCompatActivity() {
             emitter.onComplete()
         }.subscribeOn(Schedulers.computation()).subscribe {
             Log.d(TAG, "test completed")
+        }
+
+        listOf<String>("hello", "strange", "world").forEach {
+            Trunk.once(1_000, Log.ERROR, "(once) this message should appear only once for message: $it")
+            Trunk.once(1_009, Log.INFO, "(once) this message should appear only once for message: $it")
+            Trunk.once(1_001, Log.WARN, RuntimeException("(once) test exception"))
+            Trunk.once(1_002, Log.DEBUG, IOException("test io exception"), "(once) message with args: %s", it)
         }
     }
 

@@ -35,10 +35,13 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
     protected val logger: Logger = project.logger
 
     private val progressLoggerFactory = project.serviceOf<ProgressLoggerFactory>()
-    protected val progressLogger: ProgressLogger = progressLoggerFactory.newOperation(this.javaClass)
+    protected var progressLogger: ProgressLogger? = null
 
     @Suppress("UNCHECKED_CAST")
-    protected val pluginExtension: T = project.extensions.getByType(AsmCoreBasePluginExtension::class.java).extensions.getByType(extensionClass)
+    protected val pluginExtension: T =
+        project.extensions.getByType(AsmCoreBasePluginExtension::class.java).extensions.getByType(
+            extensionClass
+        )
 
     private val pluginScopes: HashSet<QualifiedContent.Scope> = hashSetOf(
         QualifiedContent.Scope.PROJECT,
@@ -49,7 +52,13 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
 
     init {
         logger.debug("[$tagName] ${this::class.java.simpleName} added to project $project.name")
-        progressLogger.description = "[$tagName] Transform Input"
+        try {
+            progressLogger = progressLoggerFactory.newOperation(this.javaClass)
+            progressLogger?.description = "[$tagName] Transform Input"
+        } catch (e: IllegalStateException) {
+            // ignore
+            progressLogger = null
+        }
     }
 
     abstract fun processJars(pluginExtension: T): Boolean
@@ -91,7 +100,13 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
 
         val enabled = isPluginEnabled(transformInvocation, pluginExtension)
 
-        logger.lifecycle("[$tagName] incremental: ${transformInvocation.isIncremental}, enabled: $enabled, processJars: ${processJars(pluginExtension)}")
+        logger.lifecycle(
+            "[$tagName] incremental: ${transformInvocation.isIncremental}, enabled: $enabled, processJars: ${
+                processJars(
+                    pluginExtension
+                )
+            }"
+        )
 
         if (!enabled) {
             logger.lifecycle("[$tagName] transformation not enabled")
@@ -104,11 +119,21 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             logger.lifecycle("[$tagName] transformation enabled: $enabled")
         }
 
-        progressLogger.started()
+        try {
+            progressLogger?.started()
+        } catch (_: Throwable) {
+            // ignored
+        }
 
-        processInput(transformInvocation, enabled)
-
-        progressLogger.completed()
+        try {
+            processInput(transformInvocation, enabled)
+        } finally {
+            try {
+                progressLogger?.completed()
+            } catch (_: Throwable) {
+                // ignored
+            }
+        }
 
         // log total execution time
         val endTime = System.currentTimeMillis()
@@ -142,7 +167,14 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
 
             // jar inputs
             input.jarInputs.forEach { jarInput ->
-                processJarInput(workQueue, transformInvocation, enabled, shouldProcessJars, jarInput, classPaths)
+                processJarInput(
+                    workQueue,
+                    transformInvocation,
+                    enabled,
+                    shouldProcessJars,
+                    jarInput,
+                    classPaths
+                )
             }
 
             // directory inputs
@@ -182,7 +214,11 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
             Format.JAR
         )
 
-        progressLogger.progress("[$tagName] processing jar ${jarInput.file.name} -> $destFile")
+        try {
+            progressLogger?.progress("[$tagName] processing jar ${jarInput.file.name} -> $destFile")
+        } catch (_: Throwable) {
+            // ignored
+        }
 
         if (transformInvocation.isIncremental) {
             when (status) {
@@ -238,7 +274,11 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         FileUtils.forceMkdir(dest)
 
         if (transformInvocation.isIncremental) {
-            progressLogger.progress("[$tagName] processing directory $directoryInput.file")
+            try {
+                progressLogger?.progress("[$tagName] processing directory $directoryInput.file")
+            } catch (_: Throwable) {
+                // ignored
+            }
 
             val srcDirPath = directoryInput.file.absolutePath
             val destDirPath = dest.absolutePath
@@ -250,7 +290,11 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
                 val destFilePath = inputFile.absolutePath.replace(srcDirPath, destDirPath)
                 val destFile = File(destFilePath)
 
-                progressLogger.progress("[$tagName] processing file $inputFile -> $destFile")
+                try {
+                    progressLogger?.progress("[$tagName] processing file $inputFile -> $destFile")
+                } catch (_:Throwable) {
+                    // ignored
+                }
 
                 when (status) {
                     Status.ADDED,
@@ -283,7 +327,11 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
         classPaths: List<URL>
     ) {
 
-        progressLogger.progress("[$tagName] processing directory $inputDir")
+        try {
+            progressLogger?.progress("[$tagName] processing directory $inputDir")
+        } catch (_:Throwable) {
+            // ignored
+        }
 
         if (!enabled) {
             FileUtils.copyDirectory(inputDir, outputDir)
@@ -298,7 +346,11 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
                     if (file.isFile) {
                         val filePath = file.absolutePath
                         val outputFile = File(filePath.replace(inputDirPath, outputDirPath))
-                        progressLogger.progress("[$tagName] processing file $file -> $outputFile")
+                        try {
+                            progressLogger?.progress("[$tagName] processing file $file -> $outputFile")
+                        } catch (_: Throwable) {
+                            // ignored
+                        }
                         transformSingleFile(workQueue, file, outputFile, classPaths)
                     }
                 }
@@ -369,7 +421,10 @@ abstract class AsmTransformer<T : AsmCorePluginExtension, R : IPluginData, Q : A
      * @param extension
      * @return
      */
-    protected open fun isPluginEnabled(transformInvocation: TransformInvocation, extension: T): Boolean {
+    protected open fun isPluginEnabled(
+        transformInvocation: TransformInvocation,
+        extension: T
+    ): Boolean {
         return isPluginEnabledForVariant(extension, transformInvocation.context.variantName)
     }
 

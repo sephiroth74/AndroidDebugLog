@@ -12,19 +12,19 @@ import org.gradle.api.JavaVersion
 object Config {
     const val ASM_VERSION = "9.2"
 
-    const val KOTLIN_VERSION = "1.6.21"
+    const val KOTLIN_VERSION = "1.7.20"
 
     // this library version
-    const val VERSION = "1.0.4"
+    const val VERSION = "1.0.9"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
     val DEBUG = VERSION.endsWith("SNAPSHOT")
 
     object Versions {
-        const val androidGradlePlugin = "7.2.0"
-        const val androidTools = "30.0.0"
-        const val autoService = "1.0-rc7"
+        const val androidGradlePlugin = "7.3.1"
+        const val androidTools = "32.0.0"
+        const val autoService = "1.0.1"
     }
 
     object Pom {
@@ -42,9 +42,9 @@ object Config {
     }
 
     object Android {
-        const val compileSdk = 31
+        const val compileSdk = 32
         const val minSdk = 24
-        const val targetSdk = 30
+        const val targetSdk = 32
     }
 
     object Java {
@@ -74,10 +74,10 @@ object Config {
         }
 
         object Lint {
-            const val core = "com.android.tools.lint:lint:${Versions.androidTools}"
-            const val api = "com.android.tools.lint:lint-api:${Versions.androidTools}"
-            const val checks = "com.android.tools.lint:lint-checks:${Versions.androidTools}"
-            const val tests = "com.android.tools.lint:lint-tests:${Versions.androidTools}"
+            const val core = "com.android.tools.lint:lint:30.3.1"
+            const val api = "com.android.tools.lint:lint-api:30.3.1"
+            const val checks = "com.android.tools.lint:lint-checks:30.3.1"
+            const val tests = "com.android.tools.lint:lint-tests:30.3.1"
         }
 
         object Misc {

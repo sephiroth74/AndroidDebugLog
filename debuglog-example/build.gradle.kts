@@ -14,6 +14,7 @@ buildscript {
     dependencies {
         classpath(Config.Dependencies.Android.buildGradle)
         classpath(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))
+        classpath(Config.Dependencies.AndroidAsm.loggingPlugin)
     }
 }
 

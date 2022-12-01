@@ -18,7 +18,10 @@ class LoggingMethodVisitor(
     methodVisitor: MethodVisitor?,
     private val pluginData: LoggingPluginData,
     private val callback: Callback? = null
-) : MethodVisitor(it.sephiroth.android.library.asm.plugin.core.Constants.ASM_VERSION, methodVisitor), Opcodes {
+) : MethodVisitor(
+    it.sephiroth.android.library.asm.plugin.core.Constants.ASM_VERSION,
+    methodVisitor
+), Opcodes {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
     private val tagName = "[${Constants.makeTag(this)}] $simpleClassName:$methodName ->"
@@ -31,7 +34,13 @@ class LoggingMethodVisitor(
         super.visitLineNumber(line, start)
     }
 
-    override fun visitMethodInsn(opcode: Int, owner: String?, name: String?, descriptor: String?, isInterface: Boolean) {
+    override fun visitMethodInsn(
+        opcode: Int,
+        owner: String?,
+        name: String?,
+        descriptor: String?,
+        isInterface: Boolean
+    ) {
         var handled = false
 
         if (opcode == Opcodes.INVOKESTATIC) {
@@ -50,6 +59,14 @@ class LoggingMethodVisitor(
         }
     }
 
+    override fun visitParameter(name: String?, access: Int) {
+        super.visitParameter(name, access)
+    }
+
+    override fun visitFieldInsn(opcode: Int, owner: String?, name: String?, descriptor: String?) {
+        super.visitFieldInsn(opcode, owner, name, descriptor)
+    }
+
     override fun visitEnd() {
         super.visitEnd()
         if (enabled) {
@@ -58,14 +75,40 @@ class LoggingMethodVisitor(
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun visitTrunkMethodInsn(opcode: Int, owner: String?, name: String?, descriptor: String?, isInterface: Boolean): Boolean {
+    private fun visitTrunkMethodInsn(
+        opcode: Int,
+        owner: String?,
+        name: String?,
+        descriptor: String?,
+        isInterface: Boolean
+    ): Boolean {
         val result = Constants.Trunk.replace(name, descriptor, opcode)
         if (null != result) {
             val priority = result.first
             val newMethod = result.second
-            AsmVisitorUtils.visitInt(this, priority)
-            super.visitLdcInsn("$simpleClassName[$lineNumber]")
-            super.visitMethodInsn(newMethod.opcode, newMethod.className, newMethod.methodName, newMethod.descriptor, false)
+
+            if (newMethod == Constants.Trunk.LOG_ONCE_TAG || newMethod == Constants.Trunk.LOG_ONCE_THROWABLE_ONLY_TAG || newMethod == Constants.Trunk.LOG_ONCE_THROWABLE_TAG) {
+                super.visitLdcInsn(simpleClassName)
+                AsmVisitorUtils.visitInt(this, lineNumber)
+                super.visitMethodInsn(
+                    newMethod.opcode,
+                    newMethod.className,
+                    newMethod.methodName,
+                    newMethod.descriptor,
+                    false
+                )
+            } else {
+                AsmVisitorUtils.visitInt(this, priority)
+                super.visitLdcInsn(simpleClassName)
+                AsmVisitorUtils.visitInt(this, lineNumber)
+                super.visitMethodInsn(
+                    newMethod.opcode,
+                    newMethod.className,
+                    newMethod.methodName,
+                    newMethod.descriptor,
+                    false
+                )
+            }
             return true
         }
         return false
@@ -73,5 +116,9 @@ class LoggingMethodVisitor(
 
     interface Callback {
         fun accept()
+    }
+
+    companion object {
+        val onceCodes = hashSetOf<Int>()
     }
 }

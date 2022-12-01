@@ -269,7 +269,9 @@ class WrongLoggingUsageDetector : Detector(), UastScanner {
             valid = when (last) {
                 'b', 'B' -> type == java.lang.Boolean.TYPE
                 'x', 'X', 'd', 'o', 'e', 'E', 'f', 'g', 'G', 'a', 'A' -> {
-                    type == Integer.TYPE || type == java.lang.Float.TYPE || type == java.lang.Double.TYPE || type == java.lang.Long.TYPE || type == java.lang.Byte.TYPE || type == java.lang.Short.TYPE
+                    type == Integer.TYPE || type == java.lang.Float.TYPE ||
+                            type == java.lang.Double.TYPE || type == java.lang.Long.TYPE ||
+                            type == java.lang.Byte.TYPE || type == java.lang.Short.TYPE
                 }
                 'c', 'C' -> type == Character.TYPE
                 'h', 'H' -> type != java.lang.Boolean.TYPE && !Number::class.java.isAssignableFrom(type)

@@ -101,42 +101,142 @@ object Trunk {
     fun wtf(throwable: Throwable?) {
     }
 
+    @JvmStatic
+    fun once(
+        code: Int,
+        @androidx.annotation.IntRange(
+            from = Log.VERBOSE.toLong(),
+            to = Log.ASSERT.toLong()
+        ) priority: Int,
+        message: String?,
+        vararg args: Any?
+    ) {
+    }
+
+    @JvmStatic
+    fun once(code: Int, priority: Int, throwable: Throwable?, message: String?, vararg args: Any?) {
+    }
+
+    @JvmStatic
+    fun once(code: Int, priority: Int, throwable: Throwable?) {
+    }
+
     // endregion API visible methods
 
     // ----------------------------------------------------
     // region Replacement methods
 
+    private val codeCache = hashSetOf<Int>()
+
     @JvmSynthetic
     @JvmStatic
-    fun log(message: String, args: Array<out Any?>?, priority: Int, tag: String) {
-        logInternal(priority, null, message, args, tag)
+    fun logOnce(
+        code: Int,
+        priority: Int,
+        message: String?,
+        vararg args: Any?,
+        tag: String,
+        lineNumber: Int
+    ) {
+        if (codeCache.add(code)) {
+            logInternal(priority, null, message, args, tag, lineNumber)
+        }
     }
 
     @JvmSynthetic
     @JvmStatic
-    fun log(throwable: Throwable?, message: String, args: Array<out Any?>?, priority: Int, tag: String) {
-        logInternal(priority, throwable, message, args, tag)
+    fun logOnce(
+        code: Int,
+        priority: Int,
+        throwable: Throwable?,
+        message: String,
+        args: Array<out Any?>?,
+        tag: String,
+        lineNumber: Int,
+    ) {
+        if (codeCache.add(code)) {
+            logInternal(priority, throwable, message, args, tag, lineNumber)
+        }
     }
 
     @JvmSynthetic
     @JvmStatic
-    fun log(throwable: Throwable, priority: Int, tag: String) {
-        logInternal(priority, throwable, null, null, tag)
+    fun logOnce(
+        code: Int,
+        priority: Int,
+        throwable: Throwable,
+        tag: String,
+        lineNumber: Int
+    ) {
+        if (codeCache.add(code)) {
+            logInternal(priority, throwable, null, null, tag, lineNumber)
+        }
+    }
+
+
+    @JvmSynthetic
+    @JvmStatic
+    fun log(
+        message: String,
+        args: Array<out Any?>?,
+        priority: Int,
+        tag: String,
+        lineNumber: Int
+    ) {
+        logInternal(priority, null, message, args, tag, lineNumber)
+    }
+
+    @JvmSynthetic
+    @JvmStatic
+    fun log(
+        throwable: Throwable?,
+        message: String,
+        args: Array<out Any?>?,
+        priority: Int,
+        tag: String,
+        lineNumber: Int
+    ) {
+        logInternal(priority, throwable, message, args, tag, lineNumber)
+    }
+
+    @JvmSynthetic
+    @JvmStatic
+    fun log(
+        throwable: Throwable,
+        priority: Int,
+        tag: String,
+        lineNumber: Int
+    ) {
+        logInternal(priority, throwable, null, null, tag, lineNumber)
     }
 
 
     // endregion Replacement methods
 
     @JvmStatic
-    private fun logInternal(priority: Int, throwable: Throwable?, message: String?, args: Array<out Any?>?, tag: String) {
+    private fun logInternal(
+        priority: Int,
+        throwable: Throwable?,
+        message: String?,
+        args: Array<out Any?>?,
+        tag: String,
+        lineNumber: Int
+    ) {
         if (args != null) {
-            prepareLog(tag, priority, throwable, message, *args)
+            prepareLog(tag, lineNumber, priority, throwable, message, *args)
         } else {
-            prepareLog(tag, priority, throwable, message)
+            prepareLog(tag, lineNumber, priority, throwable, message)
         }
     }
 
-    private fun prepareLog(tag: String, priority: Int, t: Throwable?, message: String?, vararg args: Any?) {
+    private fun prepareLog(
+        tag: String,
+        lineNumber: Int,
+        priority: Int,
+        t: Throwable?,
+        message: String?,
+        vararg args: Any?
+    ) {
         if (!isLoggable(tag, priority)) {
             return
         }
@@ -156,7 +256,7 @@ object Trunk {
             }
         }
 
-        logToAndroidLog(priority, reduceTag(tag), msg)
+        logToAndroidLog(priority, reduceTag(tag), "[$lineNumber] $msg")
     }
 
     private fun reduceTag(tag: String): String {

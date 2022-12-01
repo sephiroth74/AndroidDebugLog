@@ -16,6 +16,10 @@ object Constants {
         const val CLASS_NAME = "it/sephiroth/android/library/asm/runtime/logging/Trunk"
 
         // original calls
+        internal val ONCE = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
+        internal val ONCE_THROWABLE = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
+        internal val ONCE_THROWABLE_ONLY = ClassMethodVo(CLASS_NAME, "once", "(IILjava/lang/Throwable;)V", Opcodes.INVOKESTATIC)
+
         private val V = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
         private val V_THROWABLE = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V", Opcodes.INVOKESTATIC)
         private val V_THROWABLE_ONLY = ClassMethodVo(CLASS_NAME, "v", "(Ljava/lang/Throwable;)V", Opcodes.INVOKESTATIC)
@@ -41,13 +45,20 @@ object Constants {
         private val WTF_THROWABLE_ONLY = ClassMethodVo(CLASS_NAME, "wtf", "(Ljava/lang/Throwable;)V", Opcodes.INVOKESTATIC)
 
         // replacements
-        internal val LOG_TAG = ClassMethodVo(CLASS_NAME, "log", "(Ljava/lang/String;[Ljava/lang/Object;ILjava/lang/String;)V", Opcodes.INVOKESTATIC)
-        internal val LOG_THROWABLE_TAG = ClassMethodVo(CLASS_NAME, "log", "(Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;ILjava/lang/String;)V", Opcodes.INVOKESTATIC)
-        internal val LOG_THROWABLE_ONLY_TAG = ClassMethodVo(CLASS_NAME, "log", "(Ljava/lang/Throwable;ILjava/lang/String;)V", Opcodes.INVOKESTATIC)
+        internal val LOG_TAG = ClassMethodVo(CLASS_NAME, "log", "(Ljava/lang/String;[Ljava/lang/Object;ILjava/lang/String;I)V", Opcodes.INVOKESTATIC)
+        internal val LOG_THROWABLE_TAG = ClassMethodVo(CLASS_NAME, "log", "(Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;ILjava/lang/String;I)V", Opcodes.INVOKESTATIC)
+        internal val LOG_THROWABLE_ONLY_TAG = ClassMethodVo(CLASS_NAME, "log", "(Ljava/lang/Throwable;ILjava/lang/String;I)V", Opcodes.INVOKESTATIC)
 
+        internal val LOG_ONCE_TAG = ClassMethodVo(CLASS_NAME, "logOnce", "(IILjava/lang/String;[Ljava/lang/Object;Ljava/lang/String;I)V", Opcodes.INVOKESTATIC)
+        internal val LOG_ONCE_THROWABLE_TAG = ClassMethodVo(CLASS_NAME, "logOnce", "(IILjava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;I)V", Opcodes.INVOKESTATIC)
+        internal val LOG_ONCE_THROWABLE_ONLY_TAG = ClassMethodVo(CLASS_NAME, "logOnce", "(IILjava/lang/Throwable;Ljava/lang/String;I)V", Opcodes.INVOKESTATIC)
 
         fun replace(methodName: String?, descriptor: String?, opcode: Int): Pair<Int, ClassMethodVo>? {
             return when {
+                ONCE.matches(methodName, descriptor, opcode) -> Pair(AndroidLogLevel.VERBOSE.value, LOG_ONCE_TAG)
+                ONCE_THROWABLE.matches(methodName, descriptor, opcode) -> Pair(AndroidLogLevel.VERBOSE.value, LOG_ONCE_THROWABLE_TAG)
+                ONCE_THROWABLE_ONLY.matches(methodName, descriptor, opcode) -> Pair(AndroidLogLevel.VERBOSE.value, LOG_ONCE_THROWABLE_ONLY_TAG)
+
                 V.matches(methodName, descriptor, opcode) -> Pair(AndroidLogLevel.VERBOSE.value, LOG_TAG)
                 V_THROWABLE.matches(methodName, descriptor, opcode) -> Pair(AndroidLogLevel.VERBOSE.value, LOG_THROWABLE_TAG)
                 V_THROWABLE_ONLY.matches(methodName, descriptor, opcode) -> Pair(AndroidLogLevel.VERBOSE.value, LOG_THROWABLE_ONLY_TAG)
