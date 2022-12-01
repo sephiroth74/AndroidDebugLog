@@ -68,7 +68,7 @@ if (project.hasProperty("sonatypeUsername")
     val SONATYPE_SNAPSHOT_URL: String by project
     val publishingUrl = if (Config.DEBUG == false) SONATYPE_RELEASE_URL else SONATYPE_SNAPSHOT_URL
 
-    println("publishing to $publishingUrl")
+    println("publishing `${Config.GROUP}:$name:${Config.VERSION}` to $publishingUrl")
 
     publishing {
         publications {

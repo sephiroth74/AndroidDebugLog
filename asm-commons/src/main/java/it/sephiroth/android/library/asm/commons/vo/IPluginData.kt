@@ -9,4 +9,4 @@ import java.io.Serializable
 
 
 
-interface IPluginData : Serializable {}
+interface IPluginData : Serializable

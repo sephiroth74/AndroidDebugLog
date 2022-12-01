@@ -23,7 +23,7 @@ class LoggingClassVisitor(
     private val className = classContext.currentClassData.className
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor {
-        logger.debug("[$tagName] visitMethod(className=$className, methodName=$name, signature=$signature, exceptions=$exceptions)")
+        logger.trace("[$tagName] visitMethod(className=$className, methodName=$name, signature=$signature, exceptions=$exceptions)")
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
         return LoggingMethodVisitor(className, simpleClassName, name, descriptor, mv)
     }

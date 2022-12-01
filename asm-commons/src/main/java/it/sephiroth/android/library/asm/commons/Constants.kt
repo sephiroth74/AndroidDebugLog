@@ -12,6 +12,9 @@ object Constants {
 
     const val BASE_EXTENSION_NAME = "androidASM"
 
+    @Suppress("UNUSED_PARAMETER")
+    fun makeTag(obj: Any): String = BASE_EXTENSION_NAME
+
     object JavaTypes {
         const val TYPE_OBJECT = "java/lang/Object"
     }

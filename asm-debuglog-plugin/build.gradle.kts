@@ -52,7 +52,8 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
 
-    api(project(":asm-core-plugin"))
+//    api(project(":asm-core-plugin"))
+    api(project(":asm-commons"))
 
     annotationProcessor(Config.Dependencies.Misc.lombok)
 }

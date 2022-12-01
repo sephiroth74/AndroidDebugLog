@@ -23,20 +23,11 @@ plugins {
     id("kotlin-android")
 
     // include asm-debuglog plugin
-//    id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
+    id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
 
     // include ams-logging plugin
     id("it.sephiroth.android.library.asm.asm-logging-plugin")
 
-    // include ams-logging-level plugin (should be the last plugin inside the plugins block)
-//    id("it.sephiroth.android.library.asm.asm-logging-level-plugin")
-}
-
-androidASM {
-    logging {
-        enabled = true
-        runVariant = ".*"
-    }
 }
 
 
@@ -44,28 +35,20 @@ androidASM {
  * Main androidASM container
  * It will contain all the included plugins specific options
  */
-//androidASM {
-//    logging {
-//        enabled = true
-//        runVariant = ".*debug"
-//    }
-//
-//    debugLog {
-//        enabled = true
-//        runVariant = ".*debug"
-//        debugExit = true
-//        debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
-//        logLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.INFO
-//    }
-//
-//    loggingLevel {
-//        enabled = false
-//        runVariant = ".*debug"
-//        minLogLevel = it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel.DEBUG
-//        includeLibs = true
-//    }
-//}
+androidASM {
+    logging {
+        enabled = true
+        runVariant = ".*"
+    }
 
+    debugLog {
+        enabled = true
+        runVariant = ".*debug"
+        debugExit = true
+        debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
+        logLevel = it.sephiroth.android.library.asm.commons.AndroidLogLevel.VERBOSE
+    }
+}
 
 
 android {
@@ -78,16 +61,7 @@ android {
         versionCode = 1
         versionName = "0.2.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
     }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
-
-    sourceSets.getAt("release").java.srcDir("src/release/java")
 
     compileOptions {
         sourceCompatibility = Config.Java.version
@@ -97,13 +71,28 @@ android {
     kotlinOptions {
         jvmTarget = Config.Kotlin.jvmVersion
     }
+
+//    flavorDimensions += "api"
+//
+//    productFlavors {
+//        this.create("flavor1") {
+//            dimension = "api"
+//        }
+//    }
+
+
+    sourceSets {
+        getAt("release").java.srcDir("src/release/java")
+        findByName("flavor1")?.kotlin?.srcDir("src/flavor1/java")
+    }
+
 }
 
 dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 
     // include asm runtime libs
-//    implementation(Config.Dependencies.AndroidAsm.debuglogRuntime)
+    implementation(Config.Dependencies.AndroidAsm.debuglogRuntime)
     implementation(Config.Dependencies.AndroidAsm.loggingRuntime)
 //    implementation(Config.Dependencies.AndroidAsm.loggingLevelRuntime)
 

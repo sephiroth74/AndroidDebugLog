@@ -1,10 +1,12 @@
 package it.sephiroth.android.library.asm.plugin.debuglog
 
-import it.sephiroth.android.library.asm.plugin.core.AndroidLogLevel
-import it.sephiroth.android.library.asm.plugin.core.AsmCorePluginExtension
+import it.sephiroth.android.library.asm.commons.AndroidLogLevel
+import it.sephiroth.android.library.asm.commons.plugin.AsmPluginExtension
+import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodData
+import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodParameter
 
 @Suppress("LeakingThis")
-abstract class DebugLogPluginExtension : AsmCorePluginExtension() {
+abstract class DebugLogPluginExtension : AsmPluginExtension() {
 
     /**
      * Default log level for the final log output
@@ -23,6 +25,7 @@ abstract class DebugLogPluginExtension : AsmCorePluginExtension() {
      */
     var debugArguments: DebugArguments = Constants.DEFAULT_DEBUG_ARGUMENTS
 
+    var methodsMap = hashMapOf<String, HashMap<String, Pair<MethodData, List<MethodParameter>>>>()
 
     override fun toString(): String {
         return "${BuildConfig.EXTENSION_NAME}(enabled=${enabled}, logLevel=${logLevel}, debugExit=${debugExit}, debugArguments=${debugArguments}, runVariant=${runVariant})"

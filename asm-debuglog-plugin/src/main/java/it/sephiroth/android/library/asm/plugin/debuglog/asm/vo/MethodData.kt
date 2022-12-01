@@ -27,11 +27,11 @@ data class MethodData(
     val finalTag: String
         get() = tag?.takeIf { it.isNotBlank() } ?: simpleClassName
 
-    fun copyFrom(input: IDebugLogPluginData) {
-        debugExit = input.debugExit
-        debugEnter = input.debugEnter
-        logLevel = input.logLevel.value
-        debugArguments = input.debugArguments.value
+    fun copyFrom(input: DebugLogPluginParameters) {
+        debugExit = input.debugExit.get()
+        debugEnter = input.debugEnter.get()
+        logLevel = input.logLevel.get().value
+        debugArguments = input.debugArguments.get().value
     }
 
     fun copyFrom(input: MethodData) {

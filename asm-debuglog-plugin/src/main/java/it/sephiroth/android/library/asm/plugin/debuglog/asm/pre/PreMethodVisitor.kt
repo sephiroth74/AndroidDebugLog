@@ -1,5 +1,7 @@
 package it.sephiroth.android.library.asm.plugin.debuglog.asm.pre
 
+import it.sephiroth.android.library.asm.commons.Constants.ASM_VERSION
+import it.sephiroth.android.library.asm.commons.Constants.makeTag
 import it.sephiroth.android.library.asm.plugin.debuglog.Constants
 import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodData
 import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodParameter
@@ -8,56 +10,43 @@ import org.objectweb.asm.*
 import org.objectweb.asm.commons.LocalVariablesSorter
 import org.slf4j.LoggerFactory
 
+@Suppress("unused")
 class PreMethodVisitor(
     private val methodName: String,
     private val className: String,
-    access: Int,
-    descriptor: String,
-    methodVisitor: MethodVisitor,
+    private val access: Int,
+    private val descriptor: String,
+    private val methodVisitor: MethodVisitor?,
     private val methodData: MethodData,
-    classMethodData: MethodData?,
-    private val callback: Callback?
-) : LocalVariablesSorter(it.sephiroth.android.library.asm.plugin.core.Constants.ASM_VERSION, access, descriptor, methodVisitor), Opcodes {
-
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java) as Logger
-    private val tagName = "[${Constants.makeTag(this)}]"
-
+    private val callback: ((MethodData, List<MethodParameter>) -> Unit)? = null
+) :
+    LocalVariablesSorter(ASM_VERSION, access, descriptor, methodVisitor), Opcodes {
+    private val logger: Logger = LoggerFactory.getLogger(PreMethodVisitor::class.java) as Logger
+    private val tagName = makeTag(this)
     private val labels = mutableListOf<Label>()
     private val parameters = mutableListOf<MethodParameter>()
     private var enabled = false
 
-    init {
-        logger.debug("$tagName visiting method $className::$methodName")
-
-        classMethodData?.let {
-            methodData.copyFrom(it)
-            enabled = it.enabled
-            logger.info("$tagName $methodData")
-        }
-    }
-
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor {
-        logger.debug("$tagName ${className}:$methodName visitAnnotation $descriptor")
-
         val av = super.visitAnnotation(descriptor, visible)
+
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG};") {
-            val av2 = PreAnnotationVisitor(av, methodData, object : PreAnnotationVisitor.Callback {
-                override fun accept(methodData: MethodData) {
-                    enabled = methodData.enabled
-                    logger.debug("$tagName ${className}:${methodName} -> is enabled = $enabled (${methodData})")
-                }
-            })
+            val av2 = PreAnnotationVisitor(av, methodData) { methodData ->
+                enabled = methodData.enabled
+                logger.debug("$tagName $methodName -> is enabled = $enabled (${methodData})")
+            }
             return av2
         } else if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_SKIP};") {
             enabled = false
             methodData.skipMethod = true
-            logger.info("$tagName $className:$methodName -> should be skipped")
+            logger.debug("$tagName $className:$methodName -> should be skipped")
         }
         return av
     }
 
     override fun visitLocalVariable(name: String, descriptor: String, signature: String?, start: Label, end: Label, index: Int) {
         if (enabled && "this" != name && start == labels.first()) {
+            logger.debug("$tagName visitLocalVariable($name)")
             val type = Type.getType(descriptor)
             if (type.sort == Type.OBJECT || type.sort == Type.ARRAY) {
                 parameters.add(MethodParameter(name, "L${Constants.JavaTypes.TYPE_OBJECT};", index))
@@ -74,13 +63,10 @@ class PreMethodVisitor(
     }
 
     override fun visitEnd() {
+
         super.visitEnd()
         if (enabled) {
-            callback?.accept(methodData, parameters)
+            callback?.invoke(methodData, parameters)
         }
-    }
-
-    interface Callback {
-        fun accept(methodData: MethodData, params: List<MethodParameter>)
     }
 }

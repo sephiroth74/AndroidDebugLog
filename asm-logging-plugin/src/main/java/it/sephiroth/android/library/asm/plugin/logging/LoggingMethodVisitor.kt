@@ -87,6 +87,7 @@ class LoggingMethodVisitor(
             if (newMethod == Constants.Trunk.LOG_ONCE_TAG || newMethod == Constants.Trunk.LOG_ONCE_THROWABLE_ONLY_TAG || newMethod == Constants.Trunk.LOG_ONCE_THROWABLE_TAG) {
                 super.visitLdcInsn(simpleClassName)
                 AsmVisitorUtils.visitInt(this, lineNumber)
+
                 super.visitMethodInsn(
                     newMethod.opcode,
                     newMethod.className,
