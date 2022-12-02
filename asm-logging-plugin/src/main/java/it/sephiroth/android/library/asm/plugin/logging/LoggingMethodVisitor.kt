@@ -31,7 +31,6 @@ class LoggingMethodVisitor(
     private var lineNumber: Int = 0
 
     override fun visitLineNumber(line: Int, start: Label?) {
-        logger.lifecycle("$tagName visitLineNumber($line)")
         lineNumber = line
         super.visitLineNumber(line, start)
     }
@@ -71,7 +70,7 @@ class LoggingMethodVisitor(
     ): Boolean {
         val result = Constants.Trunk.replace(name, descriptor, opcode)
         if (null != result) {
-            logger.lifecycle("$tagName Adding Trunk replacement at line $lineNumber")
+            logger.debug("$tagName Adding Trunk replacement at line $lineNumber")
             val priority = result.first
             val newMethod = result.second
 
