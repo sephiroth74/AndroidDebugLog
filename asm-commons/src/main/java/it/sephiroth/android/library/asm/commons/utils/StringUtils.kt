@@ -11,6 +11,6 @@ object StringUtils {
     }
 
     fun getSimpleClassName(fullClassName: String): String {
-        return fullClassName.split("/").last()
+        return fullClassName.split("[\\/\\.]".toRegex()).last()
     }
 }

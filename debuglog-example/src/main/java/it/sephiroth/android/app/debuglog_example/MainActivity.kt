@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugArguments
-import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLog
+//import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugArguments
+//import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLog
 //import it.sephiroth.android.library.asm.runtime.debuglog.DebugLogger
 //import it.sephiroth.android.library.asm.runtime.debuglog.DebugLogger.DefaultDebugLogHandler
 import it.sephiroth.android.library.asm.runtime.logging.Trunk
@@ -17,7 +17,7 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    @DebugLog(logLevel = Log.DEBUG, debugArguments = DebugArguments.FULL, debugExit = true, debugEnter = true, tag = "ciccio")
+    //    @DebugLog(logLevel = Log.DEBUG, debugArguments = DebugArguments.FULL, debugExit = true, debugEnter = true, tag = "ciccio")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.plant(Timber.DebugTree())
@@ -28,31 +28,31 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    @DebugLog(logLevel = Log.DEBUG, debugArguments = DebugArguments.FULL, debugExit = true, debugEnter = true, tag = "ciccio")
+//    @DebugLog(logLevel = Log.DEBUG, debugArguments = DebugArguments.FULL, debugExit = true, debugEnter = true, tag = "ciccio")
     override fun onResume() {
         super.onResume()
-//        runTests()
+        runTests()
     }
-//
-//    @SuppressLint("CheckResult")
-//    private fun runTests() {
-//        Completable.create { emitter ->
-//            Trunk.i("runTests")
-//            emitter.onComplete()
-//        }.subscribeOn(Schedulers.computation())
-//            .subscribe {
-//                Log.d(TAG, "test completed")
-//            }
-//
-//        listOf<String>("hello", "strange", "world").forEach {
-//            Trunk.once(1_000, Log.ERROR, "(once) this message should appear only once for message: $it")
-//            Trunk.once(1_009, Log.INFO, "(once) this message should appear only once for message: $it")
-//            Trunk.once(1_001, Log.WARN, RuntimeException("(once) test exception"))
-//            Trunk.once(1_002, Log.DEBUG, IOException("test io exception"), "(once) message with args: %s", it)
-//        }
-//    }
-//
-//    companion object {
-//        const val TAG = "MainActivity"
-//    }
+
+    @SuppressLint("CheckResult")
+    private fun runTests() {
+        Completable.create { emitter ->
+            Trunk.i("runTests")
+            emitter.onComplete()
+        }.subscribeOn(Schedulers.computation())
+            .subscribe {
+                Trunk.d("test completed")
+            }
+
+        listOf<String>("hello", "strange", "world").forEach {
+            Trunk.once(1_000, Log.ERROR, "(once) this message should appear only once for message: $it")
+            Trunk.d("(once) this message should appear only once for message: $it")
+            Trunk.e(RuntimeException("(once) test exception"))
+            Trunk.w(IOException("test io exception"), "(once) message with args: %s", it)
+        }
+    }
+
+    companion object {
+        const val TAG = "MainActivity"
+    }
 }

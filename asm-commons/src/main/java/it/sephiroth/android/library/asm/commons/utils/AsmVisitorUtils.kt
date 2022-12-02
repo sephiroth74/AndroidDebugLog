@@ -3,15 +3,17 @@ package it.sephiroth.android.library.asm.commons.utils
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
+import org.objectweb.asm.commons.InstructionAdapter
 
 object AsmVisitorUtils {
-    fun visitInt(mv: MethodVisitor, value: Int) {
-        val level = Opcodes.ICONST_0 + value
-        if (level > Opcodes.ICONST_5) {
-            mv.visitIntInsn(Opcodes.BIPUSH, value)
-        } else {
-            mv.visitInsn(level)
-        }
+    fun visitInt(mv: InstructionAdapter, value: Int) {
+        mv.iconst(value)
+//        val level = Opcodes.ICONST_0 + value
+//        if (level > Opcodes.ICONST_5) {
+//            mv.visitIntInsn(Opcodes.BIPUSH, value)
+//        } else {
+//            mv.visitInsn(level)
+//        }
     }
 
     fun getLoadOpcodeFromDesc(desc: String): Int {

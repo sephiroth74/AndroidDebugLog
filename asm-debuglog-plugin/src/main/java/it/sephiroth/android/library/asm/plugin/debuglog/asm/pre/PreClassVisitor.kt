@@ -34,13 +34,8 @@ class PreClassVisitor(
     val methodsParametersMap = hashMapOf<String, Pair<MethodData, List<MethodParameter>>>()
     var requireSecondPass = false
 
-    init {
-        logger.lifecycle("=> Visiting class: $className ****")
-    }
-
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor? {
         logger.debug("$tagName visitAnnotation($className, $descriptor)")
-
         val av = super.visitAnnotation(descriptor, visible)
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_CLASS};") {
             classMethodData = MethodData("", "", simpleClassName).apply { copyFrom(pluginData) }
@@ -50,7 +45,7 @@ class PreClassVisitor(
     }
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor? {
-        logger.debug("$tagName visitMethod($name)")
+        logger.lifecycle("$tagName [pre] visitMethod($name)")
 
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
 

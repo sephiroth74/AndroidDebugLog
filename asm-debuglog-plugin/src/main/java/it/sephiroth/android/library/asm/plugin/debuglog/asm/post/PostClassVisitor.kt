@@ -11,10 +11,10 @@ import org.objectweb.asm.MethodVisitor
 import org.slf4j.LoggerFactory
 
 class PostClassVisitor(
+    visitor: ClassVisitor,
     private val classContext: ClassContext,
-    nextClassVisitor: ClassVisitor,
-    private val paramsMap: Map<String, Pair<MethodData, List<MethodParameter>>>
-) : ClassVisitor(ASM_VERSION, nextClassVisitor) {
+    private val paramsMapClosure: (() -> Map<String, Pair<MethodData, List<MethodParameter>>>)
+) : ClassVisitor(ASM_VERSION, visitor) {
 
     private val className: String = classContext.currentClassData.className
     private val logger: Logger = LoggerFactory.getLogger(PostClassVisitor::class.java) as Logger
@@ -28,11 +28,11 @@ class PostClassVisitor(
         exceptions: Array<out String>?
     ): MethodVisitor {
 
-        logger.lifecycle("[$tagName] visitMethod($name)")
+        logger.lifecycle("[$tagName] [post] visitMethod($name)")
 
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
         val methodUniqueKey = MethodData.generateUniqueKey(name, descriptor)
-        val methodDataPair = paramsMap[methodUniqueKey]
+        val methodDataPair = paramsMapClosure.invoke()[methodUniqueKey]
 
         if (null != methodDataPair) {
             return PostMethodVisitor(classContext, mv, methodDataPair.second, methodDataPair.first, access, descriptor)

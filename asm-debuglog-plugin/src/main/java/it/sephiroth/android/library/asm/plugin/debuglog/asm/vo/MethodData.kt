@@ -11,7 +11,7 @@ data class MethodData(
     val name: String,
     val descriptor: String,
     val simpleClassName: String
-) {
+) : java.io.Serializable {
     var debugExit: Boolean = false
     var debugEnter: Boolean = true
     var logLevel: Int = Constants.DEFAULT_LOG_LEVEL.value

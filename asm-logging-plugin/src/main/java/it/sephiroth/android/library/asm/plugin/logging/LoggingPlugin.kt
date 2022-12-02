@@ -39,7 +39,7 @@ abstract class LoggingPlugin : Plugin<Project> {
                     variant.instrumentation.transformClassesWith(ClassVisitorFactory::class.java, InstrumentationScope.PROJECT) { params ->
                         params.writeToStdout.set(true)
                     }
-                    variant.instrumentation.setAsmFramesComputationMode(FramesComputationMode.COMPUTE_FRAMES_FOR_ALL_CLASSES)
+                    variant.instrumentation.setAsmFramesComputationMode(FramesComputationMode.COMPUTE_FRAMES_FOR_INSTRUMENTED_METHODS)
                 } else {
                     logger.lifecycle("[$extensionName] ${target.name}:${variant.name} not enabled because runVariant[$runVariant] does not match")
                 }
@@ -56,7 +56,7 @@ abstract class LoggingPlugin : Plugin<Project> {
 
     abstract class ClassVisitorFactory : AsmClassVisitorFactory<ClassVisitorFactoryParams> {
         override fun createClassVisitor(classContext: ClassContext, nextClassVisitor: ClassVisitor): ClassVisitor {
-            return LoggingClassVisitor(nextClassVisitor, classContext, ClassWriter(ASM_VERSION))
+            return LoggingClassVisitor(nextClassVisitor, classContext)
         }
 
         override fun isInstrumentable(classData: ClassData): Boolean {

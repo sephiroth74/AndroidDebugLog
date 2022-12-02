@@ -23,7 +23,7 @@ plugins {
     id("kotlin-android")
 
     // include asm-debuglog plugin
-    id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
+//    id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
 
     // include ams-logging plugin
     id("it.sephiroth.android.library.asm.asm-logging-plugin")
@@ -41,13 +41,13 @@ androidASM {
         runVariant = ".*"
     }
 
-    debugLog {
-        enabled = true
-        runVariant = ".*debug"
-        debugExit = true
-        debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
-        logLevel = it.sephiroth.android.library.asm.commons.AndroidLogLevel.VERBOSE
-    }
+//    debugLog {
+//        enabled = true
+//        runVariant = ".*"
+//        debugExit = true
+//        debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
+//        logLevel = it.sephiroth.android.library.asm.commons.AndroidLogLevel.VERBOSE
+//    }
 }
 
 
@@ -92,7 +92,7 @@ dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 
     // include asm runtime libs
-    implementation(Config.Dependencies.AndroidAsm.debuglogRuntime)
+//    implementation(Config.Dependencies.AndroidAsm.debuglogRuntime)
     implementation(Config.Dependencies.AndroidAsm.loggingRuntime)
 //    implementation(Config.Dependencies.AndroidAsm.loggingLevelRuntime)
 

@@ -6,6 +6,7 @@ import it.sephiroth.android.library.asm.commons.utils.StringUtils
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.commons.InstructionAdapter
 import org.slf4j.LoggerFactory
 
 
@@ -14,18 +15,16 @@ import org.slf4j.LoggerFactory
  */
 class LoggingClassVisitor(
     visitor: ClassVisitor,
-    private val classContext: ClassContext,
-    private val classWriter: ClassWriter,
+    private val classContext: ClassContext
 ) : ClassVisitor(ASM_VERSION, visitor) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val tagName = Constants.makeTag(this)
-    private val simpleClassName = StringUtils.getSimpleClassName(classContext.currentClassData.className)
     private val className = classContext.currentClassData.className
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor {
         logger.trace("[$tagName] visitMethod(className=$className, methodName=$name, signature=$signature, exceptions=$exceptions)")
-        val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
-        return LoggingMethodVisitor(className, simpleClassName, name, descriptor, mv)
+        val mv = InstructionAdapter(super.visitMethod(access, name, descriptor, signature, exceptions))
+        return LoggingMethodVisitor(className, name, access, descriptor, mv)
     }
 
 }
