@@ -30,7 +30,7 @@ abstract class DebugLogPluginInit : Plugin<Project> {
         base.extensions.create(extensionName, DebugLogPluginExtension::class.java)
 
 //        target.plugins.apply(DebugLogPluginPost::class.java)
-        target.plugins.apply(DebugLogPluginPre::class.java)
+//        target.plugins.apply(DebugLogPlugin::class.java)
     }
 
     companion object {

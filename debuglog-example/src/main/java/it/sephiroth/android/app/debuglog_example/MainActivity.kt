@@ -14,15 +14,18 @@ import androidx.appcompat.app.AppCompatActivity
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLog
+import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLogClass
+import it.sephiroth.android.library.asm.runtime.debuglog.annotations.DebugLogSkip
 import it.sephiroth.android.library.asm.runtime.logging.Trunk
 import timber.log.Timber
 import java.io.IOException
 
+@DebugLogClass
 class MainActivity : AppCompatActivity() {
 
-    @DebugLog(enabled = true)
+    @DebugLog
     @NonNull
-    fun testMethod(@NonNull input: Int = 16): Int {
+    final fun testMethod(@NonNull input: Int = 16): Int {
         for (a in 0 until 100) {
             when (@Nullable a) {
                 else -> Trunk.d("a = $a")
@@ -34,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     //    @DebugLog(logLevel = Log.DEBUG, debugArguments = DebugArguments.FULL, debugExit = true, debugEnter = true, tag = "ciccio")
+    @DebugLogSkip
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.plant(Timber.DebugTree())

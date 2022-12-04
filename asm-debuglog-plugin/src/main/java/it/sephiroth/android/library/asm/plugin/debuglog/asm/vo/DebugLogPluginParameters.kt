@@ -13,7 +13,9 @@ abstract class DebugLogPluginParameters : InstrumentationParameters {
                 "logLevel=${logLevel.orNull}, " +
                 "debugExit=${debugExit.orNull}, " +
                 "debugEnter=${debugEnter.orNull}, " +
-                "debugArguments=${debugArguments.orNull})"
+                "debugArguments=${debugArguments.orNull}, " +
+                "verbose=${verbose.orNull}, " +
+                ")"
     }
 
     @get:Input
@@ -27,5 +29,8 @@ abstract class DebugLogPluginParameters : InstrumentationParameters {
 
     @get:Input
     abstract val debugArguments: Property<DebugArguments>
+
+    @get:Input
+    abstract val verbose: Property<Boolean>
 
 }

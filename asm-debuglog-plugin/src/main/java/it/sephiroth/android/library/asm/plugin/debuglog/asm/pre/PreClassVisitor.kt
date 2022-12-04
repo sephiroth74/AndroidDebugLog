@@ -30,9 +30,10 @@ class PreClassVisitor(
     private val className = classContext.currentClassData.className
     private val tag = makeTag(this)
     private var classData: ClassAnnotationData? = null
+    private val verbose = pluginData.verbose.getOrElse(false)
 
     init {
-        logger.lifecycle("$tag init(pluginData=$pluginData)")
+        if (verbose) logger.lifecycle("$tag visiting class `$className`...")
     }
 
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor? {
@@ -42,21 +43,19 @@ class PreClassVisitor(
             classData = ClassAnnotationData.from(pluginData, className)
             classData!!.enabled = true
             PreAnnotationVisitor(av, classData!!)
-
-        } else if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_SKIP};") {
-            classData = ClassAnnotationData.from(pluginData, className)
-            classData!!.enabled = false
         }
         return null
     }
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor {
         val mv: MethodVisitor = super.visitMethod(access, name, descriptor, signature, exceptions)
-        if (name == "testMethod") {
-            logger.lifecycle("$tag visitMethod($simpleClassName:$name) -> classData:$classData")
-            return PreMethodVisitor(name, className, access, name, descriptor, mv, classData, pluginData)
+        val data = classData
+
+        return if ("<clinit>" == name || (null != data && !data.isEnabled())) {
+            logger.debug("$tag $simpleClassName:$name will be skipped")
+            mv
         } else {
-            return mv
+            PreMethodVisitor(name, className, access, name, descriptor, mv, classData, pluginData)
         }
     }
 }

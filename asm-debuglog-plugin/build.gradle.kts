@@ -28,7 +28,7 @@ gradlePlugin {
     plugins {
         create("debugLogPlugin") {
             id = "it.sephiroth.android.library.asm.${project.name}"
-            implementationClass = "it.sephiroth.android.library.asm.plugin.debuglog.DebugLogPluginInit"
+            implementationClass = "it.sephiroth.android.library.asm.plugin.debuglog.DebugLogPlugin"
             displayName = "Android Debug Log Plugin"
             description = "A compile time debug library annotation for android projects"
         }

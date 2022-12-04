@@ -2,6 +2,7 @@ package it.sephiroth.android.library.asm.plugin.debuglog
 
 import com.android.build.api.instrumentation.*
 import com.android.build.api.variant.AndroidComponentsExtension
+import it.sephiroth.android.library.asm.commons.Constants
 import it.sephiroth.android.library.asm.commons.plugin.AsmBaseExtension
 import it.sephiroth.android.library.asm.plugin.debuglog.asm.pre.PreClassVisitor
 import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.DebugLogPluginParameters
@@ -10,16 +11,21 @@ import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.objectweb.asm.ClassVisitor
 
-abstract class DebugLogPluginPre : Plugin<Project> {
+abstract class DebugLogPlugin : Plugin<Project> {
     private lateinit var logger: Logger
     private val extensionName = BuildConfig.EXTENSION_NAME
 
     override fun apply(target: Project) {
         logger = target.logger
-        logger.lifecycle("[DebugLogPluginPre] apply(${target.name})")
+        logger.info("[DebugLogPlugin] apply(${target.name})")
 
-        val baseExtension = target.extensions.getByType(AsmBaseExtension::class.java)
-        val extension = baseExtension.extensions.getByType(DebugLogPluginExtension::class.java)
+        val base = if (target.extensions.findByName(Constants.BASE_EXTENSION_NAME) == null) {
+            target.extensions.create(Constants.BASE_EXTENSION_NAME, AsmBaseExtension::class.java)
+        } else {
+            target.extensions.getByType(AsmBaseExtension::class.java)
+        } // androidASM
+
+        val extension = base.extensions.create(extensionName, DebugLogPluginExtension::class.java) // debugLog
 
         val androidComponent = target.extensions.getByType(AndroidComponentsExtension::class.java)
         androidComponent.onVariants { variant ->
@@ -34,13 +40,14 @@ abstract class DebugLogPluginPre : Plugin<Project> {
                         params.debugArguments.set(extension.debugArguments)
                         params.debugEnter.set(true)
                         params.debugExit.set(extension.debugExit)
+                        params.verbose.set(extension.verbose)
                     }
                     variant.instrumentation.setAsmFramesComputationMode(FramesComputationMode.COMPUTE_FRAMES_FOR_INSTRUMENTED_METHODS)
                 } else {
-                    logger.lifecycle("[$extensionName] ${target.name}:${variant.name} not enabled because runVariant[$runVariant] does not match")
+                    logger.info("[$extensionName] ${target.name}:${variant.name} not enabled because runVariant[$runVariant] does not match")
                 }
             } else {
-                logger.lifecycle("[$extensionName] plugin not enabled on ${target.name}:${variant.name}")
+                logger.info("[$extensionName] plugin not enabled on ${target.name}:${variant.name}")
             }
         }
     }

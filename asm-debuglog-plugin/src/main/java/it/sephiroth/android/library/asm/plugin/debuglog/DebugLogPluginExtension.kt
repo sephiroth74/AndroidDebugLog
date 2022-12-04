@@ -2,9 +2,17 @@ package it.sephiroth.android.library.asm.plugin.debuglog
 
 import it.sephiroth.android.library.asm.commons.AndroidLogLevel
 import it.sephiroth.android.library.asm.commons.plugin.AsmPluginExtension
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.kotlin.dsl.property
+import javax.inject.Inject
 
 @Suppress("LeakingThis")
 abstract class DebugLogPluginExtension : AsmPluginExtension() {
+
+    @Inject
+    abstract fun getObjectFactory(): ObjectFactory
 
     /**
      * Default log level for the final log output
@@ -22,6 +30,13 @@ abstract class DebugLogPluginExtension : AsmPluginExtension() {
      * Set the default level of a method parameter logging
      */
     var debugArguments: DebugArguments = Constants.DEFAULT_DEBUG_ARGUMENTS
+
+    @get:Input
+    val verbose: Property<Boolean> = getObjectFactory().property()
+
+    init {
+        verbose.convention(false)
+    }
 
     override fun toString(): String {
         return "${BuildConfig.EXTENSION_NAME}(enabled=${enabled}, logLevel=${logLevel}, debugExit=${debugExit}, debugArguments=${debugArguments}, runVariant=${runVariant})"

@@ -12,19 +12,19 @@ import org.slf4j.LoggerFactory
  */
 class PreAnnotationVisitor(
     av: AnnotationVisitor?,
-    private val annotationData: IAnnotationData
+    private val annotationData: IAnnotationData,
+    private val callback: (() -> Unit)? = null
 ) : AnnotationVisitor(ASM_VERSION, av) {
     private val logger: Logger = LoggerFactory.getLogger(PreAnnotationVisitor::class.java) as Logger
     private val tag = makeTag(this)
 
     override fun visit(name: String, value: Any) {
-        logger.lifecycle("$tag visit($name, $value)")
+        logger.debug("$tag visit($name, $value)")
         when (name) {
             "debugExit" -> annotationData.debugExit = value as Boolean
             "debugEnter" -> annotationData.debugEnter = value as Boolean
             "logLevel" -> annotationData.logLevel = value as Int
             "debugArguments" -> annotationData.debugArguments = value as Int
-            "enabled" -> annotationData.enabled = value as Boolean
             "tag" -> {
                 val tag = value as String
                 if (tag.isNotBlank()) annotationData.tag = tag
@@ -34,7 +34,7 @@ class PreAnnotationVisitor(
     }
 
     override fun visitEnd() {
-        logger.lifecycle("$tag annotationEnd() -> $annotationData")
         super.visitEnd()
+        callback?.invoke()
     }
 }

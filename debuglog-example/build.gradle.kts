@@ -36,6 +36,7 @@ plugins {
  * It will contain all the included plugins specific options
  */
 androidASM {
+
     logging {
         enabled = true
         runVariant = ".*"
@@ -47,6 +48,7 @@ androidASM {
         debugExit = true
         debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
         logLevel = it.sephiroth.android.library.asm.commons.AndroidLogLevel.VERBOSE
+        verbose.set(false)
     }
 }
 

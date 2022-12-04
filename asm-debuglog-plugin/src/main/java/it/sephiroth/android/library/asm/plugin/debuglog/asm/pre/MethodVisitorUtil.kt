@@ -27,7 +27,7 @@ internal object MethodVisitorUtil {
         var timingStartVarIndex: Int? = null
 
         if (methodData.debugEnter) {
-            logger.lifecycle("$tag printMethodStart(${methodData.simpleClassName}:${methodData.methodName})")
+            logger.info("$tag printMethodStart(${methodData.simpleClassName}:${methodData.methodName})")
 
             methodVisitor.visitTypeInsn(Opcodes.NEW, Constants.JavaTypes.TYPE_PARAMS_LOGGER)
             methodVisitor.visitInsn(Opcodes.DUP)
@@ -58,7 +58,7 @@ internal object MethodVisitorUtil {
 
         // Insert a start local variable containing the current time in ms
         if (methodData.debugExit) {
-            logger.lifecycle("$tag ${methodData.simpleClassName}:${methodData.methodName} -> adding currentTimeMillis variable")
+            logger.debug("$tag injecting currentTimeMillis variable")
             timingStartVarIndex = localVariablesSorter.newLocal(Type.LONG_TYPE)
             methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false)
             methodVisitor.visitVarInsn(Opcodes.LSTORE, timingStartVarIndex)
@@ -83,12 +83,11 @@ internal object MethodVisitorUtil {
             return
         }
 
-        logger.lifecycle("$tag printMethodEnd(${methodData.simpleClassName}:${methodData.methodName}) -> timingStartVarIndex=$timingStartVarIndex")
-        logger.lifecycle("methodData=$methodData")
-        logger.lifecycle("method descriptor = ${methodData.descriptor}")
+        logger.info("$tag printMethodEnd(${methodData.simpleClassName}:${methodData.methodName}) -> timingStartVarIndex=$timingStartVarIndex")
+        logger.debug("method descriptor = ${methodData.descriptor}")
 
         var returnType: Type = Type.getReturnType(methodData.descriptor)
-        logger.lifecycle("returnType=$returnType")
+        logger.debug("returnType=$returnType")
 
         var returnDesc: String = methodData.descriptor.substring(methodData.descriptor.indexOf(")") + 1)
         if (returnDesc.startsWith("[") || returnDesc.startsWith("L")) {
