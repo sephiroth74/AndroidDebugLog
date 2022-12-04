@@ -2,7 +2,7 @@ package it.sephiroth.android.library.asm.plugin.debuglog.asm.pre
 
 import it.sephiroth.android.library.asm.commons.Constants.ASM_VERSION
 import it.sephiroth.android.library.asm.commons.Constants.makeTag
-import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodData
+import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.IAnnotationData
 import org.gradle.api.logging.Logger
 import org.objectweb.asm.AnnotationVisitor
 import org.slf4j.LoggerFactory
@@ -12,31 +12,29 @@ import org.slf4j.LoggerFactory
  */
 class PreAnnotationVisitor(
     av: AnnotationVisitor?,
-    private val methodData: MethodData,
-    private val callback: ((MethodData) -> Unit)? = null,
+    private val annotationData: IAnnotationData
 ) : AnnotationVisitor(ASM_VERSION, av) {
     private val logger: Logger = LoggerFactory.getLogger(PreAnnotationVisitor::class.java) as Logger
-    private val tagName = makeTag(this)
+    private val tag = makeTag(this)
 
     override fun visit(name: String, value: Any) {
-        logger.debug("$tagName visiting($name, $value)")
+        logger.lifecycle("$tag visit($name, $value)")
         when (name) {
-            "debugExit" -> methodData.debugExit = value as Boolean
-            "debugEnter" -> methodData.debugEnter = value as Boolean
-            "logLevel" -> methodData.logLevel = value as Int
-            "debugArguments" -> methodData.debugArguments = value as Int
-            "enabled" -> methodData.enabled = value as Boolean
+            "debugExit" -> annotationData.debugExit = value as Boolean
+            "debugEnter" -> annotationData.debugEnter = value as Boolean
+            "logLevel" -> annotationData.logLevel = value as Int
+            "debugArguments" -> annotationData.debugArguments = value as Int
+            "enabled" -> annotationData.enabled = value as Boolean
             "tag" -> {
                 val tag = value as String
-                if (tag.isNotBlank()) methodData.tag = tag
+                if (tag.isNotBlank()) annotationData.tag = tag
             }
         }
         super.visit(name, value)
     }
 
     override fun visitEnd() {
+        logger.lifecycle("$tag annotationEnd() -> $annotationData")
         super.visitEnd()
-        callback?.invoke(methodData)
     }
-
 }

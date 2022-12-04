@@ -5,7 +5,6 @@ import it.sephiroth.android.library.asm.commons.utils.AsmVisitorUtils
 import it.sephiroth.android.library.asm.commons.utils.StringUtils
 import org.gradle.api.logging.Logger
 import org.objectweb.asm.Label
-import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.commons.InstructionAdapter
 import org.objectweb.asm.commons.LocalVariablesSorter

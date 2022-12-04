@@ -1,5 +1,7 @@
 package it.sephiroth.android.library.asm.commons
 
+import org.jetbrains.kotlin.tooling.core.withLinearClosure
+
 
 /**
  * AndroidDebugLog
@@ -9,13 +11,8 @@ package it.sephiroth.android.library.asm.commons
 
 object Constants {
     const val ASM_VERSION = BuildConfig.ASM_VERSION
-
     const val BASE_EXTENSION_NAME = "androidASM"
 
     @Suppress("UNUSED_PARAMETER")
-    fun makeTag(obj: Any): String = BASE_EXTENSION_NAME
-
-    object JavaTypes {
-        const val TYPE_OBJECT = "java/lang/Object"
-    }
+    fun makeTag(obj: Any): String = "$BASE_EXTENSION_NAME [${obj::class.java.simpleName}]"
 }

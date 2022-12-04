@@ -2,7 +2,7 @@ buildscript {
 
     dependencies {
         classpath(Config.Dependencies.AndroidAsm.loggingPlugin)
-//        classpath(Config.Dependencies.AndroidAsm.debugLogPlugin)
+        classpath(Config.Dependencies.AndroidAsm.debugLogPlugin)
     }
 }
 

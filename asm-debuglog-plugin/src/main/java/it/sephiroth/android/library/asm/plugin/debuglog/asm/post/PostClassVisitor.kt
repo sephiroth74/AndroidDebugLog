@@ -3,22 +3,23 @@ package it.sephiroth.android.library.asm.plugin.debuglog.asm.post
 import com.android.build.api.instrumentation.ClassContext
 import it.sephiroth.android.library.asm.commons.Constants
 import it.sephiroth.android.library.asm.commons.Constants.ASM_VERSION
-import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodData
-import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodParameter
+import it.sephiroth.android.library.asm.commons.utils.StringUtils
+import it.sephiroth.android.library.asm.plugin.debuglog.asm.pre.PreMethodVisitor
 import org.gradle.api.logging.Logger
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.slf4j.LoggerFactory
 
+@Suppress("CanBeParameter")
 class PostClassVisitor(
-    visitor: ClassVisitor,
+    private val classVisitor: ClassVisitor,
     private val classContext: ClassContext,
-    private val paramsMapClosure: (() -> Map<String, Pair<MethodData, List<MethodParameter>>>)
-) : ClassVisitor(ASM_VERSION, visitor) {
+) : ClassVisitor(ASM_VERSION, classVisitor) {
 
     private val className: String = classContext.currentClassData.className
+    private val simpleClassName = StringUtils.getSimpleClassName(className)
     private val logger: Logger = LoggerFactory.getLogger(PostClassVisitor::class.java) as Logger
-    private val tagName = Constants.makeTag(this)
+    private val tag = Constants.makeTag(this)
 
     override fun visitMethod(
         access: Int,
@@ -27,16 +28,14 @@ class PostClassVisitor(
         signature: String?,
         exceptions: Array<out String>?
     ): MethodVisitor {
-
-        logger.lifecycle("[$tagName] [post] visitMethod($name)")
-
         val mv = super.visitMethod(access, name, descriptor, signature, exceptions)
-        val methodUniqueKey = MethodData.generateUniqueKey(name, descriptor)
-        val methodDataPair = paramsMapClosure.invoke()[methodUniqueKey]
-
-        if (null != methodDataPair) {
-            return PostMethodVisitor(classContext, mv, methodDataPair.second, methodDataPair.first, access, descriptor)
-        }
-        return mv
+        logger.lifecycle("$tag visitMethod($simpleClassName:$name)")
+//        val mv = InstructionAdapter(super.visitMethod(access, name, descriptor, signature, exceptions))
+        return PostMethodVisitor(classContext, mv as PreMethodVisitor, access, name, descriptor)
     }
+
+    override fun visitEnd() {
+        super.visitEnd()
+    }
+
 }

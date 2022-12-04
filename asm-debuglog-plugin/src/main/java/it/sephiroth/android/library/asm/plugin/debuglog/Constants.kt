@@ -5,9 +5,6 @@ import org.objectweb.asm.Opcodes
 
 object Constants {
 
-    @Suppress("UNUSED_PARAMETER")
-    fun makeTag(obj: Any): String = BuildConfig.EXTENSION_NAME
-
     //
     // default values for the plugin
     //

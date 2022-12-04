@@ -2,7 +2,7 @@ package it.sephiroth.android.library.asm.plugin.debuglog
 
 import it.sephiroth.android.library.asm.commons.Constants
 import it.sephiroth.android.library.asm.commons.plugin.AsmBaseExtension
-import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodData
+import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodAnnotationData
 import it.sephiroth.android.library.asm.plugin.debuglog.asm.vo.MethodParameter
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -27,15 +27,13 @@ abstract class DebugLogPluginInit : Plugin<Project> {
         }
 
         logger.lifecycle("[DebugLogPluginInit] registering extension ${Constants.BASE_EXTENSION_NAME}.$extensionName")
-        val extension = base.extensions.create(extensionName, DebugLogPluginExtension::class.java)
+        base.extensions.create(extensionName, DebugLogPluginExtension::class.java)
 
-        logger.lifecycle("[DebugLogPluginInit] result = $extension")
-
+//        target.plugins.apply(DebugLogPluginPost::class.java)
         target.plugins.apply(DebugLogPluginPre::class.java)
-        target.plugins.apply(DebugLogPluginPost::class.java)
     }
 
     companion object {
-        val map = hashMapOf<String, HashMap<String, Pair<MethodData, List<MethodParameter>>>>()
+        val map = hashMapOf<String, HashMap<String, Pair<MethodAnnotationData, List<MethodParameter>>>>()
     }
 }
