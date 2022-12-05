@@ -59,6 +59,7 @@ class PreMethodVisitor(
                 val methodData = if (null != classData) MethodAnnotationData(classData, methodName, this.descriptor)
                 else MethodAnnotationData(pluginData, className, methodName, this.descriptor)
                 this.methodData = methodData
+                deferredCalls.add { finalMethodVisitor.visitAnnotation(descriptor, visible) }
                 PreAnnotationVisitor(av, methodData)
             }
 
@@ -70,7 +71,6 @@ class PreMethodVisitor(
                 this.methodData = methodData
                 secondPass.set(true)
                 finalMethodVisitor.visitAnnotation(descriptor, visible)
-                // PreAnnotationVisitor(av, methodData)
             }
 
             else -> {
@@ -113,10 +113,16 @@ class PreMethodVisitor(
             return
         }
 
-        logger.info("$tag visitCode()")
+        logger.debug("$tag visitCode(methodData=$methodData)")
 
-        if (null == methodData && (null == classData || !classData.isEnabled())) {
+        if ((null == methodData && (null == classData || !classData.isEnabled())) || (methodData?.isEnabled() == false)) {
+            if (verbose) logger.lifecycle("$tag $className:$methodName will be skipped")
             secondPass.set(true)
+
+            // invoke any defereed calls added so far and then clear them
+            deferredCalls.forEach { function -> function.invoke() }
+            deferredCalls.clear()
+
             finalMethodVisitor.visitCode()
             return
         }

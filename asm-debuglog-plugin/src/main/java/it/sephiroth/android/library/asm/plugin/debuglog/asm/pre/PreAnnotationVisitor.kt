@@ -25,6 +25,7 @@ class PreAnnotationVisitor(
             "debugEnter" -> annotationData.debugEnter = value as Boolean
             "logLevel" -> annotationData.logLevel = value as Int
             "debugArguments" -> annotationData.debugArguments = value as Int
+            "enabled" -> annotationData.enabled = value as Boolean
             "tag" -> {
                 val tag = value as String
                 if (tag.isNotBlank()) annotationData.tag = tag

@@ -23,7 +23,7 @@ import java.io.IOException
 @DebugLogClass
 class MainActivity : AppCompatActivity() {
 
-    @DebugLog
+    @DebugLog(enabled = BuildConfig.IS_DEBUG)
     @NonNull
     final fun testMethod(@NonNull input: Int = 16): Int {
         for (a in 0 until 100) {
@@ -74,5 +74,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val TAG = "MainActivity"
+        const val ENABLED = false
     }
 }

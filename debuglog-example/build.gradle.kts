@@ -23,10 +23,10 @@ plugins {
     id("kotlin-android")
 
     // include asm-debuglog plugin
-    id("it.sephiroth.android.library.asm.asm-debuglog-plugin")
+    id("it.sephiroth.android.library.asm.asm-debuglog-plugin") version (Config.VERSION)
 
     // include ams-logging plugin
-    id("it.sephiroth.android.library.asm.asm-logging-plugin")
+    id("it.sephiroth.android.library.asm.asm-logging-plugin") version (Config.VERSION)
 
 }
 
@@ -45,10 +45,10 @@ androidASM {
     debugLog {
         enabled = true
         runVariant = ".*"
-        debugExit = true
+        debugExit = false
         debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
         logLevel = it.sephiroth.android.library.asm.commons.AndroidLogLevel.VERBOSE
-        verbose.set(false)
+        verbose.set(true)
     }
 }
 
@@ -63,6 +63,16 @@ android {
         versionCode = 1
         versionName = "0.2.3"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField("boolean", "IS_DEBUG", "true")
+        }
+
+        release {
+            buildConfigField("boolean", "IS_DEBUG", "false")
+        }
     }
 
     compileOptions {
