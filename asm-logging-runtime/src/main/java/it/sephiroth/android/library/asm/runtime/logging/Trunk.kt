@@ -29,6 +29,8 @@ object Trunk {
     // ----------------------------------------------------
     // region API visible methods
 
+    fun tag(tag: String): ILogger = LoggerTrunk(tag)
+
     @JvmStatic
     fun v(message: String?, vararg args: Any?) {
     }

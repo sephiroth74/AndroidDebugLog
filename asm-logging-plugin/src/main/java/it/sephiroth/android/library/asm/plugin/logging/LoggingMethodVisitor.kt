@@ -48,6 +48,10 @@ class LoggingMethodVisitor(
                 // Replace Trunk
                 handled = visitTrunkMethodInsn(opcode, owner, name, descriptor, isInterface)
             }
+        } else if (opcode == Opcodes.INVOKEINTERFACE) {
+            if (owner == Constants.ILogger.CLASS_NAME) {
+                handled = visitLoggerMethodInsn(opcode, owner, name, descriptor, isInterface)
+            }
         }
 
         if (handled) {
@@ -57,6 +61,40 @@ class LoggingMethodVisitor(
             logger.debug("$tagName not handled $owner:$name$descriptor (opcode=$opcode) in $className::$methodName[$lineNumber]")
             super.visitMethodInsn(opcode, owner, name, descriptor, isInterface)
         }
+    }
+
+    private fun visitLoggerMethodInsn(
+        opcode: Int,
+        owner: String?,
+        name: String?,
+        descriptor: String?,
+        isInterface: Boolean
+    ): Boolean {
+        println("****** visitLoggerMethdInsn ********")
+        println("opcode: $opcode, owner: $owner, name: $name, descriptor: $descriptor, isinterface: $isInterface")
+        val result = Constants.ILogger.replace(name, descriptor, opcode)
+        if (null != result) {
+            logger.debug("$tagName Adding Trunk replacement at line $lineNumber")
+
+            val priority = result.first
+            val newMethod = result.second
+
+//            methodVisitor.visitVarInsn(Opcodes.ALOAD, 1)
+//            methodVisitor.visitMethodInsn(getTag.opcode, getTag.className, getTag.methodName, getTag.descriptor, true)
+
+            AsmVisitorUtils.visitInt(methodVisitor, priority)
+            AsmVisitorUtils.visitInt(methodVisitor, lineNumber)
+
+            super.visitMethodInsn(
+                newMethod.opcode,
+                newMethod.className,
+                newMethod.methodName,
+                newMethod.descriptor,
+                true
+            )
+            return true
+        }
+        return false
     }
 
     @Suppress("UNUSED_PARAMETER")
