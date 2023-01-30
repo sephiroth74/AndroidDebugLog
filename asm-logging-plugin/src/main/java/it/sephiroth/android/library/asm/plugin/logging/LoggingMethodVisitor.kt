@@ -70,8 +70,6 @@ class LoggingMethodVisitor(
         descriptor: String?,
         isInterface: Boolean
     ): Boolean {
-        println("****** visitLoggerMethdInsn ********")
-        println("opcode: $opcode, owner: $owner, name: $name, descriptor: $descriptor, isinterface: $isInterface")
         val result = Constants.ILogger.replace(name, descriptor, opcode)
         if (null != result) {
             logger.debug("$tagName Adding Trunk replacement at line $lineNumber")
