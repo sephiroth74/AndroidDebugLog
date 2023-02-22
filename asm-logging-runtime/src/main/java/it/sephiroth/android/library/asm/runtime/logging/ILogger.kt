@@ -5,7 +5,6 @@ import androidx.annotation.IntRange
 
 interface ILogger {
     val tag: String
-
     fun v(message: String, vararg args: Any?)
     fun v(throwable: Throwable?, message: String?, vararg args: Any?)
     fun v(throwable: Throwable?)

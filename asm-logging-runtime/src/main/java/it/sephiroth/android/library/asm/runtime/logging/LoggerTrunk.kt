@@ -1,6 +1,5 @@
 package it.sephiroth.android.library.asm.runtime.logging
 
-import android.util.Log
 import androidx.annotation.Keep
 
 
@@ -13,7 +12,8 @@ import androidx.annotation.Keep
  */
 @Suppress("unused", "UNUSED_PARAMETER")
 @Keep
-class LoggerTrunk(override val tag: String) : ILogger {
+class LoggerTrunk(tag: String) : ILogger {
+    override val tag: String = if (tag.length > 35) (tag.substring(0, 32) + "...") else tag
 
     @JvmSynthetic
     override fun log(message: String, args: Array<out Any?>?, priority: Int, lineNumber: Int) {

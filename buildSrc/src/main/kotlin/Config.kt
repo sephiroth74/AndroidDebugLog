@@ -12,10 +12,10 @@ import org.gradle.api.JavaVersion
 object Config {
     const val ASM_VERSION = "9.2"
 
-    const val KOTLIN_VERSION = "1.7.20"
+    const val KOTLIN_VERSION = "1.8.10"
 
     // this library version
-    const val VERSION = "2.0.5"
+    const val VERSION = "2.0.6"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
