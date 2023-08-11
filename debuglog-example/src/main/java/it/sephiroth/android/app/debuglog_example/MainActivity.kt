@@ -54,27 +54,6 @@ class MainActivity : AppCompatActivity() {
         t.v(RuntimeException("test"), "My Custom Message `%s` with `%d` args", "with args", 2)
         t.v(RuntimeException("another exception"))
 
-        t.d("My Custom Message `%s` with `%d` args", "with args", 2)
-        t.d(RuntimeException("test"), "My Custom Message `%s` with `%d` args", "with args", 2)
-        t.d(RuntimeException("another exception"))
-
-        t.i("My Custom Message `%s` with `%d` args", "with args", 2)
-        t.i(RuntimeException("test"), "My Custom Message `%s` with `%d` args", "with args", 2)
-        t.i(RuntimeException("another exception"))
-
-        t.w("My Custom Message `%s` with `%d` args", "with args", 2)
-        t.w(RuntimeException("test"), "My Custom Message `%s` with `%d` args", "with args", 2)
-        t.w(RuntimeException("another exception"))
-
-        t.e("My Custom Message `%s` with `%d` args", "with args", 2)
-        t.e(RuntimeException("test"), "My Custom Message `%s` with `%d` args", "with args", 2)
-        t.e(RuntimeException("another exception"))
-
-        t.wtf("My Custom Message `%s` with `%d` args", "with args", 2)
-        t.wtf(RuntimeException("test"), "My Custom Message `%s` with `%d` args", "with args", 2)
-        t.wtf(RuntimeException("another exception"))
-
-
         Completable.create { emitter ->
             Trunk.i("runTests")
             emitter.onComplete()

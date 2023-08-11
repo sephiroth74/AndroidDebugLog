@@ -1,6 +1,4 @@
-import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.plugins.signing.Sign
 
 plugins {
     `kotlin-dsl`
@@ -9,14 +7,6 @@ plugins {
     id("java-gradle-plugin")
     id("maven-publish")
     id("com.gradle.plugin-publish") version "0.16.0"
-}
-
-
-repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    mavenLocal()
-    google()
 }
 
 version = Config.VERSION
@@ -37,24 +27,10 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
 
-    annotationProcessor(Config.Dependencies.Misc.lombok)
 }
 
 tasks {
-    val sourcesJar by creating(Jar::class) {
-        archiveClassifier.set("sources")
-        //        from(sourceSets.main.get().allSource)
-    }
-
-    val javadocJar by creating(Jar::class) {
-        archiveClassifier.set("javadoc")
-        dependsOn.add(javadoc)
-        from(javadoc)
-    }
-
     artifacts {
-        //        archives(sourcesJar)
-        //        archives(javadocJar)
         archives(jar)
     }
 }
@@ -142,8 +118,7 @@ publishing {
 
 
 java {
-    sourceCompatibility = Config.Java.version
-    targetCompatibility = Config.Java.version
+    toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
     withSourcesJar()
     withJavadocJar()
 }

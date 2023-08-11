@@ -11,7 +11,7 @@ import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 import org.objectweb.asm.ClassVisitor
 
-abstract class DebugLogPlugin : Plugin<Project> {
+open class DebugLogPlugin : Plugin<Project> {
     private lateinit var logger: Logger
     private val extensionName = BuildConfig.EXTENSION_NAME
 

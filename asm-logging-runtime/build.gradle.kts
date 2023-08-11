@@ -18,7 +18,6 @@ android {
 
     defaultConfig {
         minSdk = Config.Android.minSdk
-        targetSdk = Config.Android.targetSdk
     }
 
     buildTypes {
@@ -122,7 +121,7 @@ afterEvaluate {
     }
 
     java {
-        // empty
+        toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
     }
 }
 

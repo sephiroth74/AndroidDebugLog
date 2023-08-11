@@ -15,14 +15,6 @@ plugins {
     id("com.gradle.plugin-publish") version "0.16.0"
 }
 
-
-repositories {
-    gradlePluginPortal()
-    mavenCentral()
-    mavenLocal()
-    google()
-}
-
 version = Config.VERSION
 group = Config.GROUP
 
@@ -59,24 +51,10 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
 
-    // using local
-//    api(project(":asm-core-plugin"))
     api(project(":asm-commons"))
-
-    annotationProcessor(Config.Dependencies.Misc.lombok)
 }
 
 tasks {
-    val sourcesJar by creating(Jar::class) {
-        archiveClassifier.set("sources")
-    }
-
-    val javadocJar by creating(Jar::class) {
-        archiveClassifier.set("javadoc")
-        dependsOn.add(javadoc)
-        from(javadoc)
-    }
-
     artifacts {
         archives(jar)
     }
@@ -162,8 +140,7 @@ publishing {
 
 
 java {
-    sourceCompatibility = Config.Java.version
-    targetCompatibility = Config.Java.version
+    toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
     withSourcesJar()
     withJavadocJar()
 }

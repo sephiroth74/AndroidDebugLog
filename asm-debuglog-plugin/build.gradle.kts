@@ -1,8 +1,4 @@
-// debuglog-plugin/build.gradle.kts
-
-import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.plugins.signing.Sign
 
 plugins {
     `kotlin-dsl`
@@ -52,27 +48,11 @@ dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
 
-//    api(project(":asm-core-plugin"))
     api(project(":asm-commons"))
-
-    annotationProcessor(Config.Dependencies.Misc.lombok)
 }
 
 tasks {
-    val sourcesJar by creating(Jar::class) {
-        archiveClassifier.set("sources")
-//        from(sourceSets.main.get().allSource)
-    }
-
-    val javadocJar by creating(Jar::class) {
-        archiveClassifier.set("javadoc")
-        dependsOn.add(javadoc)
-        from(javadoc)
-    }
-
     artifacts {
-//        archives(sourcesJar)
-//        archives(javadocJar)
         archives(jar)
     }
 }
@@ -158,8 +138,7 @@ publishing {
 
 
 java {
-    sourceCompatibility = Config.Java.version
-    targetCompatibility = Config.Java.version
+    toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
     withSourcesJar()
     withJavadocJar()
 }

@@ -14,7 +14,7 @@ import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 
 
-abstract class LoggingPlugin : Plugin<Project> {
+open class LoggingPlugin : Plugin<Project> {
     lateinit var logger: Logger
     private val extensionName = BuildConfig.EXTENSION_NAME
 

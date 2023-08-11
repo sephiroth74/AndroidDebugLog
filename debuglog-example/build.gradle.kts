@@ -2,21 +2,6 @@
 
 // debuglog-example/build.gradle.kts
 
-buildscript {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        google()
-        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
-        maven { url = uri("https://repo1.maven.org/maven2") }
-    }
-
-    dependencies {
-        classpath(Config.Dependencies.Android.buildGradle)
-        classpath(kotlin(Config.Dependencies.JetBrains.kolinGradlePlugin))
-        classpath(Config.Dependencies.AndroidAsm.loggingPlugin)
-    }
-}
 
 plugins {
     id("com.android.application")
@@ -108,13 +93,13 @@ dependencies {
     implementation(Config.Dependencies.AndroidAsm.loggingRuntime)
 //    implementation(Config.Dependencies.AndroidAsm.loggingLevelRuntime)
 
-    implementation("androidx.appcompat:appcompat:1.5.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
-    implementation("io.reactivex.rxjava3:rxjava:3.1.5")
+    implementation("io.reactivex.rxjava3:rxjava:3.1.6")
 
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.4")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }

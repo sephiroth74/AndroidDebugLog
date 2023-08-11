@@ -8,7 +8,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.Logger
 
-abstract class DebugLogPluginInit : Plugin<Project> {
+open class DebugLogPluginInit : Plugin<Project> {
     private lateinit var logger: Logger
     private val extensionName = BuildConfig.EXTENSION_NAME
 

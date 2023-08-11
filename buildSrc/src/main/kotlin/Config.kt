@@ -10,19 +10,19 @@ import org.gradle.api.JavaVersion
  */
 
 object Config {
-    const val ASM_VERSION = "9.2"
+    const val ASM_VERSION = "9.3"
 
-    const val KOTLIN_VERSION = "1.8.10"
+    const val KOTLIN_VERSION = "1.9.0"
 
     // this library version
-    const val VERSION = "2.0.6"
+    const val VERSION = "2.0.8-rc2-SNAPSHOT"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
     val DEBUG = VERSION.endsWith("SNAPSHOT")
 
     object Versions {
-        const val androidGradlePlugin = "7.3.1"
+        const val androidGradlePlugin = "7.4.1"
         const val androidTools = "32.0.0"
         const val autoService = "1.0.1"
     }
@@ -42,7 +42,7 @@ object Config {
     }
 
     object Android {
-        const val compileSdk = 32
+        const val compileSdk = 33
         const val minSdk = 24
         const val targetSdk = 32
     }
