@@ -36,4 +36,4 @@ include(":asm-debuglog-plugin")
 include(":asm-logging-plugin")
 
 // demo app
-include(":debuglog-example")
+//include(":debuglog-example")

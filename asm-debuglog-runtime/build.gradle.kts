@@ -1,5 +1,7 @@
 @file:Suppress("LocalVariableName")
 
+import org.gradle.jvm.tasks.Jar
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -34,7 +36,6 @@ dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
 }
 
-
 afterEvaluate {
 
     if (project.hasProperty("sonatypeUsername")
@@ -51,6 +52,7 @@ afterEvaluate {
             publications {
                 create<MavenPublication>("release") {
 
+
                     pom {
                         groupId = Config.GROUP
                         version = Config.VERSION
@@ -58,8 +60,6 @@ afterEvaluate {
                         description.set(Config.Pom.DESCRIPTION)
                         url.set(Config.Pom.URL)
                         name.set(project.name)
-
-                        from(components["release"])
 
                         licenses {
                             license {
@@ -80,6 +80,10 @@ afterEvaluate {
                                 name.set(Config.Pom.DEVELOPER_NAME)
                             }
                         }
+                    }
+
+                    afterEvaluate {
+                        from(components["release"])
                     }
                 }
             }

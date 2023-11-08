@@ -28,9 +28,6 @@ open class DebugLogPluginInit : Plugin<Project> {
 
         logger.lifecycle("[DebugLogPluginInit] registering extension ${Constants.BASE_EXTENSION_NAME}.$extensionName")
         base.extensions.create(extensionName, DebugLogPluginExtension::class.java)
-
-//        target.plugins.apply(DebugLogPluginPost::class.java)
-//        target.plugins.apply(DebugLogPlugin::class.java)
     }
 
     companion object {

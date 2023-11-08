@@ -12,10 +12,10 @@ import org.gradle.api.JavaVersion
 object Config {
     const val ASM_VERSION = "9.3"
 
-    const val KOTLIN_VERSION = "1.9.0"
+    const val KOTLIN_VERSION = "1.9.10"
 
     // this library version
-    const val VERSION = "2.0.8-rc2-SNAPSHOT"
+    const val VERSION = "2.0.8-rc7-SNAPSHOT"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
@@ -25,6 +25,7 @@ object Config {
         const val androidGradlePlugin = "7.4.1"
         const val androidTools = "32.0.0"
         const val autoService = "1.0.1"
+        const val ksp = "1.9.10-1.0.13"
     }
 
     object Pom {
@@ -48,14 +49,12 @@ object Config {
     }
 
     object Java {
-        val version = JavaVersion.VERSION_11
+        val version = JavaVersion.VERSION_17
     }
 
     object Kotlin {
         const val version = KOTLIN_VERSION
-        const val jvmId = "jvm"
-        const val kaptId = "kapt"
-        const val jvmVersion = "11"
+        const val jvmVersion = "17"
     }
 
     object MavenPublish {

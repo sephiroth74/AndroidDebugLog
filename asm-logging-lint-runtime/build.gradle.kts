@@ -9,8 +9,8 @@ plugins {
     id("java-library")
     id("maven-publish")
     id("kotlin")
-    id("org.jetbrains.kotlin.kapt")
     id("com.android.lint")
+    id("com.google.devtools.ksp") version Config.Versions.ksp
     signing
 }
 
@@ -22,7 +22,7 @@ dependencies {
     compileOnly(Config.Dependencies.Lint.api)
     compileOnly(Config.Dependencies.Lint.checks)
     compileOnly(Config.Dependencies.Auto.serviceAnnotations)
-    kapt(Config.Dependencies.Auto.service)
+//    ksp(Config.Dependencies.Auto.service)
     testImplementation(Config.Dependencies.Lint.core)
     testImplementation(Config.Dependencies.Lint.tests)
     testImplementation(Config.Dependencies.junit)
