@@ -38,11 +38,12 @@ class PreClassVisitor(
 
     override fun visitAnnotation(descriptor: String?, visible: Boolean): AnnotationVisitor? {
         val av = super.visitAnnotation(descriptor, visible)
+        if(verbose) logger.lifecycle("$tag visitAnnotation($descriptor)")
         if (descriptor == "L${Constants.JavaTypes.TYPE_ANNOTATION_DEBUGLOG_CLASS};") {
             // DebugLogClass for all class methods
             classData = ClassAnnotationData.from(pluginData, className)
             classData!!.enabled = true
-            PreAnnotationVisitor(av, classData!!)
+            return PreAnnotationVisitor(av, classData!!)
         }
         return null
     }

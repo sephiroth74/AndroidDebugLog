@@ -25,7 +25,10 @@ class MethodAnnotationData(
     val uniqueKey = generateUniqueKey(methodName, descriptor)
 
     val finalTag: String
-        get() = tag?.takeIf { it.isNotBlank() } ?: simpleClassName
+        get() {
+            if (tag.isNullOrBlank()) return simpleClassName
+            else return tag!!
+        }
 
     override fun toString(): String {
         return "MethodAnnotationData(" +

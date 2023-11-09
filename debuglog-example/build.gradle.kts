@@ -29,10 +29,6 @@ androidASM {
 
     debugLog {
         enabled = true
-        runVariant = ".*"
-        debugExit = false
-        debugArguments = it.sephiroth.android.library.asm.plugin.debuglog.DebugArguments.Full
-        logLevel = it.sephiroth.android.library.asm.commons.AndroidLogLevel.VERBOSE
         verbose.set(true)
     }
 }

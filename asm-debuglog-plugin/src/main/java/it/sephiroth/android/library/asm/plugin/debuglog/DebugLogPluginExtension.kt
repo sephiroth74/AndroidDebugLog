@@ -30,7 +30,7 @@ abstract class DebugLogPluginExtension : AsmPluginExtension() {
     var debugArguments: DebugArguments = Constants.DEFAULT_DEBUG_ARGUMENTS
 
     @get:Input
-    val verbose: Property<Boolean> = getObjectFactory().property()
+    var verbose: Property<Boolean> = getObjectFactory().property()
 
     init {
         verbose.convention(false)

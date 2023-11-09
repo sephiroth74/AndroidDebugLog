@@ -19,7 +19,7 @@ class PreAnnotationVisitor(
     private val tag = makeTag(this)
 
     override fun visit(name: String, value: Any) {
-        logger.debug("$tag visit($name, $value)")
+        logger.debug("visit(name=$name, value=$value)")
         when (name) {
             "debugExit" -> annotationData.debugExit = value as Boolean
             "debugEnter" -> annotationData.debugEnter = value as Boolean

@@ -18,7 +18,7 @@ import it.sephiroth.android.library.asm.runtime.logging.Trunk
 import timber.log.Timber
 import java.io.IOException
 
-@DebugLogClass
+@DebugLogClass(tag = "Ciao")
 class MainActivity : AppCompatActivity() {
 
     @DebugLog(enabled = BuildConfig.IS_DEBUG)
