@@ -2,9 +2,7 @@
 
 @file:Suppress("SpellCheckingInspection")
 
-import org.gradle.plugin.devel.GradlePluginDevelopmentExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.plugins.signing.Sign
 
 plugins {
     `kotlin-dsl`

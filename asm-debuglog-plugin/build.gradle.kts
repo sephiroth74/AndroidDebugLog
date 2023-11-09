@@ -9,7 +9,6 @@ plugins {
     id("com.gradle.plugin-publish") version "0.16.0"
 }
 
-
 version = Config.VERSION
 group = Config.GROUP
 
@@ -18,7 +17,6 @@ pluginBundle {
     vcsUrl = "https://github.com/sephiroth74/AndroidDebugLog"
     tags = listOf("android", "annotations", "logging")
 }
-
 
 gradlePlugin {
     plugins {
