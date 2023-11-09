@@ -24,8 +24,6 @@ abstract class DebugLogPluginExtension : AsmPluginExtension() {
      */
     var debugExit: Boolean = Constants.DEFAULT_DEBUG_EXIT
 
-    // var debugEnter: Boolean = Constants.DEFAULT_DEBUG_ENTER
-
     /**
      * Set the default level of a method parameter logging
      */

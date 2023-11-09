@@ -15,7 +15,7 @@ object Config {
     const val KOTLIN_VERSION = "1.9.10"
 
     // this library version
-    const val VERSION = "2.0.8-rc7-SNAPSHOT"
+    const val VERSION = "2.0.8-rc8-SNAPSHOT"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
@@ -24,7 +24,7 @@ object Config {
     object Versions {
         const val androidGradlePlugin = "7.4.1"
         const val androidTools = "32.0.0"
-        const val autoService = "1.0.1"
+        const val autoService = "1.1.1"
         const val ksp = "1.9.10-1.0.13"
     }
 
@@ -70,6 +70,7 @@ object Config {
         object Auto {
             const val service = "com.google.auto.service:auto-service:${Versions.autoService}"
             const val serviceAnnotations = "com.google.auto.service:auto-service-annotations:${Versions.autoService}"
+            const val kspService = "dev.zacsweers.autoservice:auto-service-ksp:1.1.0"
         }
 
         object Lint {

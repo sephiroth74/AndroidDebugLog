@@ -1,31 +1,7 @@
 package it.sephiroth.android.library.asm.runtime.logging.lint
 
-import com.android.tools.lint.detector.api.skipParentheses
-import org.jetbrains.uast.util.isMethodCall
-import com.android.tools.lint.detector.api.minSdkLessThan
-import com.android.tools.lint.detector.api.isString
-import com.android.tools.lint.detector.api.isKotlin
-import org.jetbrains.uast.isInjectionHost
-import org.jetbrains.uast.evaluateString
-import com.android.tools.lint.detector.api.Detector
-import com.android.tools.lint.detector.api.JavaContext
-import org.jetbrains.uast.UCallExpression
-import com.intellij.psi.PsiMethod
-import com.android.tools.lint.client.api.JavaEvaluator
-import com.android.tools.lint.detector.api.LintFix
-import org.jetbrains.uast.UElement
-import org.jetbrains.uast.UMethod
-import org.jetbrains.uast.UExpression
-import com.android.tools.lint.detector.api.Incident
-import org.jetbrains.uast.UQualifiedReferenceExpression
-import org.jetbrains.uast.UBinaryExpression
-import org.jetbrains.uast.UastBinaryOperator
-import org.jetbrains.uast.UIfExpression
-import com.intellij.psi.PsiMethodCallExpression
-import com.intellij.psi.PsiLiteralExpression
-import com.intellij.psi.PsiType
-import com.intellij.psi.PsiClassType
 import com.android.tools.lint.checks.StringFormatDetector
+import com.android.tools.lint.client.api.JavaEvaluator
 import com.android.tools.lint.client.api.TYPE_BOOLEAN
 import com.android.tools.lint.client.api.TYPE_BOOLEAN_WRAPPER
 import com.android.tools.lint.client.api.TYPE_BYTE
@@ -47,25 +23,56 @@ import com.android.tools.lint.client.api.TYPE_STRING
 import com.android.tools.lint.detector.api.Category.Companion.CORRECTNESS
 import com.android.tools.lint.detector.api.Category.Companion.MESSAGES
 import com.android.tools.lint.detector.api.ConstantEvaluator.evaluateString
+import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Detector.UastScanner
 import com.android.tools.lint.detector.api.Implementation
+import com.android.tools.lint.detector.api.Incident
 import com.android.tools.lint.detector.api.Issue
+import com.android.tools.lint.detector.api.JavaContext
+import com.android.tools.lint.detector.api.LintFix
 import com.android.tools.lint.detector.api.Scope.Companion.JAVA_FILE_SCOPE
 import com.android.tools.lint.detector.api.Severity.ERROR
 import com.android.tools.lint.detector.api.Severity.WARNING
-import org.jetbrains.uast.ULiteralExpression
-import org.jetbrains.uast.USimpleNameReferenceExpression
+import com.android.tools.lint.detector.api.isKotlin
+import com.android.tools.lint.detector.api.isString
+import com.android.tools.lint.detector.api.minSdkLessThan
+import com.android.tools.lint.detector.api.skipParentheses
+import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiField
+import com.intellij.psi.PsiLiteralExpression
+import com.intellij.psi.PsiMethod
+import com.intellij.psi.PsiMethodCallExpression
 import com.intellij.psi.PsiParameter
+import com.intellij.psi.PsiType
+import org.jetbrains.uast.UBinaryExpression
+import org.jetbrains.uast.UCallExpression
+import org.jetbrains.uast.UElement
+import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.UIfExpression
+import org.jetbrains.uast.ULiteralExpression
+import org.jetbrains.uast.UMethod
+import org.jetbrains.uast.UQualifiedReferenceExpression
+import org.jetbrains.uast.USimpleNameReferenceExpression
+import org.jetbrains.uast.UastBinaryOperator
+import org.jetbrains.uast.evaluateString
+import org.jetbrains.uast.isInjectionHost
+import org.jetbrains.uast.util.isMethodCall
 import java.lang.Byte
 import java.lang.Double
 import java.lang.Float
-import java.lang.IllegalStateException
 import java.lang.Long
 import java.lang.Short
 import java.util.Calendar
 import java.util.Date
 import java.util.regex.Pattern
+import kotlin.Any
+import kotlin.Boolean
+import kotlin.IllegalStateException
+import kotlin.Int
+import kotlin.Number
+import kotlin.String
+import kotlin.Throwable
+import kotlin.arrayOf
 
 class WrongLoggingUsageDetector : Detector(), UastScanner {
     override fun getApplicableMethodNames() = listOf("tag", "format", "v", "d", "i", "w", "e", "wtf")
@@ -240,7 +247,7 @@ class WrongLoggingUsageDetector : Detector(), UastScanner {
                     'B', 'b', 'h', 'A', 'a', 'C', 'Y', 'y', 'j', 'm', 'd', 'e', // date
                     'R', 'T', 'r', 'D', 'F', 'c' -> { // date/time
                         valid =
-                            type == Integer.TYPE || type == Calendar::class.java || type == Date::class.java || type == java.lang.Long.TYPE
+                            type == Integer.TYPE || type == Calendar::class.java || type == Date::class.java || type == Long.TYPE
                         if (!valid) {
                             context.report(
                                 Incident(
@@ -269,9 +276,9 @@ class WrongLoggingUsageDetector : Detector(), UastScanner {
             valid = when (last) {
                 'b', 'B' -> type == java.lang.Boolean.TYPE
                 'x', 'X', 'd', 'o', 'e', 'E', 'f', 'g', 'G', 'a', 'A' -> {
-                    type == Integer.TYPE || type == java.lang.Float.TYPE ||
-                            type == java.lang.Double.TYPE || type == java.lang.Long.TYPE ||
-                            type == java.lang.Byte.TYPE || type == java.lang.Short.TYPE
+                    type == Integer.TYPE || type == Float.TYPE ||
+                            type == Double.TYPE || type == Long.TYPE ||
+                            type == Byte.TYPE || type == Short.TYPE
                 }
                 'c', 'C' -> type == Character.TYPE
                 'h', 'H' -> type != java.lang.Boolean.TYPE && !Number::class.java.isAssignableFrom(type)
@@ -308,7 +315,7 @@ class WrongLoggingUsageDetector : Detector(), UastScanner {
             when {
                 isString(expressionType!!) -> return String::class.java
                 expressionType === PsiType.INT -> return Integer.TYPE
-                expressionType === PsiType.FLOAT -> return java.lang.Float.TYPE
+                expressionType === PsiType.FLOAT -> return Float.TYPE
                 expressionType === PsiType.CHAR -> return Character.TYPE
                 expressionType === PsiType.BOOLEAN -> return java.lang.Boolean.TYPE
                 expressionType === PsiType.NULL -> return Any::class.java

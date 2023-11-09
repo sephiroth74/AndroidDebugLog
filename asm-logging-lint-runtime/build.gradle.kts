@@ -19,10 +19,12 @@ java {
 }
 
 dependencies {
+    ksp(Config.Dependencies.Auto.kspService)
+
     compileOnly(Config.Dependencies.Lint.api)
     compileOnly(Config.Dependencies.Lint.checks)
     compileOnly(Config.Dependencies.Auto.serviceAnnotations)
-//    ksp(Config.Dependencies.Auto.service)
+
     testImplementation(Config.Dependencies.Lint.core)
     testImplementation(Config.Dependencies.Lint.tests)
     testImplementation(Config.Dependencies.junit)

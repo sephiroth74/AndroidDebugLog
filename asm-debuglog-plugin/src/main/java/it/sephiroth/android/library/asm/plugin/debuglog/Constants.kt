@@ -1,7 +1,6 @@
 package it.sephiroth.android.library.asm.plugin.debuglog
 
 import it.sephiroth.android.library.asm.commons.AndroidLogLevel
-import org.objectweb.asm.Opcodes
 
 object Constants {
 
@@ -12,7 +11,6 @@ object Constants {
     val DEFAULT_LOG_LEVEL = AndroidLogLevel.INFO
 
     const val DEFAULT_DEBUG_EXIT = false
-    const val DEFAULT_DEBUG_ENTER = true
     val DEFAULT_DEBUG_ARGUMENTS = DebugArguments.Full
 
     object JavaTypes {
