@@ -15,11 +15,11 @@ object Config {
     const val KOTLIN_VERSION = "1.9.10"
 
     // this library version
-    const val VERSION = "2.0.8-rc8-SNAPSHOT"
+    const val VERSION = "2.0.9"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
-    val DEBUG = VERSION.endsWith("SNAPSHOT")
+    val DEBUG = VERSION.endsWith("SNAPSHOT", true)
 
     object Versions {
         const val androidGradlePlugin = "7.4.1"

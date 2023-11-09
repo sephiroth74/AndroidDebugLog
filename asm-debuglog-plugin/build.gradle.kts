@@ -139,7 +139,7 @@ publishing {
 
 java {
     toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
-//    withSourcesJar()
+    withSourcesJar()
     withJavadocJar()
 }
 
