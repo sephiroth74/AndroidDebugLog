@@ -1,6 +1,8 @@
 @file:Suppress("SpellCheckingInspection")
 
 import org.gradle.api.JavaVersion
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 
 /**
@@ -12,20 +14,24 @@ import org.gradle.api.JavaVersion
 object Config {
     const val ASM_VERSION = "9.3"
 
-    const val KOTLIN_VERSION = "1.9.10"
+    const val KOTLIN_VERSION = "2.1.10"
 
     // this library version
-    const val VERSION = "2.0.10"
+    const val VERSION = "2.0.14-SNAPSHOT"
 
     const val GROUP = "it.sephiroth.android.library.asm"
 
     val DEBUG = VERSION.endsWith("SNAPSHOT", true)
 
     object Versions {
-        const val androidGradlePlugin = "7.4.1"
+        val kotlinApiVersion = KotlinVersion.KOTLIN_2_1
+        val kotlinLanguageVersion = KotlinVersion.KOTLIN_2_1
+        val jvmTarget = JvmTarget.JVM_21
+
+        const val androidGradlePlugin = "8.8.1"
         const val androidTools = "32.0.0"
         const val autoService = "1.1.1"
-        const val ksp = "1.9.10-1.0.13"
+        const val ksp = "2.1.10-1.0.29"
     }
 
     object Pom {
@@ -43,18 +49,18 @@ object Config {
     }
 
     object Android {
-        const val compileSdk = 33
+        const val compileSdk = 35
         const val minSdk = 24
         const val targetSdk = 32
     }
 
     object Java {
-        val version = JavaVersion.VERSION_17
+        val version = JavaVersion.VERSION_21
     }
 
     object Kotlin {
         const val version = KOTLIN_VERSION
-        const val jvmVersion = "17"
+        const val jvmVersion = "21"
     }
 
     object MavenPublish {

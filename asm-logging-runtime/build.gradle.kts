@@ -29,8 +29,12 @@ android {
         targetCompatibility = Config.Java.version
     }
 
-    kotlinOptions {
-        jvmTarget = Config.Kotlin.jvmVersion
+    kotlin {
+        compilerOptions {
+            apiVersion.set(Config.Versions.kotlinApiVersion)
+            jvmTarget.set(Config.Versions.jvmTarget)
+            languageVersion.set(Config.Versions.kotlinLanguageVersion)
+        }
     }
 
     lint {
@@ -48,8 +52,8 @@ dependencies {
 
 afterEvaluate {
 
-    if (project.hasProperty("sonatypeUsername")
-        && project.hasProperty("sonatypePassword")
+    if (project.hasProperty("SONATYPE_TOKEN_USER")
+        && project.hasProperty("SONATYPE_TOKEN_PASSWORD")
         && project.hasProperty("SONATYPE_RELEASE_URL")
         && project.hasProperty("SONATYPE_SNAPSHOT_URL")
     ) {
@@ -100,11 +104,11 @@ afterEvaluate {
                     name = "sonatype"
                     url = uri(publishingUrl)
                     credentials {
-                        val sonatypeUsername: String by project
-                        val sonatypePassword: String by project
+                        val SONATYPE_TOKEN_USER: String by project
+                        val SONATYPE_TOKEN_PASSWORD: String by project
 
-                        username = sonatypeUsername
-                        password = sonatypePassword
+                        username = SONATYPE_TOKEN_USER
+                        password = SONATYPE_TOKEN_PASSWORD
                     }
                 }
             }
@@ -118,10 +122,6 @@ afterEvaluate {
 
     tasks.withType<Sign> {
         onlyIf { !Config.DEBUG }
-    }
-
-    java {
-        toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
     }
 }
 

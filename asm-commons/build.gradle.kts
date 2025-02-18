@@ -1,12 +1,15 @@
+import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    `kotlin-dsl`
     signing
     groovy
     id("java-gradle-plugin")
     id("maven-publish")
-    id("com.gradle.plugin-publish") version "0.16.0"
+    `kotlin-dsl`
+    id("com.gradle.plugin-publish") version "1.3.1"
 }
 
 version = Config.VERSION
@@ -35,8 +38,8 @@ tasks {
     }
 }
 
-if (project.hasProperty("sonatypeUsername")
-    && project.hasProperty("sonatypePassword")
+if (project.hasProperty("SONATYPE_TOKEN_USER")
+    && project.hasProperty("SONATYPE_TOKEN_PASSWORD")
     && project.hasProperty("SONATYPE_RELEASE_URL")
     && project.hasProperty("SONATYPE_SNAPSHOT_URL")
 ) {
@@ -89,11 +92,11 @@ if (project.hasProperty("sonatypeUsername")
                 name = "sonatype"
                 url = uri(publishingUrl)
                 credentials {
-                    val sonatypeUsername: String by project
-                    val sonatypePassword: String by project
+                    val SONATYPE_TOKEN_USER: String by project
+                    val SONATYPE_TOKEN_PASSWORD: String by project
 
-                    username = sonatypeUsername
-                    password = sonatypePassword
+                    username = SONATYPE_TOKEN_USER
+                    password = SONATYPE_TOKEN_PASSWORD
                 }
             }
         }
@@ -120,12 +123,17 @@ publishing {
 java {
     toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
     withSourcesJar()
-    withJavadocJar()
+//    withJavadocJar()
 }
+
 
 afterEvaluate {
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = Config.Kotlin.jvmVersion
+        compilerOptions {
+            apiVersion.set(Config.Versions.kotlinApiVersion)
+            jvmTarget.set(Config.Versions.jvmTarget)
+            languageVersion.set(Config.Versions.kotlinLanguageVersion)
+        }
     }
 }
 

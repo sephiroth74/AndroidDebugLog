@@ -6,7 +6,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.plugins.signing.Sign
 
 plugins {
-    id("java-library")
     id("maven-publish")
     id("kotlin")
     id("com.android.lint")
