@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    signing
-    groovy
-    id("java-gradle-plugin")
-    id("maven-publish")
     `kotlin-dsl`
+    groovy
+    `java-gradle-plugin`
+    `maven-publish`
+    signing
     id("com.gradle.plugin-publish") version "1.3.1"
 }
 
@@ -32,11 +32,7 @@ dependencies {
 
 }
 
-tasks {
-    artifacts {
-        archives(jar)
-    }
-}
+
 
 if (project.hasProperty("SONATYPE_TOKEN_USER")
     && project.hasProperty("SONATYPE_TOKEN_PASSWORD")
@@ -88,6 +84,7 @@ if (project.hasProperty("SONATYPE_TOKEN_USER")
         }
 
         repositories {
+            mavenLocal()
             maven {
                 name = "sonatype"
                 url = uri(publishingUrl)
@@ -99,6 +96,7 @@ if (project.hasProperty("SONATYPE_TOKEN_USER")
                     password = SONATYPE_TOKEN_PASSWORD
                 }
             }
+            maven(ProjectUtil.artifactory(project))
         }
 
 
@@ -111,19 +109,6 @@ if (project.hasProperty("SONATYPE_TOKEN_USER")
     tasks.withType<Sign> {
         onlyIf { !Config.DEBUG }
     }
-}
-
-publishing {
-    repositories {
-        mavenLocal()
-    }
-}
-
-
-java {
-    toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
-    withSourcesJar()
-//    withJavadocJar()
 }
 
 

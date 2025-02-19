@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.gradle.plugins.signing.Sign
 
 plugins {
-    id("maven-publish")
+    `maven-publish`
     id("kotlin")
     id("com.android.lint")
     id("com.google.devtools.ksp") version Config.Versions.ksp

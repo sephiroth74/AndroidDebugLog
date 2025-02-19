@@ -111,6 +111,8 @@ afterEvaluate {
                         password = SONATYPE_TOKEN_PASSWORD
                     }
                 }
+                maven(ProjectUtil.artifactory(project))
+                mavenLocal()
             }
         }
 

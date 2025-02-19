@@ -1,8 +1,5 @@
 @file:Suppress("LocalVariableName")
 
-import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -106,6 +103,8 @@ afterEvaluate {
                         password = SONATYPE_TOKEN_PASSWORD
                     }
                 }
+                maven(ProjectUtil.artifactory(project))
+                mavenLocal()
             }
         }
 

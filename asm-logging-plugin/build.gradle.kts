@@ -17,25 +17,6 @@ plugins {
 version = Config.VERSION
 group = Config.GROUP
 
-val SONATYPE_RELEASE_URL: String by project
-val SONATYPE_SNAPSHOT_URL: String by project
-
-publishing {
-    repositories {
-        maven {
-            name = "sonatypePluginRepository"
-            url = if (!Config.DEBUG) uri(SONATYPE_RELEASE_URL) else uri(SONATYPE_SNAPSHOT_URL)
-            credentials {
-                val SONATYPE_TOKEN_USER: String by project
-                val SONATYPE_TOKEN_PASSWORD: String by project
-
-                username = SONATYPE_TOKEN_USER
-                password = SONATYPE_TOKEN_PASSWORD
-            }
-        }
-    }
-}
-
 gradlePlugin {
     plugins {
         create("loggingPlugin") {
@@ -49,7 +30,6 @@ gradlePlugin {
         }
     }
 }
-
 
 dependencies {
     implementation(kotlin(Config.Dependencies.JetBrains.stdLib))
@@ -69,95 +49,78 @@ dependencies {
     api(project(":asm-commons"))
 }
 
-tasks {
-    artifacts {
-        archives(jar)
+if (project.hasProperty("SONATYPE_TOKEN_USER")
+    && project.hasProperty("SONATYPE_TOKEN_PASSWORD")
+    && project.hasProperty("SONATYPE_RELEASE_URL")
+    && project.hasProperty("SONATYPE_SNAPSHOT_URL")
+) {
+    val SONATYPE_RELEASE_URL: String by project
+    val SONATYPE_SNAPSHOT_URL: String by project
+    val publishingUrl = if (!Config.DEBUG) SONATYPE_RELEASE_URL else SONATYPE_SNAPSHOT_URL
+
+    publishing {
+        publications {
+            create<MavenPublication>("pluginMaven") {
+                groupId = Config.GROUP
+                version = Config.VERSION
+
+                pom {
+                    groupId = Config.GROUP
+                    version = Config.VERSION
+
+                    description.set(Config.Pom.DESCRIPTION)
+                    url.set(Config.Pom.URL)
+                    name.set(project.name)
+
+                    licenses {
+                        license {
+                            name.set(Config.Pom.LICENCE_NAME)
+                            url.set(Config.Pom.LICENCE_URL)
+                        }
+                    }
+
+                    scm {
+                        url.set(Config.Pom.SCM_URL)
+                        connection.set(Config.Pom.SCM_CONNECTION)
+                        developerConnection.set(Config.Pom.SCM_DEV_CONNECTION)
+                    }
+
+                    developers {
+                        developer {
+                            id.set(Config.Pom.DEVELOPER_ID)
+                            name.set(Config.Pom.DEVELOPER_NAME)
+                        }
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name = "sonatype"
+                url = uri(publishingUrl)
+                credentials {
+                    val SONATYPE_TOKEN_USER: String by project
+                    val SONATYPE_TOKEN_PASSWORD: String by project
+
+                    username = SONATYPE_TOKEN_USER
+                    password = SONATYPE_TOKEN_PASSWORD
+                }
+            }
+            maven(ProjectUtil.artifactory(project))
+            mavenLocal()
+        }
+
+
     }
-}
-//
-//if (project.hasProperty("SONATYPE_TOKEN_USER")
-//    && project.hasProperty("SONATYPE_TOKEN_PASSWORD")
-//    && project.hasProperty("SONATYPE_RELEASE_URL")
-//    && project.hasProperty("SONATYPE_SNAPSHOT_URL")
-//) {
-//    val SONATYPE_RELEASE_URL: String by project
-//    val SONATYPE_SNAPSHOT_URL: String by project
-//    val publishingUrl = if (!Config.DEBUG) SONATYPE_RELEASE_URL else SONATYPE_SNAPSHOT_URL
-//
-//    publishing {
-//        publications {
-//            create<MavenPublication>("pluginMaven") {
-//                groupId = Config.GROUP
-//                version = Config.VERSION
-//
-//                pom {
-//                    groupId = Config.GROUP
-//                    version = Config.VERSION
-//
-//                    description.set(Config.Pom.DESCRIPTION)
-//                    url.set(Config.Pom.URL)
-//                    name.set(project.name)
-//
-//                    licenses {
-//                        license {
-//                            name.set(Config.Pom.LICENCE_NAME)
-//                            url.set(Config.Pom.LICENCE_URL)
-//                        }
-//                    }
-//
-//                    scm {
-//                        url.set(Config.Pom.SCM_URL)
-//                        connection.set(Config.Pom.SCM_CONNECTION)
-//                        developerConnection.set(Config.Pom.SCM_DEV_CONNECTION)
-//                    }
-//
-//                    developers {
-//                        developer {
-//                            id.set(Config.Pom.DEVELOPER_ID)
-//                            name.set(Config.Pom.DEVELOPER_NAME)
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        repositories {
-//            maven {
-//                name = "sonatype"
-//                url = uri(publishingUrl)
-//                credentials {
-//                    val SONATYPE_TOKEN_USER: String by project
-//                    val SONATYPE_TOKEN_PASSWORD: String by project
-//
-//                    username = SONATYPE_TOKEN_USER
-//                    password = SONATYPE_TOKEN_PASSWORD
-//                }
-//            }
-//        }
-//
-//
-//    }
-//
-//    signing {
-//        sign(publishing.publications["pluginMaven"])
-//    }
-//
-//    tasks.withType<Sign> {
-//        onlyIf { !Config.DEBUG }
-//    }
-//}
 
-publishing {
-    repositories {
-        mavenLocal()
+    signing {
+        sign(publishing.publications["pluginMaven"])
     }
-}
 
-
-java {
-    toolchain { languageVersion.set(JavaLanguageVersion.of(Config.Kotlin.jvmVersion)) }
-    withSourcesJar()
-    withJavadocJar()
+    tasks.withType<Sign> {
+        onlyIf { !Config.DEBUG }
+    }
 }
 
 afterEvaluate {
